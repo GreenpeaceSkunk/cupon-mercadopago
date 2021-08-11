@@ -1,0 +1,76 @@
+{
+  "name": "greenpeace-landing-topics",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "/sk/test-mp/",
+  "dependencies": {
+    "@analytics/google-analytics": "^0.5.3",
+    "@bit/meema.gpar-ui-components.form": "0.0.2",
+    "@bit/meema.gpar-ui-components.general.button": "0.0.2",
+    "@bit/meema.ui-components.carousel": "0.0.58",
+    "@bit/meema.ui-components.elements": "0.0.48",
+    "@bit/meema.ui-components.loaders.three-circles": "0.0.2",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router-dom": "^5.1.7",
+    "analytics": "^0.7.5",
+    "meema.utils": "^1.4.3",
+    "moment": "^2.29.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-facebook-pixel": "^1.0.4",
+    "react-gtm-module": "^2.0.11",
+    "react-player": "^2.9.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "react-share": "^4.4.0",
+    "styled-components": "^5.3.0",
+    "typescript": "^4.1.2",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "client:start:development": "npm run client:env:development && NODE_ENV=development && node -r dotenv/config ./node_modules/.bin/react-scripts start",
+    "client:start:production": "npm run client:env:production && NODE_ENV=production && node -r dotenv/config ./node_modules/.bin/react-scripts start",
+    "client:build:development": "npm run client:env:development && NODE_ENV=development && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version",
+    "client:build:production": "npm run client:env:production && NODE_ENV=production && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version",
+    "client:env:development": "cp .env.development.sample .env.development",
+    "client:env:production": "cp .env.production.sample .env.production",
+    "build:version": "npm run build:version:id && npm run build:version:date && npm run build:author",
+    "build:version:id": "CURRENT_BRANCH=$(git branch --show-current) && VERSION_BUILD=$(git describe --long) && sed -i -- 's/%VERSION_BUILD%/'$CURRENT_BRANCH--$VERSION_BUILD'/g' ./build/index.html",
+    "build:version:date": "VERSION_BUILD_DATE=$(date +%Y-%m-%d)-$(date +%T) && sed -i -- 's/%VERSION_BUILD_DATE%/'$VERSION_BUILD_DATE'/g' ./build/index.html",
+    "build:author": "BUILD_AUTHOR=$(git config --global user.email) && sed -i -- 's/%BUILD_AUTHOR%/'$BUILD_AUTHOR'/g' ./build/index.html",
+    "stylelint": "npx stylelint '**/*.css'",
+    "types": "ln -s $(pwd)/src/types $(pwd)/node_modules/@types/greenpeace"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/moment": "^2.13.0",
+    "@types/react-gtm-module": "^2.0.0",
+    "@types/react-share": "^4.0.0",
+    "@types/styled-components": "^5.1.9",
+    "axios": "^0.21.1"
+  }
+}

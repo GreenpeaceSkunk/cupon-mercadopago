@@ -1,0 +1,15 @@
+RewriteEngine on
+# Only for app in subdirectory
+RewriteBase /landing-temas/
+RewriteRule ^index\.html$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule . /landing-temas/index.html [L]
+
+# Only for root app
+# RewriteBase /
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteCond %{REQUEST_FILENAME} !-l
+# RewriteRule . /index.html [L]

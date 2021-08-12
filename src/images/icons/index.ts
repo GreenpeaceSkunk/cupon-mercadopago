@@ -9,6 +9,7 @@ import SelectArrowIcon from './select-arrow.svg';
 import TickIcon from './tick.svg';
 import LockIcon from './lock.svg';
 import XIcon from './x.svg';
+import WarningIcon from './warning.svg';
 
 export {
   GreenpeaceLogoWhite,
@@ -22,4 +23,5 @@ export {
   TickIcon,
   LockIcon,
   XIcon,
+  WarningIcon,
 }

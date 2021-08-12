@@ -14,16 +14,17 @@ const MainHeader: FunctionComponent<{
       position: absolute;
       display: flex;
       align-items: center;
-      padding-left: ${pixelToRem(16)};
-      padding-right: ${pixelToRem(16)};
+      /* padding-left: ${pixelToRem(16)};
+      padding-right: ${pixelToRem(16)}; */
       width: 100%;
       min-height: ${({theme}) => pixelToRem(theme.header.mobile.height)};
       background-color: ${({theme}) => theme.header.mobile.backgroundColor};
       transition: all 250ms ease;
 
       @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-        padding-left: ${pixelToRem(40)};
-        padding-right: ${pixelToRem(40)};
+        /* padding-left: ${pixelToRem(40)}; */
+        /* padding-right: ${pixelToRem(40)}; */
+        padding: ${pixelToRem(40)} ${pixelToRem(40)} ${pixelToRem(40)} ${pixelToRem(40)};
         min-height: ${({theme}) => pixelToRem(theme.header.tablet.height)};
         background-color: ${({theme}) => theme.header.tablet.backgroundColor};
       }

@@ -1,18 +1,24 @@
-import React, { Suspense, memo, useMemo, lazy, } from 'react';
+import React, { Suspense, memo, useMemo, lazy, useEffect } from 'react';
 import { Wrapper, View } from '@bit/meema.ui-components.elements';
 import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import Shared from '../Shared';
 import { carouselItemStyles } from '../../styles/mixins';
+import { trackEvent as trackDataCrushEvent } from '../../utils/dataCrush';
 
 const SocialMediaNav = lazy(() => import('../SocialMediaNav'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
+
+  useEffect(() => {
+    trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_THANK_YOU_PAGE}`);
+  }, []);
+
   return useMemo(() => (
     <View
       customCss={css`
         ${carouselItemStyles};
-
+      
         padding-top: ${pixelToRem(200)};
       `}
     >

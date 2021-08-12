@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Elements, { CustomCSSType } from '@bit/meema.ui-components.elements';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import { OnChangeEvent } from '../../types';
-import { SelectArrowIcon } from '../../images/icons';
+import { SelectArrowIcon, WarningIcon } from '../../images/icons';
 import { carouselItemStyles } from '../../styles/mixins';
+import { ValidationType } from '../../utils/validators';
 
 const sharedStyles = css`
   margin: 0;
@@ -22,9 +23,24 @@ const sharedStyles = css`
   }
 `;
 
+/**
+ * Defines margin right and left. Also resets margins at first and last child.
+ * @param marginRight Margin Right
+ * @param marginLeft Margin Right
+ * @returns 
+ */
+ const innerMargin = (marginRight: number, marginLeft: number) => css`
+ margin-right: ${pixelToRem(marginRight)};
+ 
+ &:last-child {
+   margin-right: 0;
+ }
+`;
 
 const Main = styled(Elements.Form)`
   ${carouselItemStyles};
+  height: 100vh;
+  overflow-y: scroll;
 
   ${({customCss}) => (customCss) && customCss};
 `;
@@ -143,40 +159,123 @@ const RadioButton: React.FunctionComponent<{
 
 const Group: React.FunctionComponent<{
   children?: React.ReactNode | HTMLAllCollection;
-  errorMessage?: string;
-  hasError?: boolean;
-  showError?: boolean;
+  fieldName: string;
+  labelText?: string;
+  labelBottomText?: string;
+  value?: string|number;
+  showErrorMessage?: boolean;
+  customCss?: CustomCSSType;
+  maxLength?: number;
+  validateFn?: (value: any, maxLength?: number) => ValidationType;
+  onUpdateHandler?: (fieldName: string, isValid: boolean, value?: string|number) => void;
 }> = ({
   children,
-  errorMessage,
-  hasError = false,
-  showError = false,
-}) => useMemo(() => (
-  <Elements.Wrapper
-    customCss={css`
-      margin-bottom: ${pixelToRem(16)};
-      
-      &:after {
-        display: ${(hasError && showError && errorMessage) ? 'flex' : 'none'};
-        margin-top: ${pixelToRem(10)};
-        padding: 0 ${pixelToRem(10)};
-        color: ${({theme}) => theme.color.error.normal};
-        content: "${errorMessage}";
+  fieldName,
+  labelText,
+  labelBottomText,
+  showErrorMessage = false,
+  value = '',
+  customCss,
+  maxLength,
+  validateFn,
+  onUpdateHandler,
+}) => {
+  const [ isValid, setIsValid ] = useState<boolean>(false);
+  const [ errorMessage, setErrorMessage ] = useState<string>('');
+
+  useEffect(() => {
+    if(validateFn) {
+      let validator: ValidationType;      
+      if(maxLength) {
+        validator = validateFn(value, maxLength);
+      } else {
+        validator = validateFn(value);
       }
 
-      input[type="text"], input[type="email"] {
-        ${(hasError && errorMessage) && css`
-          border-color: ${({theme}) => theme.color.error.normal};
-        `}
+      if(validator) {
+        setIsValid(validator.isValid);
+        setErrorMessage(validator.errorMessage ?? '');
+        
+        if(onUpdateHandler && fieldName) {
+          onUpdateHandler(fieldName, validator.isValid, value);
+        }
       }
-    `}
-  >{children}</Elements.Wrapper>
-), [
-  children,
-  errorMessage,
-  hasError,
-  showError,
-]);
+    }
+  }, [
+    fieldName,
+    value,
+  ]);
+
+  return useMemo(() => (
+    <Elements.Wrapper
+      customCss={css`
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        width: 100%;
+        margin-bottom: ${pixelToRem(16)};
+        
+        &:after {
+          width: 100%;
+          margin-top: ${pixelToRem(10)};
+          font-size: ${pixelToRem(15)};
+          font-family: ${({theme}) => theme.font.family.primary.regular};
+          color: ${({theme}) => theme.color.error.normal};
+          text-align: left;
+          content: "${(!isValid && value !== '' && showErrorMessage && errorMessage) ? errorMessage : ""}";
+        }
+  
+        input[type="text"], input[type="email"], textarea {
+          width: 100%;
+  
+          ${(value === '') && css`
+            border-color: ${({theme}) => theme.color.secondary.normal};
+          `}
+          
+          ${(!isValid && value !== '') && css`
+            border-color: ${({theme}) => theme.color.error.normal};
+          `}
+        }
+
+        ${innerMargin(20, 20)};
+        ${(customCss) && customCss};
+      `}
+    >
+      {(labelText) && (
+        <Elements.Label
+          htmlFor={fieldName}
+          customCss={css`
+            text-align: left;
+            font-family: ${({theme}) => theme.font.family.primary.regular};
+          `}
+        >{labelText}</Elements.Label>
+      )}
+      {children}
+      {(labelBottomText) ? (
+        <Elements.Label
+          customCss={css`
+            font-size: ${pixelToRem(14)};
+            margin-top: ${pixelToRem(4)};
+            text-align: left;
+            font-family: ${({theme}) => theme.font.family.primary.regular};
+          `}
+        >{labelBottomText}</Elements.Label>
+      ) : null}
+    </Elements.Wrapper>
+  ), [
+    children,
+    fieldName,
+    labelText,
+    labelBottomText,
+    showErrorMessage,
+    value,
+    customCss,
+    isValid,
+    maxLength,
+    validateFn,
+    onUpdateHandler,
+  ]);
+};
 
 const Label = styled(Elements.Label)`
   position: relative;
@@ -205,12 +304,9 @@ export const Option = styled(Elements.Option)`
 const Row = styled(Elements.Wrapper)`
   display: grid;
   flex-direction: row;
-  /* flex-wrap: wrap; */
   width: 100%;
 
   > * {
-    /* margin-right: ${pixelToRem(10)}; */
-    /* margin-left: ${pixelToRem(10)}; */
     margin-bottom: ${pixelToRem(10)};
 
     &:first-child {
@@ -219,6 +315,33 @@ const Row = styled(Elements.Wrapper)`
     
     &:last-child {
       margin-right: 0;
+    }
+  }
+`;
+
+const ErrorMessage = styled(Elements.Wrapper)`
+  display: flex;
+  align-items: center;
+  padding: ${pixelToRem(12)};
+  border-radius: ${pixelToRem(5)};
+  background-color: ${({theme}) => theme.color.error.normal};
+  color: white;
+  margin-top: ${pixelToRem(18)};
+  font-family: ${({theme}) => theme.font.family.primary.regular};
+
+  &:before {
+    flex: 0 0 auto;
+    width: ${pixelToRem(20)};
+    height: ${pixelToRem(20)};
+    background-size: ${pixelToRem(20)} ${pixelToRem(20)};
+    background-position: center center;
+    background-repeat: no-repeat;
+    transform-origin: center;
+    background-image: url(${WarningIcon});
+    content: "";
+
+    @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+      margin-right: ${pixelToRem(12)};
     }
   }
 `;
@@ -238,6 +361,7 @@ const defaults = {
   OptGroup,
   TextArea,
   ContentTitle,
+  ErrorMessage,
 };
 
 export default defaults;

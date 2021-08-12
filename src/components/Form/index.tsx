@@ -6,6 +6,8 @@ import Carousel, { IRef as ICarouselRef } from '@bit/meema.ui-components.carouse
 import { FormContext, FormProvider, FormComponentsType } from './context';
 import Shared from '../Shared';
 
+const ThankYouPage = React.lazy(() => import('../ThankYou'))
+
 const Component: FunctionComponent<{}> = memo(() => {
   const { step, Forms } = useContext(FormContext); 
   const carouselRef = useRef<ICarouselRef>(null);
@@ -103,13 +105,20 @@ const Component: FunctionComponent<{}> = memo(() => {
           showIndicators={false}
           allowSlide={false}
         >
-          <React.Suspense fallback={<Shared.Loader />}>
-            {Object.values(Forms).map(
-              (Child: FormComponentsType, key: number) => (
-                <Child.Component key={key} />
-              )
-            )}
-          </React.Suspense>
+          <>
+            <React.Suspense fallback={<Shared.Loader />}>
+              {Object.values(Forms).map(
+                (Child: FormComponentsType, key: number) => (
+                  <Child.Component key={key} />
+                )
+              )}
+            </React.Suspense>
+            {((step - 1) === Object.values(Forms).length) ? (
+              <React.Suspense fallback={<Shared.Loader />}>
+                <ThankYouPage />
+              </React.Suspense>
+            ) : null}
+          </>
         </Carousel>
       </Wrapper>
 
@@ -120,6 +129,7 @@ const Component: FunctionComponent<{}> = memo(() => {
           justify-content: space-between;
           width: 100%;
           height: 100%;
+
           
           @media (max-width: ${({theme}) => pixelToRem(theme.responsive.tablet.maxWidth)}) {
             ${(isOpen) && css`
@@ -155,7 +165,7 @@ const Component: FunctionComponent<{}> = memo(() => {
       </Wrapper>
     </View>
   ), [
-    // step,
+    step,
     Forms,
     isOpen,
     showPreview,

@@ -82,7 +82,6 @@ export const getPublicKey = async (): Promise<any | AxiosResquestError> => {
 // TODO
 export const doSubscriptionPayment = async (data: any): Promise<any | AxiosResquestError> => ApiCall({
   url: `${process.env.REACT_APP_GREENPEACE_MERCADOPAGO_API_URL}/createStaging`,
-  // url: `https://dona.greenpeace.org.ar/gp/createStaging`,
   method: 'POST',
   data,
 });

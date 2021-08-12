@@ -15,14 +15,14 @@ const Forms = {
     Component: React.lazy(() => import('./SubscriptionForm')),
     route: 'form/user', // Used only for Data Crush Route
   },
-  // checkoutForm: {
-  //   Component: React.lazy(() => import('./CheckoutForm')),
-  //   route: 'form/checkout', // Used only for Data Crush Route
-  // },
-  thankYou: {
-    Component: React.lazy(() => import('../ThankYou')),
-    route: 'thank-you', // Used only for Data Crush Route
+  checkoutForm: {
+    Component: React.lazy(() => import('./CheckoutForm')),
+    route: 'form/checkout', // Used only for Data Crush Route
   },
+  // thankYou: {
+  //   Component: React.lazy(() => import('../ThankYou')),
+  //   route: 'thank-you', // Used only for Data Crush Route
+  // },
 };
 
 export interface IContext {
@@ -50,6 +50,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const { setGhostRouter } = useContext(AppContext);
 
   const goNext = useCallback(() => {
+    console.log('Go next')
     // if((parseInt(step) + 1) <= Object.keys(Forms).length) {
     //   history.push(generatePath(routeMatch.path, { step: parseInt(step) + 1 }));
     // } else {
@@ -57,9 +58,10 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
     // }
 
     // Used only for Data Crush Router
-    if((step + 1) <= Object.keys(Forms).length) {
-      setStep(step + 1);
-    }
+    // if((step + 1) <= Object.keys(Forms).length) {
+    //   setStep(step + 1);
+    // }
+    setStep(step + 1);
   }, [
     step,
     // routeMatch,
@@ -67,7 +69,9 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   ]);
 
   useEffect(() => {
-    setGhostRouter(Object.values(Forms)[step - 1].route);
+    if((step - 1) < Object.keys(Forms).length) {
+      setGhostRouter(Object.values(Forms)[step - 1].route);
+    }
   }, [
     step,
     setGhostRouter,

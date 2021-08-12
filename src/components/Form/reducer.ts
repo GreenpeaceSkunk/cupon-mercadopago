@@ -1,6 +1,11 @@
 import { SharedState, SharedActions, GenericReducerFn, IData, IUserData, IPaymentData, } from 'greenpeace';
 
-export type ContextStateType = SharedState;
+export type ContextStateType = {
+  data: {
+    user: IUserData;
+    payment: IPaymentData;
+  };
+} & SharedState;
 
 type PayloadType = { [x: string]: string | number }; 
 
@@ -13,39 +18,44 @@ export type ContextActionType =
 export const initialState: ContextStateType = {
   data: {
     user: {
-      birthDate: '20/03/1985',
-      email: 'doe.deer+20@email.com',
-      genre: 'male',
+      birthDate: '',
+      email: '',
+      genre: '',
+      phoneNumber: '',
+      areaCode: '',
     } as IUserData,
     payment: {
-      cardNumber: '4509953566233704',//'4704550004928854', 
-      cardholderName: 'Dan Tovbein',
-      securityCode: '123',
-      cardExpirationMonth: '11',
-      cardExpirationYear: '2025',
-      docNumber: '31533422',
-      docType: 'DNI',
-      amount: '200',
+      cardNumber: '', 
+      cardholderName: '',
+      securityCode: '',
+      cardExpirationMonth: '',
+      cardExpirationYear: '',
+      docNumber: '',
+      docType: '',
+      amount: '',
       newAmount: '',
     } as IPaymentData,
-    // user: {
-    //   birthDate: '',
-    //   email: '',
-    //   genre: '',
-    // } as IUserData,
-    // payment: {
-    //   cardNumber: '4509953566233704',
-    //   cardholderName: '',
-    //   securityCode: '123',
-    //   cardExpirationMonth: '11',
-    //   cardExpirationYear: '25',
-    //   issuerInput: '',
-    //   transactionAmount: '',
-    //   paymentMethodId: '',
-    //   docNumber: '12345678',
-    //   docType: 'DNI',
-    // },
   } as IData,
+  // data: {
+  //   user: {
+  //     birthDate: '20/03/1985',
+  //     email: 'doe.deer@email.com',
+  //     genre: '',
+  //     phoneNumber: '44440000',
+  //     areaCode: '11',
+  //   } as IUserData,
+  //   payment: {
+  //     cardNumber: '4509953566233704', 
+  //     cardholderName: 'APRO',
+  //     securityCode: '223',
+  //     cardExpirationMonth: '11',
+  //     cardExpirationYear: '2025',
+  //     docNumber: '31533422',
+  //     docType: 'DNI',
+  //     amount: '700',
+  //     newAmount: '',
+  //   } as IPaymentData,
+  // } as IData,
   submitting: false,
   submitted: false,
   error: null,
@@ -71,18 +81,12 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
             ...state.data,
             payment: {
               ...state.data.payment,
-              ...action.payload['monto']
-              ? {
-                  amount: action.payload['monto'],
-                  newAmount: '',
-                }
-              : (
-                (action.payload['otherAmount'])
+              ...action.payload['amount']
                 ? {
-                  amount: '',
-                }
-                : action.payload
-              ),
+                    amount: action.payload['amount'],
+                    newAmount: '',
+                  }
+                : action.payload,
             },
           },
         }

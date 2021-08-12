@@ -15,11 +15,11 @@ import ErrorBoundary from '../ErrorBoundary';
 const AppRouter = lazy(() => import('./router'));
 
 // if(process.env.NODE_ENV === 'production') {
-  // initializeTagManager();
-  // inititalizeAnalytics();
-  // initializeFacebookPixel();
-  // initializeDataCrush();
-  // initializeMercadopago();
+  initializeTagManager();
+  inititalizeAnalytics();
+  initializeFacebookPixel();
+  initializeDataCrush();
+  initializeMercadopago();
 // }
 
 const Component: React.FunctionComponent<{}> = () => {

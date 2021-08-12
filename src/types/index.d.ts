@@ -12,7 +12,7 @@ declare global {
 
     dc: {
       track: {
-        event: (portalId: string, eventId: string) => void;
+        event: (portalId: string, eventId: string, userEmail: string) => void;
       }
     };
 
@@ -47,6 +47,9 @@ export type ServiceParams = {
 export interface IUserData {
   birthDate: string;
   email: string;
+  areaCode: string;
+  phoneNumber: string;
+  birthDate: string;
   genre: '' | 'female' | 'male' | 'non-binary';
 }
 
@@ -71,10 +74,10 @@ export interface IData {
 }
 
 export type SharedState = {
-  data: {
-    user: IUserData;
-    payment: IPaymentData;
-  };
+  // data: {
+  //   user: IUserData;
+  //   payment: IPaymentData;
+  // };
   submitting?: boolean,
   submitted?: boolean,
   error: string | null,

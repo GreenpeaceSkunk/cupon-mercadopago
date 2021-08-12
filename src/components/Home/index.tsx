@@ -92,7 +92,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             padding: 0;
 
             @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
-              padding: ${pixelToRem(80)} ${pixelToRem(20)} ${pixelToRem(20)} ${pixelToRem(20)};
+              /* padding: ${pixelToRem(80)} ${pixelToRem(20)} ${pixelToRem(20)} ${pixelToRem(20)}; */
             }
           `}
         >
@@ -101,7 +101,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               display: flex;
               align-items: flex-end;
               justify-content: space-between;
-              padding: ${pixelToRem(20)};
+              padding: ${pixelToRem(40)};
               width: 100%;
               height: ${pixelToRem(300)};
               background-image: linear-gradient(0deg, rgba(0, 0, 0, .75) 0%, rgba(0, 0, 0, 0) 100%), url(${HomeBackground});
@@ -143,7 +143,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
           <Wrapper
             customCss={css`
-              padding: ${pixelToRem(30)} ${pixelToRem(20)};
+              padding: ${pixelToRem(30)} ${pixelToRem(40)};
 
               > * {
                 margin-bottom: ${pixelToRem(28)};

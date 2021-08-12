@@ -23,7 +23,7 @@ export const Logo = () => (
   </Elements.A>
 );
 
-export const Loader = () => (
+export const Loader:React.FunctionComponent<{ mode?: 'light' | 'default' }> = ({ mode }) => (
   <Elements.Wrapper
     customCss={css`
       display: flex;
@@ -31,12 +31,11 @@ export const Loader = () => (
       justify-content: center;
       height: 100%;
       width: 100%;
-      padding: ${pixelToRem(16)} 0;
     `}
   >
     <ThreeCircles 
       circleCss={css`
-        background-color: ${props => props.theme.color.primary.normal};
+        background-color: ${(mode === 'light') ? 'white' : (({ theme }) => theme.color.primary.normal)};
       `}
     />
   </Elements.Wrapper>

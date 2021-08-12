@@ -1,50 +1,35 @@
-import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useState, } from 'react';
+import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, } from 'react';
 import { FormContext } from '../context';
-import { FormFieldsType, OnChangeEvent } from 'greenpeace';
-import { validateBirthDate, validateEmail } from '../../../utils/validators';
-import styled, { css } from 'styled-components';
+import { OnChangeEvent } from 'greenpeace';
+import { validateBirthDate, validateEmail, validateNewAmount, validatePhoneNumber, validateAreaCode, validateEmptyField } from '../../../utils/validators';
+import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
-import { HGroup, Wrapper, } from '@bit/meema.ui-components.elements';
+import { HGroup } from '@bit/meema.ui-components.elements';
 import { 
-  Group as FormGroup, 
-  Label as FormLabel,
   Input,
-  // Select as FormSelect,
+  Select,
 } from '@bit/meema.gpar-ui-components.form';
 import Shared from '../../Shared';
 import { addOrRemoveSlashToDate } from '../../../utils';
-// import { synchroInit } from '../../../utils/dataCrush';
-
-const FormInput = styled(Input)`
-  label {
-    background-color: green !important;
-
-  } 
-`;
+import { initialState, reducer } from './reducer';
+import { synchroInit } from '../../../utils/dataCrush';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { data: {
     user: {
       birthDate,
       email,
-      // genre,
+      areaCode,
+      phoneNumber,
     },
     payment: {
       amount,
       newAmount,
     }
   }, dispatch, goNext } = useContext(FormContext);
-  const [ isValid, setIsValid ] = useState<boolean>(false);
-  const [ showError, setShowError ] = useState<boolean>(false);
-  const [ allowContiunue, setAllowContinue ] = useState<boolean>(false);
-  const [ errors, setErrors ] = useState<FormFieldsType>({
-    birthDate: false,
-    email: false,
-    genre: false,
-  });
-  const [ fetching, setFetching ] = useState<boolean>(false);
+  const [{ errors, submitting, submitted }, dispatchFormErrors ] = useReducer(reducer, initialState);
   
-  const onChange = useCallback((evt: OnChangeEvent) => {
+  const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
     const name = evt.currentTarget.name;
     let value = evt.currentTarget.value;
@@ -53,7 +38,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       value = addOrRemoveSlashToDate((value.length < birthDate.length && birthDate.charAt(birthDate.length - 1) === '/') ? birthDate : value);
     }
 
-    if(name === 'monto' || name === 'newAmount') {
+    if(name === 'amount' || name === 'newAmount') {
       dispatch({
         type: 'UPDATE_PAYMENT_DATA',
         payload: { [name]: value }
@@ -64,34 +49,68 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         payload: { [name]: value }
       });
     }
-
   }, [
     birthDate,
+    email,
+    areaCode,
+    phoneNumber,
+    amount,
+    newAmount,
     dispatch,
   ]);
 
-  const onSubmit = useCallback((evt: FormEvent) => {
-    evt.preventDefault();
-    if(!isValid) {
-      setShowError(true);
+  const onUpdateFieldHandler = useCallback((fieldName: string, isValid: boolean, value: any) => {
+    if(fieldName === 'amount' || fieldName === 'newAmount') {
+      dispatchFormErrors({
+        type: 'UPDATE_FIELD_ERRORS',
+        payload: {
+          fieldName: 'newAmount',
+          isValid: 
+          (fieldName === 'amount' && value === 'otherAmount')
+          ? false
+          : (fieldName === 'newAmount' && amount === 'otherAmount')
+          ? validateNewAmount(value).isValid
+          : true,
+        }
+      });
     } else {
-      setFetching(true);
-      // synchroInit({
-      //   email,
-      //   fecha_de_nacimiento: birthDate,
-      // });
+      dispatchFormErrors({
+        type: 'UPDATE_FIELD_ERRORS',
+        payload: {
+          fieldName,
+          isValid,
+        }
+      });
     }
   }, [
-    isValid,
-    email,
-    birthDate,
+    amount,
+    dispatch,
   ]);
 
+  const onSubmitHandler = useCallback((evt: FormEvent) => {
+    evt.preventDefault();
+    synchroInit({
+      email,
+      fecha_de_nacimiento: birthDate,
+      phone: phoneNumber,
+      area_code: areaCode,
+      genero: "",
+    }, 
+      `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`
+    );
+    // trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_THANK_YOU_PAGE}`);
+    goNext();
+  }, [
+    birthDate,
+    email,
+    areaCode,
+    phoneNumber,
+  ]);
+  
   useEffect(() => {
     (() => {
-      if(fetching) {
+      if(submitted) {
         const timeOut = setTimeout(() => {
-          setFetching(false);
           goNext();
         }, 200);
         
@@ -101,30 +120,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       }
     })();
   }, [
-    fetching,
+    submitted,
     goNext,
-  ])
-
-  useEffect(() => {
-    setIsValid(!Object.values(errors).includes(true));
-  }, [
-    errors,
-  ])
-
-  useEffect(() => {
-    setErrors({
-      ...errors,
-      email: !validateEmail(email),
-      birthDate: !validateBirthDate(birthDate),
-    });
-    setAllowContinue(!(errors['email'] && errors['birthDate']));
-  }, [
-    email,
-    birthDate,
   ]);
-console.log(newAmount)
+  
   return useMemo(() => (
-    <Shared.Form.Main>
+    <Shared.Form.Main onSubmit={onSubmitHandler}>
       <Shared.Form.Header>
         <HGroup>
           <Shared.General.Title>Suscribite para que juntos podamos lograr un futuro más sustentable</Shared.General.Title>
@@ -133,96 +134,123 @@ console.log(newAmount)
       </Shared.Form.Header>
       
       <Shared.Form.Content>
-        <Shared.Form.Row
-          customCss={css`
-            &:before {
-              content: "Elegí con cuánto querés ayudar al planeta:";
-              width: 100%;
-            }
-          `}
-        >
-          <FormGroup>
-            <Shared.Form.Select
-              name='monto'
+        <Shared.Form.Row>
+          <Shared.Form.Group
+            fieldName='amount'
+            value={amount}
+            labelText='Elegí con cuánto querés ayudar al planeta:'
+            showErrorMessage={true}
+            validateFn={validateEmptyField}
+            onUpdateHandler={onUpdateFieldHandler}
+          >
+            <Select
+              name='amount'
               value={amount}
-              onChange={onChange}
+              onChange={onChangeHandler}
             >
               {(['500', '700', '1500']).map((value: string, key: number) => (
                 <option key={key} value={value}>${value}</option>
               ))}
               <option value='otherAmount'>Otro importe</option>
-            </Shared.Form.Select>
-          </FormGroup>
-            
-          <FormGroup>
-            <FormInput
-              disabled={!(amount === 'otherAmount')} 
-              type='number'
+            </Select>
+          </Shared.Form.Group>
+          <Shared.Form.Group
+            fieldName='newAmount'
+            value={newAmount}
+            labelText='Ingrese el monto'
+            showErrorMessage={true}
+            validateFn={validateNewAmount}
+            onUpdateHandler={onUpdateFieldHandler}
+          >
+            <Input
               name='newAmount'
+              type='text'
+              disabled={!(amount === 'otherAmount')} 
               value={newAmount}
-              placeholder='Ingrese el monto'
-              onChange={onChange}
+              placeholder='Ej. $350'
+              maxLength={8}
+              onChange={onChangeHandler}
             />
-          </FormGroup>
+          </Shared.Form.Group>
         </Shared.Form.Row>
 
         <Shared.Form.Row>
-          <FormGroup /*value={email}*/ hasError={errors['email']} showError={showError} errorMessage='Error en el correo electrónico.'>
-            <FormLabel htmlFor='email'>Correo electrónico</FormLabel>
-            <FormInput onChange={onChange} id="email" name='email' type='email' value={email || ''} placeholder='damian.lopez@email.com' />
-          </FormGroup>
+          <Shared.Form.Group
+            value={email}
+            fieldName='email'
+            labelText='Correo electrónico'
+            showErrorMessage={true}
+            validateFn={validateEmail}
+            onUpdateHandler={onUpdateFieldHandler}
+          >
+            <Input
+              name='email'
+              type='email'
+              placeholder='Ej. daniela.lopez@email.com'
+              value={email}
+              onChange={onChangeHandler}
+            />
+          </Shared.Form.Group>
         </Shared.Form.Row>
         
         <Shared.Form.Row>
-          <FormGroup /*value={birthDate}*/ hasError={errors['birthDate']} showError={showError} errorMessage='Error en la fecha de nacimiento.'>
-            <FormLabel htmlFor='birthDate'>Fecha de nacimiento</FormLabel>
-            <FormInput
+          <Shared.Form.Group
+            fieldName='birthDate'
+            value={birthDate}
+            labelText='Fecha de nacimiento'
+            showErrorMessage={true}
+            validateFn={validateBirthDate}
+            onUpdateHandler={onUpdateFieldHandler}
+          >
+            <Input
               name='birthDate'
               type='text'
               placeholder='DD/MM/YYYY'
-              onChange={onChange}
-              value={birthDate || ''}
+              value={birthDate}
+              maxLength={10}
+              onChange={onChangeHandler}
             />
-          </FormGroup>
+          </Shared.Form.Group>
         </Shared.Form.Row>
 
         <Shared.Form.Row>
-          <FormGroup>
-            <FormLabel htmlFor='areaCode'>Código de área</FormLabel>
-            <FormInput
-              type='number'
+          <Shared.Form.Group
+            fieldName='areaCode'
+            value={areaCode}
+            labelText='Código de área'
+            labelBottomText='Sin el 0'
+            showErrorMessage={true}
+            validateFn={validateAreaCode}
+            onUpdateHandler={onUpdateFieldHandler}
+          >
+            <Input
               name='areaCode'
-              value={'011'}
-              placeholder='Código de área'
-              onChange={onChange}
+              type='text'
+              placeholder='Ej. 11'
+              value={areaCode}
+              maxLength={2}
+              onChange={onChangeHandler}
             />
-          </FormGroup>
-            
-          <FormGroup>
-            <FormLabel htmlFor='phoneNumber'>Número telefónico</FormLabel>
-            <FormInput
-              type='number'
+          </Shared.Form.Group>
+          
+          <Shared.Form.Group
+            fieldName='phoneNumber'
+            value={phoneNumber}
+            labelText='Número telefónico'
+            showErrorMessage={true}
+            validateFn={validatePhoneNumber}
+            onUpdateHandler={onUpdateFieldHandler}
+          >
+            <Input
               name='phoneNumber'
-              value={'11111111'}
-              placeholder='Número telefónico'
-              onChange={onChange}
+              type='text'
+              placeholder='Ej. 41239876'
+              value={phoneNumber}
+              maxLength={8}
+              onChange={onChangeHandler}
             />
-          </FormGroup>
+          </Shared.Form.Group>
         </Shared.Form.Row>
-      
-        {/* <Shared.Form.Row>
-          <FormGroup hasError={errors['genre']} showError={showError} errorMessage='Error en el campo.'>
-            <FormLabel htmlFor='genre' />
-            <Shared.Form.Select onChange={onChange} name='genre' value={genre || ''}>
-              <Shared.Form.OptGroup>
-                <Shared.Form.Option value='' disabled={true}>Género</Shared.Form.Option>
-                <Shared.Form.Option value='female'>Femenino</Shared.Form.Option>
-                <Shared.Form.Option value='male'>Masculino</Shared.Form.Option>
-                <Shared.Form.Option value='non-binary'>No binario</Shared.Form.Option>
-              </Shared.Form.OptGroup>
-            </Shared.Form.Select>
-          </FormGroup>
-        </Shared.Form.Row> */}
       </Shared.Form.Content>
 
       <Shared.Form.Nav
@@ -233,33 +261,35 @@ console.log(newAmount)
           height: 100%;
         `}
       >
-        {(!fetching) ? (
+        {(!submitting) ? (
           <Shared.General.Button
-            onClick={onSubmit}
-            type='button'
-            disabled={!isValid}
+            type='submit'
+            disabled={((errors) && Object.keys(errors).length) ? true : false}
             customCss={css`
               width: 100%;
             `}
           >Continuar</Shared.General.Button>
         ) : (
-          <Shared.Loader />
+          <Shared.Loader mode='light' />
         )}
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
-    allowContiunue,
-    isValid,
-    showError,
-    email,
     birthDate,
+    phoneNumber,
     amount,
     newAmount,
+    email,
+    areaCode,
     errors,
-    fetching,
-    setShowError,
-    onSubmit,
-    onChange,
+    submitted,
+    submitting,
+    goNext,
+    onSubmitHandler,
+    onChangeHandler,
+    onUpdateFieldHandler,
+    dispatch,
+    dispatchFormErrors,
   ]);
 });
 

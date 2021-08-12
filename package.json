@@ -34,17 +34,20 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "client:start:development": "npm run client:env:development && NODE_ENV=development && node -r dotenv/config ./node_modules/.bin/react-scripts start",
-    "client:start:production": "npm run client:env:production && NODE_ENV=production && node -r dotenv/config ./node_modules/.bin/react-scripts start",
+    "client:start:development": "npm run client:env:development && NODE_ENV=development && node -r dotenv/config ./node_modules/.bin/react-scripts start dotenv_config_path=$PWD/.env",
+    "client:start:staging": "npm run client:env:staging && NODE_ENV=staging && node -r dotenv/config ./node_modules/.bin/react-scripts start dotenv_config_path=$PWD/.env",
+    "client:start:production": "npm run client:env:production && NODE_ENV=production && node -r dotenv/config ./node_modules/.bin/react-scripts start dotenv_config_path=$PWD/.env",
     "client:build:development": "npm run client:env:development && NODE_ENV=development && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version",
+    "client:build:staging": "npm run client:env:staging && NODE_ENV=staging && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version",
     "client:build:production": "npm run client:env:production && NODE_ENV=production && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version",
-    "client:env:development": "cp .env.development.sample .env.development",
-    "client:env:production": "cp .env.production.sample .env.production",
+    "client:env:development": "cp .env.development.sample .env",
+    "client:env:staging": "cp .env.staging.sample .env",
+    "client:env:production": "cp .env.production.sample .env",
     "build:version": "npm run build:version:id && npm run build:version:date && npm run build:author",
-    "build:version:id": "CURRENT_BRANCH=$(git branch --show-current) && VERSION_BUILD=$(git describe --long) && sed -i -- 's/%VERSION_BUILD%/'$CURRENT_BRANCH--$VERSION_BUILD'/g' ./build/index.html",
+    "build:version:id": "VERSION_BUILD=$(git describe --long) && sed -i -- 's/%VERSION_BUILD%/'$VERSION_BUILD'/g' ./build/index.html",
     "build:version:date": "VERSION_BUILD_DATE=$(date +%Y-%m-%d)-$(date +%T) && sed -i -- 's/%VERSION_BUILD_DATE%/'$VERSION_BUILD_DATE'/g' ./build/index.html",
     "build:author": "BUILD_AUTHOR=$(git config --global user.email) && sed -i -- 's/%BUILD_AUTHOR%/'$BUILD_AUTHOR'/g' ./build/index.html",
-    "stylelint": "npx stylelint '**/*.css'",
+    "stylelint": "npx stylelint '**/*.tsx'",
     "types": "ln -s $(pwd)/src/types $(pwd)/node_modules/@types/greenpeace"
   },
   "eslintConfig": {

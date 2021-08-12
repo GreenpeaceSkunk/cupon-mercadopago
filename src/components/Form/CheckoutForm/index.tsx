@@ -313,6 +313,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               value={payment.docType}
               onChange={onChangeHandler}
             >
+              <option></option>
               {(['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro']).map((value: string, key: number) => (
                 <option key={key} value={value}>{value}</option>
               ))}

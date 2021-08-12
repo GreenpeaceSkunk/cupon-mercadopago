@@ -222,7 +222,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               type='text'
               id='cardNumber'
               name='cardNumber'
-              placeholder='Número de documento'
+              placeholder='Ej. 4509953566233704'
               data-checkout='cardNumber'
               maxLength={16}
               value={payment.cardNumber}
@@ -266,7 +266,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               type='text'
               id='cardExpirationMonth'
               name='cardExpirationMonth'
-              placeholder='Ej. 03'
+              placeholder='Ej. 11'
               data-checkout='cardExpirationMonth'
               maxLength={2}
               value={payment.cardExpirationMonth}
@@ -288,7 +288,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               type='text'
               id='cardExpirationYear'
               name='cardExpirationYear'
-              placeholder='Ej. 2021'
+              placeholder='Ej. 2025'
               data-checkout='cardExpirationYear'
               maxLength={4}
               value={payment.cardExpirationYear}
@@ -333,7 +333,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               type='text'
               id='docNumber'
               name='docNumber'
-              placeholder='Número de documento'
+              placeholder='Ej. 31402931'
               data-checkout='docNumber'
               maxLength={8}
               value={payment.docNumber}

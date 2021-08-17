@@ -3,7 +3,7 @@ import Elements, { CustomCSSType } from '@bit/meema.ui-components.elements';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import { OnChangeEvent } from '../../types';
-import { SelectArrowIcon, WarningIcon } from '../../images/icons';
+import { SelectArrowIcon, WarningIcon, TickIcon } from '../../images/icons';
 import { carouselItemStyles } from '../../styles/mixins';
 import { ValidationType } from '../../utils/validators';
 
@@ -51,7 +51,9 @@ const Content = styled(Elements.Wrapper)`
   width: 100%;
 `;
 
-const Header = styled(Elements.Header)``;
+const Header = styled(Elements.Header)`
+  margin-bottom: ${pixelToRem(14)};
+`;
 
 const Nav = styled(Elements.Nav)`
   justify-self: flex-end;
@@ -109,6 +111,10 @@ const RadioButton: React.FunctionComponent<{
         cursor: pointer;
         margin-bottom: ${pixelToRem(10)};
         user-select: none;
+        text-align: left;
+        font-family: ${({theme}) => theme.font.family.primary.regular};
+        font-size: ${pixelToRem(15)};
+        
         
         ${(customCss) && customCss};
       `}
@@ -133,15 +139,28 @@ const RadioButton: React.FunctionComponent<{
           flex: 0 0 ${pixelToRem(20)};
           width: ${pixelToRem(20)};
           height: ${pixelToRem(20)};
-          border-radius: 50%;
+          border-radius: ${pixelToRem(2)};
           background-color: white;
           border: solid ${pixelToRem(1)} ${({theme}) => theme.color.secondary.normal};
           margin-right: ${pixelToRem(10)};
-          transition: all 150ms ease;
 
           ${(checkedValue === value) && css`
             border-color: ${({theme}) => theme.color.primary.normal};
+            background-color: ${({theme}) => theme.color.primary.normal};
             border-width: ${pixelToRem(4)};
+
+            &:after {
+              flex: 0 0 auto;
+              width: ${pixelToRem(12)};
+              height: ${pixelToRem(12)};
+              background-size: ${pixelToRem(12)} ${pixelToRem(12)};
+              background-position: center center;
+              background-repeat: no-repeat;
+              transform-origin: center;
+              background-image: url(${TickIcon});
+              position: absolute;
+              content: "";
+            }
           `}
         `}
       />
@@ -213,7 +232,7 @@ const Group: React.FunctionComponent<{
         flex-direction: column;
         justify-content: flex-start;
         width: 100%;
-        margin-bottom: ${pixelToRem(16)};
+        /* margin-bottom: ${pixelToRem(16)}; */
         
         &:after {
           width: 100%;
@@ -247,6 +266,7 @@ const Group: React.FunctionComponent<{
           customCss={css`
             text-align: left;
             font-family: ${({theme}) => theme.font.family.primary.regular};
+            margin-bottom: ${pixelToRem(6)};
           `}
         >{labelText}</Elements.Label>
       )}
@@ -319,6 +339,39 @@ const Row = styled(Elements.Wrapper)`
   }
 `;
 
+const Column: React.FunctionComponent<{
+  children: React.ReactNode | HTMLAllCollection;
+  bottomText?: string;
+}> = ({
+  children,
+  bottomText,
+}) => (
+  <Elements.Wrapper>
+    <Elements.Wrapper
+      customCss={css`
+      display: flex;
+      width: 100%;
+
+      ${innerMargin(20, 20)};
+      
+      
+      @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+        flex-direction: row;
+      }
+    `}
+    >
+      {children}
+    </Elements.Wrapper>
+    {(bottomText) && (
+      <Elements.Span
+        customCss={css`
+          font-size: ${pixelToRem(15)};
+        `}
+      >{bottomText}</Elements.Span>
+    )}
+  </Elements.Wrapper>
+);
+
 const ErrorMessage = styled(Elements.Wrapper)`
   display: flex;
   align-items: center;
@@ -349,6 +402,7 @@ const ErrorMessage = styled(Elements.Wrapper)`
 const defaults = {
   Content,
   Row,
+  Column,
   Group,
   Header,
   Input,

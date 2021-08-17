@@ -128,7 +128,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 `}
               >En Greenpeace creemos, como vos, que un mejor futuro es posible. ¡Unite!</Heading2>
             </HGroup>
-            <Shared.General.ButtonLink
+            {/* <Shared.General.ButtonLink
               href={`${process.env.REACT_APP_UNITE_URL}`}
               target='blank'
               customCss={css`
@@ -138,7 +138,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   display: inherit;
                 }
               `}
-            >¡UNITE AHORA!</Shared.General.ButtonLink>
+            >¡UNITE AHORA!</Shared.General.ButtonLink> */}
           </Wrapper>
 
           <Wrapper
@@ -189,14 +189,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 `}
               >Firmá esta petición para que se prohíban y penalicen los desmontes y los incendios forestales. Destruir bosques es un crimen y no podemos perder ni una hectárea más.</Heading3>
             </HGroup>
-            <Shared.General.ButtonLink
+            {/* <Shared.General.ButtonLink
               format='text'
               href={`${process.env.REACT_APP_UNITE_URL}`}
               target='blank'
               customCss={css`
                 margin-bottom: ${pixelToRem(20)} !important;
               `}
-            >¡UNITE AHORA!</Shared.General.ButtonLink>
+            >¡UNITE AHORA!</Shared.General.ButtonLink> */}
             <P
               customCss={css`
                 color: white;

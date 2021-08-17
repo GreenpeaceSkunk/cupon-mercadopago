@@ -56,7 +56,8 @@ const Component: FunctionComponent<{}> = memo(() => {
         flex-direction: row;
         justify-content: space-between;
         height: 100vh;
-        background-color: ${({theme}) => theme.color.secondary.light};
+        /* background-color: ${({theme}) => theme.color.secondary.light}; */
+        background-color: white;
         transition: all 250ms ease;
         bottom: 0;
 

@@ -209,159 +209,188 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       </Shared.Form.Header>
       <Shared.Form.Content>
         <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='cardNumber'
-            value={payment.cardNumber}
-            labelText='Número de la tarjeta'
-            labelBottomText='Sin espacios'
-            showErrorMessage={true}
-            validateFn={validateCreditCard}
-            onUpdateHandler={onUpdateFieldHandler}
+          <Shared.Form.Column
+            bottomText='Escribe solo números. No agregues guiones.'
           >
-            <Input
-              type='text'
-              id='cardNumber'
-              name='cardNumber'
-              placeholder='Ej. 4509953566233704'
-              data-checkout='cardNumber'
-              maxLength={16}
+            <Shared.Form.Group
+              fieldName='cardNumber'
               value={payment.cardNumber}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
+              labelText='Número de la tarjeta'
+              showErrorMessage={true}
+              validateFn={validateCreditCard}
+              onUpdateHandler={onUpdateFieldHandler}
+              >
+              <Input
+                type='text'
+                id='cardNumber'
+                name='cardNumber'
+                placeholder='Ej. 4509953566233704'
+                data-checkout='cardNumber'
+                maxLength={16}
+                value={payment.cardNumber}
+                onChange={onChangeHandler}
+                />
+            </Shared.Form.Group>
+          </Shared.Form.Column>
         </Shared.Form.Row>
 
         <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='securityCode'
-            value={payment.securityCode}
-            labelText='Código de seguridad'
-            showErrorMessage={true}
-            validateFn={validateCvv}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Input
-              type='text'
-              id='securityCode'
-              name='securityCode'
-              placeholder='Ej. 123'
-              data-checkout='securityCode'
-              maxLength={4}
+          <Shared.Form.Column>
+            <Shared.Form.Group
+              fieldName='securityCode'
               value={payment.securityCode}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
-        </Shared.Form.Row>
-        
-        <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='cardExpirationMonth'
-            value={payment.cardExpirationMonth}
-            labelText='Mes de expiración'
-            showErrorMessage={true}
-            validateFn={validateMonth}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Input
-              type='text'
-              id='cardExpirationMonth'
-              name='cardExpirationMonth'
-              placeholder='Ej. 11'
-              data-checkout='cardExpirationMonth'
-              maxLength={2}
-              value={payment.cardExpirationMonth}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
-        </Shared.Form.Row>
-        
-        <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='cardExpirationYear'
-            value={payment.cardExpirationYear}
-            labelText='Año de expiración'
-            showErrorMessage={true}
-            validateFn={validateYear}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Input
-              type='text'
-              id='cardExpirationYear'
-              name='cardExpirationYear'
-              placeholder='Ej. 2025'
-              data-checkout='cardExpirationYear'
-              maxLength={4}
-              value={payment.cardExpirationYear}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
-        </Shared.Form.Row>
-        
-        <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='docType'
-            value={payment.docType}
-            labelText='Tipo de documento'
-            showErrorMessage={true}
-            validateFn={validateEmptyField}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Shared.Form.Select
-              id='docType'
-              name='docType'
-              data-checkout='docType'
-              value={payment.docType}
-              onChange={onChangeHandler}
+              labelText='Código de seguridad'
+              showErrorMessage={true}
+              validateFn={validateCvv}
+              onUpdateHandler={onUpdateFieldHandler}
             >
-              <option></option>
-              {(['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro']).map((value: string, key: number) => (
-                <option key={key} value={value}>{value}</option>
-              ))}
-            </Shared.Form.Select>
-          </Shared.Form.Group>
+              <Input
+                type='text'
+                id='securityCode'
+                name='securityCode'
+                placeholder='Ej. 123'
+                data-checkout='securityCode'
+                maxLength={4}
+                value={payment.securityCode}
+                onChange={onChangeHandler}
+              />
+            </Shared.Form.Group>
+          </Shared.Form.Column>
         </Shared.Form.Row>
-
+        
         <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='docNumber'
-            value={payment.docNumber}
-            labelText='Número de documento'
-            showErrorMessage={true}
-            validateFn={validateCitizenId}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Input
-              type='text'
-              id='docNumber'
-              name='docNumber'
-              placeholder='Ej. 31402931'
-              data-checkout='docNumber'
-              maxLength={8}
+          <Shared.Form.Column>
+            <Shared.Form.Group
+              fieldName='cardExpirationMonth'
+              value={payment.cardExpirationMonth}
+              labelText='Mes de expiración'
+              showErrorMessage={true}
+              validateFn={validateMonth}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Shared.Form.Select
+                id='cardExpirationMonth'
+                name='cardExpirationMonth'
+                data-checkout='cardExpirationMonth'
+                value={payment.cardExpirationMonth}
+                onChange={onChangeHandler}
+              >
+                <option></option>
+                {(['01','02','03','04','05','06','07','08','09','10','11','12']).map((value: string, key: number) => (
+                  <option key={key} value={value}>{value}</option>
+                ))}
+              </Shared.Form.Select>
+              {/* <Input
+                type='text'
+                id='cardExpirationMonth'
+                name='cardExpirationMonth'
+                placeholder='Ej. 11'
+                data-checkout='cardExpirationMonth'
+                maxLength={2}
+                value={payment.cardExpirationMonth}
+                onChange={onChangeHandler}
+              /> */}
+            </Shared.Form.Group>
+            <Shared.Form.Group
+              fieldName='cardExpirationYear'
+              value={payment.cardExpirationYear}
+              labelText='Año de expiración'
+              showErrorMessage={true}
+              validateFn={validateYear}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Shared.Form.Select
+                id='cardExpirationYear'
+                name='cardExpirationYear'
+                data-checkout='cardExpirationYear'
+                value={payment.cardExpirationYear}
+                onChange={onChangeHandler}
+              >
+                <option></option>
+                {(Array.from(Array(20).keys()).map((value) => value + 2021)).map((value: number, key: number) => (
+                  <option key={key} value={value}>{value}</option>
+                ))}
+              </Shared.Form.Select>
+              {/* <Input
+                type='text'
+                id='cardExpirationYear'
+                name='cardExpirationYear'
+                placeholder='Ej. 2025'
+                data-checkout='cardExpirationYear'
+                maxLength={4}
+                value={payment.cardExpirationYear}
+                onChange={onChangeHandler}
+              /> */}
+            </Shared.Form.Group>
+          </Shared.Form.Column>
+        </Shared.Form.Row>
+        
+        <Shared.Form.Row>
+          <Shared.Form.Column>
+            <Shared.Form.Group
+              fieldName='docType'
+              value={payment.docType}
+              labelText='Tipo de documento'
+              showErrorMessage={true}
+              validateFn={validateEmptyField}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Shared.Form.Select
+                id='docType'
+                name='docType'
+                data-checkout='docType'
+                value={payment.docType}
+                onChange={onChangeHandler}
+              >
+                <option></option>
+                {(['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro']).map((value: string, key: number) => (
+                  <option key={key} value={value}>{value}</option>
+                ))}
+              </Shared.Form.Select>
+            </Shared.Form.Group>
+            <Shared.Form.Group
+              fieldName='docNumber'
               value={payment.docNumber}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
+              labelText='Número de documento'
+              showErrorMessage={true}
+              validateFn={validateCitizenId}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Input
+                type='text'
+                id='docNumber'
+                name='docNumber'
+                placeholder='Ej. 31402931'
+                data-checkout='docNumber'
+                maxLength={8}
+                value={payment.docNumber}
+                onChange={onChangeHandler}
+              />
+            </Shared.Form.Group>
+          </Shared.Form.Column>
         </Shared.Form.Row>
 
         <Shared.Form.Row>
-          <Shared.Form.Group
-            value={payment.cardholderName}
-            fieldName='cardholderName'
-            labelText='Titular de la tarjeta'
-            validateFn={validateCardHolderName}
-            onUpdateHandler={onUpdateFieldHandler}
-            showErrorMessage={true}
-          >
-            <Input
-              type='text'
-              id='cardholderName'
-              name='cardholderName'
-              data-checkout='cardholderName'
-              placeholder='Ej. Daniela Lopez'
+          <Shared.Form.Column>
+            <Shared.Form.Group
               value={payment.cardholderName}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
+              fieldName='cardholderName'
+              labelText='Titular de la tarjeta'
+              validateFn={validateCardHolderName}
+              onUpdateHandler={onUpdateFieldHandler}
+              showErrorMessage={true}
+            >
+              <Input
+                type='text'
+                id='cardholderName'
+                name='cardholderName'
+                data-checkout='cardholderName'
+                placeholder='Ej. Daniela Lopez'
+                value={payment.cardholderName}
+                onChange={onChangeHandler}
+              />
+            </Shared.Form.Group>
+          </Shared.Form.Column>
         </Shared.Form.Row>
       </Shared.Form.Content>
 

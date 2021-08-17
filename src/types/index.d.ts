@@ -45,6 +45,8 @@ export type ServiceParams = {
 }
 
 export interface IUserData {
+  firstName: string;
+  lastName: string;
   birthDate: string;
   email: string;
   areaCode: string;

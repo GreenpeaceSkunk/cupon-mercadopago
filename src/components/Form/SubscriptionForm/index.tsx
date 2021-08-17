@@ -1,7 +1,7 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, } from 'react';
 import { FormContext } from '../context';
 import { OnChangeEvent } from 'greenpeace';
-import { validateBirthDate, validateEmail, validateNewAmount, validatePhoneNumber, validateAreaCode, validateEmptyField } from '../../../utils/validators';
+import { validateBirthDate, validateEmail, validateNewAmount, validatePhoneNumber, validateAreaCode, validateEmptyField, validateFirstName, validateLastName } from '../../../utils/validators';
 import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import { HGroup } from '@bit/meema.ui-components.elements';
@@ -17,6 +17,8 @@ import { synchroInit } from '../../../utils/dataCrush';
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { data: {
     user: {
+      firstName,
+      lastName,
       birthDate,
       email,
       areaCode,
@@ -90,6 +92,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const onSubmitHandler = useCallback((evt: FormEvent) => {
     evt.preventDefault();
     synchroInit({
+      first_name: firstName,
+      last_name: lastName,
       email,
       fecha_de_nacimiento: birthDate,
       phone: phoneNumber,
@@ -98,9 +102,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     }, 
       `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`
     );
-    // trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_THANK_YOU_PAGE}`);
     goNext();
   }, [
+    firstName,
+    lastName,
     birthDate,
     email,
     areaCode,
@@ -135,65 +140,96 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       
       <Shared.Form.Content>
         <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='amount'
-            value={amount}
-            labelText='Elegí con cuánto querés ayudar al planeta:'
-            showErrorMessage={true}
-            validateFn={validateEmptyField}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Select
-              name='amount'
+          <Shared.Form.Column>
+            <Shared.Form.Group
               value={amount}
-              onChange={onChangeHandler}
+              fieldName='amount'
+              labelText='Elegí con cuánto querés ayudar al planeta:'
+              showErrorMessage={true}
+              validateFn={validateEmptyField}
+              onUpdateHandler={onUpdateFieldHandler}
+              >
+                {[
+                  { text: '$500', value: '500' },
+                  { text: '$700', value: '700' },
+                  { text: '$1500', value: '1500' },
+                  { text: 'Otras donaciones', value: 'otherAmount' },
+                ].map((option: { text: string; value: string; }) => (
+                  <Shared.Form.RadioButton
+                    key={option.text}
+                    text={option.text}
+                    name='amount'
+                    value={option.value}
+                    checkedValue={amount}
+                    onChangeHandler={onChangeHandler}
+                  />
+                ))}
+            </Shared.Form.Group>
+
+            {/* <Shared.Form.Group
+              fieldName='amount'
+              value={amount}
+              labelText='Elegí con cuánto querés ayudar al planeta:'
+              showErrorMessage={true}
+              validateFn={validateEmptyField}
+              onUpdateHandler={onUpdateFieldHandler}
             >
-              {(['500', '700', '1500']).map((value: string, key: number) => (
-                <option key={key} value={value}>${value}</option>
-              ))}
-              <option value='otherAmount'>Otro importe</option>
-            </Select>
-          </Shared.Form.Group>
-          <Shared.Form.Group
-            fieldName='newAmount'
-            value={newAmount}
-            labelText='Ingrese el monto'
-            showErrorMessage={true}
-            validateFn={validateNewAmount}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Input
-              name='newAmount'
-              type='text'
-              disabled={!(amount === 'otherAmount')} 
-              value={newAmount}
-              placeholder='Ej. $350'
-              maxLength={8}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
+              <Select
+                name='amount'
+                value={amount}
+                onChange={onChangeHandler}
+              >
+                {(['500', '700', '1500']).map((value: string, key: number) => (
+                  <option key={key} value={value}>${value}</option>
+                ))}
+                <option value='otherAmount'>Otro importe</option>
+              </Select>
+            </Shared.Form.Group> */}
+            </Shared.Form.Column>
+            <Shared.Form.Column>
+              <Shared.Form.Group
+                fieldName='newAmount'
+                value={newAmount}
+                labelText='Ingrese el monto'
+                showErrorMessage={true}
+                validateFn={validateNewAmount}
+                onUpdateHandler={onUpdateFieldHandler}
+              >
+                <Input
+                  name='newAmount'
+                  type='text'
+                  disabled={!(amount === 'otherAmount')} 
+                  value={newAmount}
+                  placeholder='Ej. $350'
+                  maxLength={8}
+                  onChange={onChangeHandler}
+                />
+              </Shared.Form.Group>
+          </Shared.Form.Column>
         </Shared.Form.Row>
 
         <Shared.Form.Row>
-          <Shared.Form.Group
-            value={email}
-            fieldName='email'
-            labelText='Correo electrónico'
-            showErrorMessage={true}
-            validateFn={validateEmail}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Input
-              name='email'
-              type='email'
-              placeholder='Ej. daniela.lopez@email.com'
+          <Shared.Form.Column>
+            <Shared.Form.Group
               value={email}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
+              fieldName='email'
+              labelText='Correo electrónico'
+              showErrorMessage={true}
+              validateFn={validateEmail}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Input
+                name='email'
+                type='email'
+                placeholder='Ej. daniela.lopez@email.com'
+                value={email}
+                onChange={onChangeHandler}
+              />
+            </Shared.Form.Group>
+          </Shared.Form.Column>
         </Shared.Form.Row>
         
-        <Shared.Form.Row>
+        {/* <Shared.Form.Row>
           <Shared.Form.Group
             fieldName='birthDate'
             value={birthDate}
@@ -211,46 +247,91 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               onChange={onChangeHandler}
             />
           </Shared.Form.Group>
-        </Shared.Form.Row>
+        </Shared.Form.Row> */}
 
         <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='areaCode'
-            value={areaCode}
-            labelText='Código de área'
-            labelBottomText='Sin el 0'
-            showErrorMessage={true}
-            validateFn={validateAreaCode}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Input
-              name='areaCode'
-              type='text'
-              placeholder='Ej. 11'
-              value={areaCode}
-              maxLength={2}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
-          
-          <Shared.Form.Group
-            fieldName='phoneNumber'
-            value={phoneNumber}
-            labelText='Número telefónico'
-            showErrorMessage={true}
-            validateFn={validatePhoneNumber}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Input
-              name='phoneNumber'
-              type='text'
-              placeholder='Ej. 41239876'
-              value={phoneNumber}
-              maxLength={8}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
+          <Shared.Form.Column>
+            <Shared.Form.Group
+              fieldName='firstName'
+              value={firstName}
+              labelText='Nombre'
+              showErrorMessage={true}
+              validateFn={validateFirstName}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Input
+                name='firstName'
+                type='text'
+                placeholder='Ej. Lucas'
+                value={firstName}
+                onChange={onChangeHandler}
+              />
+            </Shared.Form.Group>
+            <Shared.Form.Group
+              fieldName='lastName'
+              value={lastName}
+              labelText='Apellido'
+              showErrorMessage={true}
+              validateFn={validateFirstName}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Input
+                name='lastName'
+                type='text'
+                placeholder='Ej. Rodriguez'
+                value={lastName}
+                onChange={onChangeHandler}
+              />
+            </Shared.Form.Group>
+          </Shared.Form.Column>
         </Shared.Form.Row>
+              
+        <Shared.Form.Row>
+          <Shared.Form.Column
+            bottomText='Escribe solo números y no agregues guiones.'
+          >
+            <Shared.Form.Group
+              fieldName='areaCode'
+              value={areaCode}
+              labelText='Código de área'
+              showErrorMessage={true}
+              validateFn={validateAreaCode}
+              onUpdateHandler={onUpdateFieldHandler}
+              customCss={css`
+                width: 40%;
+              `}
+            >
+              <Input
+                name='areaCode'
+                type='text'
+                placeholder='Ej. 11'
+                value={areaCode}
+                maxLength={2}
+                onChange={onChangeHandler}
+              />
+            </Shared.Form.Group>
+            <Shared.Form.Group
+              fieldName='phoneNumber'
+              value={phoneNumber}
+              labelText='Número telefónico'
+              showErrorMessage={true}
+              validateFn={validatePhoneNumber}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Input
+                name='phoneNumber'
+                type='text'
+                placeholder='Ej. 41239876'
+                value={phoneNumber}
+                maxLength={8}
+                onChange={onChangeHandler}
+              />
+            </Shared.Form.Group>
+          </Shared.Form.Column>
+        </Shared.Form.Row>
+        
+
+
       </Shared.Form.Content>
 
       <Shared.Form.Nav
@@ -275,6 +356,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
+    firstName,
+    lastName,
     birthDate,
     phoneNumber,
     amount,

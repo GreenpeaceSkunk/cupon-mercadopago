@@ -186,26 +186,28 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               </Select>
             </Shared.Form.Group> */}
             </Shared.Form.Column>
-            <Shared.Form.Column>
-              <Shared.Form.Group
-                fieldName='newAmount'
-                value={newAmount}
-                labelText='Ingrese el monto'
-                showErrorMessage={true}
-                validateFn={validateNewAmount}
-                onUpdateHandler={onUpdateFieldHandler}
-              >
-                <Input
-                  name='newAmount'
-                  type='text'
-                  disabled={!(amount === 'otherAmount')} 
+            {(amount === 'otherAmount') ? (
+              <Shared.Form.Column>
+                <Shared.Form.Group
+                  fieldName='newAmount'
                   value={newAmount}
-                  placeholder='Ej. $350'
-                  maxLength={8}
-                  onChange={onChangeHandler}
-                />
-              </Shared.Form.Group>
-          </Shared.Form.Column>
+                  labelText='Ingrese el monto'
+                  showErrorMessage={true}
+                  validateFn={validateNewAmount}
+                  onUpdateHandler={onUpdateFieldHandler}
+                >
+                  <Input
+                    name='newAmount'
+                    type='text'
+                    disabled={!(amount === 'otherAmount')} 
+                    value={newAmount}
+                    placeholder='Ej. $350'
+                    maxLength={8}
+                    onChange={onChangeHandler}
+                  />
+                </Shared.Form.Group>
+              </Shared.Form.Column>
+            ) : null}
         </Shared.Form.Row>
 
         <Shared.Form.Row>

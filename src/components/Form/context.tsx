@@ -5,8 +5,12 @@ import { ContextActionType, initialState, reducer } from './reducer';
 import { IData } from 'greenpeace';
 import { AppContext } from '../App/context';
 
+export interface IFormComponent {
+  formIndex: number;
+}
+
 export type FormComponentsType = {
-  Component: React.LazyExoticComponent<React.FunctionComponent>,
+  Component: React.LazyExoticComponent<React.FunctionComponent<IFormComponent>>,
   route: string,
 };
 
@@ -78,7 +82,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   ])
 
   return useMemo(() => (
-    <Provider 
+    <Provider
       value={{
         data,
         step,

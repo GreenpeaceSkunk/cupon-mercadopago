@@ -45,9 +45,9 @@ const Component: React.FunctionComponent<{}> = () => {
   useEffect(() => {
     // if(process.env.NODE_ENV === 'production') {
       console.log('Path', ghostRoute);
-      trackEvent('PageView');
-      pushToDataLayer('pageview');
-      trackPage("", ghostRoute, "");
+      // trackEvent('PageView');
+      // pushToDataLayer('pageview');
+      // trackPage("", ghostRoute, "");
     // }
   }, [
     ghostRoute,

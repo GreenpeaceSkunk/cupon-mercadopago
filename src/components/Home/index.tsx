@@ -214,7 +214,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 border-radius: ${(({theme}) => pixelToRem(theme.borderRadius))};
 
                 @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
-                  width: 90%;
+                  width: 100%;
                 }
               `}
             >

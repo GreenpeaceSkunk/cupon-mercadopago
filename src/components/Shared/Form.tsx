@@ -38,9 +38,21 @@ const sharedStyles = css`
 `;
 
 const Main = styled(Elements.Form)`
-  ${carouselItemStyles};
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  flex-basis: 100%;
+  width: 100%;
+  /* padding: ${pixelToRem(50)} ${pixelToRem(40)} ${pixelToRem(160)}; */
+  padding: ${pixelToRem(50)} ${pixelToRem(40)} 0;
   height: 100vh;
   overflow-y: scroll;
+
+  @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+    
+  }
 
   ${({customCss}) => (customCss) && customCss};
 `;
@@ -55,11 +67,55 @@ const Header = styled(Elements.Header)`
   margin-bottom: ${pixelToRem(14)};
 `;
 
-const Nav = styled(Elements.Nav)`
-  justify-self: flex-end;
-  margin-top: ${pixelToRem(20)};
-  width: 100%;
-`;
+const Nav: React.FunctionComponent<{
+  children?: React.ReactNode | HTMLAllCollection;
+  customCss?: CustomCSSType;
+  formIndex: number;
+}> = ({
+  children,
+  customCss,
+  formIndex = 0,
+}) => {
+  return useMemo(() => (
+    <Elements.Nav
+      customCss={css`
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        align-self: flex-end;
+        justify-self: flex-end;
+        background-color: rgba(255, 255, 255, 0.7);
+        width: 100%;
+        height: 100%;
+        padding: ${pixelToRem(20)} ${pixelToRem(60)};
+        
+        > * {
+          margin-bottom: ${pixelToRem(20)};
+        }
+        
+        @media (max-width: ${({theme}) => pixelToRem(theme.responsive.tablet.maxWidth)}) {
+          position: fixed;
+          padding: ${pixelToRem(20)} 10vw;
+          width: 100vw;
+          height: auto;
+          left: calc(100vw * ${formIndex});
+          right: 0;
+          bottom: 0;
+          box-shadow: 0 0 ${pixelToRem(20)} rgba(0, 0, 0, .1);
+        }
+        
+        ${customCss && customCss};
+      `}
+    >
+      {children}
+    </Elements.Nav>
+  ), [
+    children,
+    customCss,
+    formIndex,
+  ]);
+}
 
 const ContentTitle = styled(Elements.H3)`
   margin-bottom: ${pixelToRem(10)};
@@ -114,7 +170,6 @@ const RadioButton: React.FunctionComponent<{
         text-align: left;
         font-family: ${({theme}) => theme.font.family.primary.regular};
         font-size: ${pixelToRem(15)};
-        
         
         ${(customCss) && customCss};
       `}

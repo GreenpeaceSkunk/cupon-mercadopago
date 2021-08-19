@@ -46,13 +46,12 @@ const Component: FunctionComponent<{}> = memo(() => {
     <View
       className="form-view"
       customCss={css`
-        position: fixed;
         display: flex;
+        position: fixed;
         flex-grow: 0;
         flex-shrink: 0;
-        flex-basis: ${pixelToRem(480)}; /* The same as its parent, cause it's fixed */
+        flex-basis: ${pixelToRem(480)};
         width: ${pixelToRem(480)};
-        
         flex-direction: row;
         justify-content: space-between;
         height: 100vh;
@@ -110,7 +109,7 @@ const Component: FunctionComponent<{}> = memo(() => {
             <React.Suspense fallback={<Shared.Loader />}>
               {Object.values(Forms).map(
                 (Child: FormComponentsType, key: number) => (
-                  <Child.Component key={key} />
+                  <Child.Component key={key} formIndex={key} />
                 )
               )}
             </React.Suspense>

@@ -7,6 +7,7 @@ const Title = styled(Elements.H1)`
   margin-bottom: ${pixelToRem(10)};
   font-size: ${pixelToRem(32)};
   font-family: ${({theme}) => theme.font.family.primary.bold};
+  color: ${({theme}) => theme.color.primary.normal};
   text-align: center;
   width: 100%;
 
@@ -125,6 +126,28 @@ const ButtonClose = styled(Elements.Button)`
   ${({customCss}) => (customCss) && customCss};
 `;
 
+const Link = styled(Elements.A)`
+  text-decoration: underline;
+  margin-bottom: ${pixelToRem(5)};
+  font-family: ${({theme}) => theme.font.family.primary.regular};
+  
+  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+    margin-bottom: 0;
+    
+    &:after {
+      content: '|';
+      margin-right: ${pixelToRem(10)};
+      margin-left: ${pixelToRem(10)};
+    }
+    
+    &:last-child {
+      &:after {
+        display: none;
+      }
+    }
+  }
+`;
+
 const defaults = {
   Text,
   Title,
@@ -132,6 +155,7 @@ const defaults = {
   Button,
   ButtonClose,
   ButtonLink,
+  Link,
 };
 
 export default defaults;

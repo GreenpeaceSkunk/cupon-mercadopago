@@ -3,28 +3,28 @@ import styled, { css } from 'styled-components';
 import { Footer, Wrapper, A, Nav, } from '@bit/meema.ui-components.elements';
 import { pixelToRem } from 'meema.utils';
 
-const Link = styled(A)`
-  color: white;
-  text-decoration: underline;
-  margin-bottom: ${pixelToRem(5)};
-  font-family: ${({theme}) => theme.font.family.primary.regular};
+// const Link = styled(A)`
+//   color: white;
+//   text-decoration: underline;
+//   margin-bottom: ${pixelToRem(5)};
+//   font-family: ${({theme}) => theme.font.family.primary.regular};
   
-  @media (min-width: ${props => pixelToRem(props.theme.responsive.tablet.minWidth)}) {
-    margin-bottom: 0;
+//   @media (min-width: ${props => pixelToRem(props.theme.responsive.tablet.minWidth)}) {
+//     margin-bottom: 0;
     
-    &:after {
-      content: '|';
-      margin-right: ${pixelToRem(10)};
-      margin-left: ${pixelToRem(10)};
-    }
+//     &:after {
+//       content: '|';
+//       margin-right: ${pixelToRem(10)};
+//       margin-left: ${pixelToRem(10)};
+//     }
     
-    &:last-child {
-      &:after {
-        display: none;
-      }
-    }
-  }
-`;
+//     &:last-child {
+//       &:after {
+//         display: none;
+//       }
+//     }
+//   }
+// `;
 
 const MainFooter: React.FunctionComponent<{}> = memo(() => useMemo(() => (
   <Footer
@@ -59,7 +59,7 @@ const MainFooter: React.FunctionComponent<{}> = memo(() => useMemo(() => (
       }
     `}
   >
-    <Nav>
+    {/* <Nav>
       <Wrapper
         customCss={css`
           display: flex;
@@ -76,7 +76,7 @@ const MainFooter: React.FunctionComponent<{}> = memo(() => useMemo(() => (
           href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}
         >Politicas de privacidad</Link>
       </Wrapper>
-    </Nav>
+    </Nav> */}
   </Footer>
 ), []));
 

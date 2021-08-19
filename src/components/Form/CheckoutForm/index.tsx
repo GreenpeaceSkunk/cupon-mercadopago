@@ -1,5 +1,5 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useState, useRef, useReducer } from 'react';
-import { FormContext } from '../context';
+import { FormContext, IFormComponent } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import { validateCardHolderName, validateCitizenId, validateCreditCard, validateCvv, validateEmptyField, validateMonth, validateYear } from '../../../utils/validators';
 import { css } from 'styled-components';
@@ -17,16 +17,16 @@ import { trackEvent as trackDataCrushEvent } from '../../../utils/dataCrush';
 import { initialState, reducer } from './reducer';
 import { createToken, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
 
-const Component: React.FunctionComponent<{}> = memo(() => {
+const Component: React.FunctionComponent<IFormComponent> = memo(({
+  formIndex,
+}) => {
   const { data: {
     payment,
     user,
-  }, dispatch, goNext } = useContext(FormContext);
+  }, step, dispatch, goNext } = useContext(FormContext);
   const [ showError, setShowError ] = useState<boolean>(false);
   const [ errorMessage, setErrorMessage ] = useState<string>('');
-  // const [ fetching, setFetching ] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const [ formId, setFormId ] = useState<string>('');
   const [{ errors, submitting, submitted }, dispatchFormErrors ] = useReducer(reducer, initialState);
 
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
@@ -61,11 +61,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
       if(formRef.current) {
         setPublishableKey(await getPublicKey());
-        const token = await createToken(formRef.current); 
+        const token = await createToken(formRef.current);
+        const amount = payment.amount === 'otherAmount' ? payment.newAmount : payment.amount;
         if(token.isValid) {
           const paymentMethod = await getInstallments({
             bin: payment.cardNumber.slice(0, 6),
-            amount: payment.amount,
+            amount,
           });
 
           if(paymentMethod) {
@@ -87,9 +88,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               merchant_account_id: (merchantAccount.length) ? merchantAccount[0].id : null,
               payment_method_option_id: (merchantAccount.length) ? merchantAccount[0].payment_method_option_id : null,
               // 
-              amount: payment.amount,
-              nombre: 'Nombre', // En la doc dice Nombre del titular de la tarjeta de crédito
-              apellido: 'Apellido', // En la doc dice Apellido del titular de la tarjeta de crédito
+              amount,
+              nombre: payment.cardholderName, // En la doc dice Nombre del titular de la tarjeta de crédito
+              apellido: payment.cardholderName, // En la doc dice Apellido del titular de la tarjeta de crédito
               cod_area: user.areaCode,
               telefono: user.phoneNumber,
               email: user.email,
@@ -135,9 +136,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             }
             
             console.log('Payload', payload);
-
             const result = await doSubscriptionPayment(payload);
-            setFormId(`checkout-form-id-${new Date().getTime()}`);
 
             if(result['error']) {
               setShowError(true);
@@ -149,6 +148,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               goNext();
             }
             
+            dispatchFormErrors({
+              type: 'SUBMITTED',
+            });
+          } else {
+            setShowError(true);
+            setErrorMessage('Ocurrió un error inesperado. Revisa el monto.');
             dispatchFormErrors({
               type: 'SUBMITTED',
             });
@@ -165,7 +170,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     })();
   }, [
     formRef,
-    formId,
+    // formId,
     payment,
     user,
     showError,
@@ -192,18 +197,19 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   // ]);
 
   useEffect(() => {
-    setFormId(`checkout-form-id-${new Date().getTime()}`);
+    // setFormId(`checkout-form-id-${new Date().getTime()}`);
   }, [])
 
   return useMemo(() => (
     <Shared.Form.Main
-      id={formId}
+      // id={formId}
+      id='transaction-form'
       ref={formRef}
       onSubmit={onSubmitHandler}
     >
       <Shared.Form.Header>
         <HGroup>
-          <Shared.General.Title>Checkout</Shared.General.Title>
+          <Shared.General.Title>DONÁ AHORA</Shared.General.Title>
         </HGroup>
         <Shared.General.Text>Te enviaremos información sobre nuestras acciones y la forma en que puedes ayudarnos a lograrlo.</Shared.General.Text>
       </Shared.Form.Header>
@@ -399,13 +405,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           {(errorMessage !== '') ? errorMessage : 'Tenés campos incompletos o con errores. Revisalos para continuar.'}
         </Shared.Form.ErrorMessage>
       ) : null}
-      
+
       <Shared.Form.Nav
+        formIndex={formIndex}
         customCss={css`
-          display: flex;
-          align-items: flex-end;
-          padding-top: ${pixelToRem(10)};
-          height: 100%;
+          ${((step - 1) !== formIndex) && css`
+            display: none;
+          `}
         `}
       >
         <Shared.General.Button
@@ -419,12 +425,15 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               padding-bottom: ${pixelToRem(10)};
             `}
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : 'Doná'}</Shared.General.Button>
+        >{(submitting) ? <Shared.Loader mode='light' /> : `Doná`}</Shared.General.Button>
+        <Shared.General.Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>
+          Politicas de privacidad
+        </Shared.General.Link>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
     formRef,
-    formId,
+    // formId,
     showError,
     payment,
     user,
@@ -433,6 +442,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     errors,
     // fetching,
     errorMessage,
+    step,
+    formIndex,
     setShowError,
     onSubmitHandler,
     onChangeHandler,

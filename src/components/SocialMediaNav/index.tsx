@@ -35,7 +35,9 @@ const Component: FunctionComponent<{
         font-size: ${pixelToRem(16)};
         margin-bottom: ${pixelToRem(18)};
       `}
-    >Compartí<br/>¡Seamos muchos más!</H1>
+    >
+      Conocé más sobre Greenpeace en nuestro sitio web o seguinos en redes sociales:
+    </H1>
     <Nav
       customCss={css`
         display: flex;
@@ -74,7 +76,7 @@ const Component: FunctionComponent<{
         <Img src={FacebookLogo} alt='Facebook' width='auto' height='auto' />
       </FacebookShareButton>
 
-      <EmailShareButton
+      {/* <EmailShareButton
         onClick={(evt: MouseEvent<HTMLButtonElement>) => {}}
         openShareDialogOnClick={true}
         url={`${process.env.REACT_APP_SHARE_URL}`}
@@ -85,7 +87,7 @@ const Component: FunctionComponent<{
         windowWidth={SHARE_MODAL_WIDTH}
       >
         <Img src={EmailLogo} alt='Email' width='auto' height='auto' />
-      </EmailShareButton>
+      </EmailShareButton> */}
 
       <TwitterShareButton
         title={`${process.env.REACT_APP_SHARE_TWITTER_TITLE}`}

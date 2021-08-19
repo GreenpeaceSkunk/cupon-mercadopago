@@ -1,5 +1,5 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, } from 'react';
-import { FormContext } from '../context';
+import { FormContext, IFormComponent } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import { validateBirthDate, validateEmail, validateNewAmount, validatePhoneNumber, validateAreaCode, validateEmptyField, validateFirstName, validateLastName } from '../../../utils/validators';
 import { css } from 'styled-components';
@@ -14,7 +14,9 @@ import { addOrRemoveSlashToDate } from '../../../utils';
 import { initialState, reducer } from './reducer';
 import { synchroInit } from '../../../utils/dataCrush';
 
-const Component: React.FunctionComponent<{}> = memo(() => {
+const Component: React.FunctionComponent<IFormComponent> = memo(({
+  formIndex,
+}) => {
   const { data: {
     user: {
       firstName,
@@ -28,7 +30,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       amount,
       newAmount,
     }
-  }, dispatch, goNext } = useContext(FormContext);
+  }, step, dispatch, goNext } = useContext(FormContext);
   const [{ errors, submitting, submitted }, dispatchFormErrors ] = useReducer(reducer, initialState);
   
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
@@ -130,10 +132,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ]);
   
   return useMemo(() => (
-    <Shared.Form.Main onSubmit={onSubmitHandler}>
+    <Shared.Form.Main
+      id='sign-form'
+      onSubmit={onSubmitHandler}
+    >
       <Shared.Form.Header>
         <HGroup>
-          <Shared.General.Title>Suscribite para que juntos podamos lograr un futuro más sustentable</Shared.General.Title>
+          <Shared.General.Title>DONÁ AHORA</Shared.General.Title>
         </HGroup>
         <Shared.General.Text>Te enviaremos información sobre nuestras acciones y la forma en que puedes ayudarnos a lograrlo.</Shared.General.Text>
       </Shared.Form.Header>
@@ -144,7 +149,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             <Shared.Form.Group
               value={amount}
               fieldName='amount'
-              labelText='Elegí con cuánto querés ayudar al planeta:'
+              labelText='Autorizo el débito automático mensual de:'
               showErrorMessage={true}
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
@@ -295,7 +300,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             <Shared.Form.Group
               fieldName='areaCode'
               value={areaCode}
-              labelText='Código de área'
+              labelText='Cód. área'
               showErrorMessage={true}
               validateFn={validateAreaCode}
               onUpdateHandler={onUpdateFieldHandler}
@@ -331,17 +336,15 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             </Shared.Form.Group>
           </Shared.Form.Column>
         </Shared.Form.Row>
-        
-
-
       </Shared.Form.Content>
 
       <Shared.Form.Nav
+        formIndex={formIndex}
         customCss={css`
-          display: flex;
-          align-items: flex-end;
-          padding-top: ${pixelToRem(10)};
-          height: 100%;
+          /* ${((step - 1) !== formIndex) && css`
+            display: none;
+          `} */
+          /* position: relative; */
         `}
       >
         {(!submitting) ? (
@@ -355,6 +358,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         ) : (
           <Shared.Loader mode='light' />
         )}
+        <Shared.General.Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>
+          Politicas de privacidad
+        </Shared.General.Link>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
@@ -369,6 +375,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     errors,
     submitted,
     submitting,
+    step,
+    formIndex,
     goNext,
     onSubmitHandler,
     onChangeHandler,

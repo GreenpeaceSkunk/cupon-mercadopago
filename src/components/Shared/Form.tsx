@@ -46,12 +46,12 @@ const Main = styled(Elements.Form)`
   flex-basis: 100%;
   width: 100%;
   /* padding: ${pixelToRem(50)} ${pixelToRem(40)} ${pixelToRem(160)}; */
-  padding: ${pixelToRem(50)} ${pixelToRem(40)} 0;
+  padding: ${pixelToRem(50)} ${pixelToRem(40)} ${pixelToRem(160)};;
   height: 100vh;
   overflow-y: scroll;
 
   @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-    
+    padding-bottom: 0; 
   }
 
   ${({customCss}) => (customCss) && customCss};

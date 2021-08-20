@@ -13,6 +13,7 @@ import Shared from '../../Shared';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import { initialState, reducer } from './reducer';
 import { synchroInit } from '../../../utils/dataCrush';
+import { pushToDataLayer } from '../../../utils/googleTagManager';
 
 const Component: React.FunctionComponent<IFormComponent> = memo(({
   formIndex,
@@ -104,6 +105,9 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     }, 
       `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`
     );
+    pushToDataLayer({
+      'event' : 'petitionSignup',
+    });
     goNext();
   }, [
     firstName,

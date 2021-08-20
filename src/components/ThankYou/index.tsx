@@ -36,29 +36,29 @@ const Link = styled(A)`
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { data: { payment } } = useContext(FormContext);
 
-  useEffect(() => {
-    const id = Math.floor((Math.random() * 100) + 1);
-    console.log(payment.amount);
-    pushToDataLayer({
-      event: 'eecPurchase',
-      ecommerce: {
-        currencyCode: 'ARS',
-        purchase: {
-          actionField: {
-            id,
-            revenue: payment.amount,              
-          },
-          products: [{
-            id,
-            name: 'Suscripcion',                        
-            quantity: 1,
-            price: 'pesos',
-          }],
-        },
-      },
-    });
-    trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_THANK_YOU_PAGE}`);
-  }, []);
+  // useEffect(() => {
+    // const id = Math.floor((Math.random() * 100) + 1);
+    // console.log(payment.amount);
+    // pushToDataLayer({
+    //   event: 'eecPurchase',
+    //   ecommerce: {
+    //     currencyCode: 'ARS',
+    //     purchase: {
+    //       actionField: {
+    //         id,
+    //         revenue: payment.amount,              
+    //       },
+    //       products: [{
+    //         id,
+    //         name: 'Suscripcion',                        
+    //         quantity: 1,
+    //         price: 'pesos',
+    //       }],
+    //     },
+    //   },
+    // });
+    // trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_THANK_YOU_PAGE}`);
+  // }, []);
 
   return useMemo(() => (
     <View

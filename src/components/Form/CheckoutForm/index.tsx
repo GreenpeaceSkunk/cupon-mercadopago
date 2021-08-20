@@ -161,7 +161,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
                       id,
                       name: 'Regular',                        
                       quantity: 1,
-                      price: 'pesos',
+                      price: amount,
                     }],
                   },
                 },

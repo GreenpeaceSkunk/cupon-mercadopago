@@ -8,6 +8,6 @@ export const initialize = () => {
 
 export const pushToDataLayer = (event: EventType) => {
   if(window.dataLayer) {
-    window.dataLayer.push({event});
+    window.dataLayer.push({...event});
   }
 }

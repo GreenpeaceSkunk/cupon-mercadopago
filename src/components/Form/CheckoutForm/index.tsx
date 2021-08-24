@@ -255,7 +255,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               onUpdateHandler={onUpdateFieldHandler}
             >
               <Input
-                type='text'
+                type='password'
                 id='securityCode'
                 name='securityCode'
                 placeholder='Ej. 123'

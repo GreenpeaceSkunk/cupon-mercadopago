@@ -23,7 +23,9 @@ declare global {
       key: string;
       tokenId: string;
     };
-  }
+    userAmount: any;
+  };
+
 }
 
 export interface GenericReducerFn<S, A> { 

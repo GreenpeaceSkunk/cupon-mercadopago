@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, lazy, Suspense, useContext } from 'react';
-import { initialize as initializeTagManager, pushToDataLayer } from '../../utils/googleTagManager';
-import { initialize as inititalizeAnalytics, trackPage } from '../../utils/googleAnalytics';
-import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
+import { initialize as initializeTagManager } from '../../utils/googleTagManager';
+// import { initialize as inititalizeAnalytics, trackPage } from '../../utils/googleAnalytics';
+// import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
 import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as initializeDataCrush } from '../../utils/dataCrush';
 import { View } from '@bit/meema.ui-components.elements';
@@ -16,8 +16,8 @@ const AppRouter = lazy(() => import('./router'));
 
 // if(process.env.NODE_ENV === 'production') {
   initializeTagManager();
-  inititalizeAnalytics();
-  initializeFacebookPixel();
+  // inititalizeAnalytics();
+  // initializeFacebookPixel();
   initializeDataCrush();
   initializeMercadopago();
 // }

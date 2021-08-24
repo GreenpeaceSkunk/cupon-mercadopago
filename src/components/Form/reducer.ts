@@ -33,7 +33,7 @@ export const initialState: ContextStateType = {
       cardExpirationMonth: '',
       cardExpirationYear: '',
       docNumber: '',
-      docType: '',
+      docType: 'DNI',
       amount: '',
       newAmount: '',
     } as IPaymentData,
@@ -49,9 +49,12 @@ export const initialState: ContextStateType = {
   //     areaCode: '11',
   //   } as IUserData,
   //   payment: {
-  //     cardNumber: '4509953566233704', 
+  //     cardNumber: '4509953566233704', // Visa
+  //     // cardNumber: '5031755734530604', // Mastercard
+  //     // cardNumber: '371180303257522', // AMEX
   //     cardholderName: 'APRO',
-  //     securityCode: '223',
+  //     securityCode: '123',
+  //     // securityCode: '1234',
   //     cardExpirationMonth: '11',
   //     cardExpirationYear: '2025',
   //     docNumber: '31533422',

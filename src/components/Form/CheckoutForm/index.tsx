@@ -147,48 +147,8 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               setErrorMessage('');
               trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_2}`, user.email);
 
-              const id = `${Math.floor((Math.random() * 100) + 1)}`;
-              pushToDataLayer({
-                event: 'Donation',
-                ecommerce: {
-                  currencyCode: 'ARS',
-                  purchase: {
-                    actionField: {
-                      id,
-                      revenue: amount,              
-                    },
-                    products: [{
-                      id,
-                      name: 'Regular',                        
-                      quantity: 1,
-                      price: amount,
-                    }],
-                  },
-                },
-              });
+              window.userAmount = amount;
 
-              // var transactionId = Math.floor((Math.random() * 100) + 1);
-              // var pesos = document.querySelector("#monto").value;
-
-              // window.dataLayer = window.dataLayer || [];
-              //   dataLayer.push({
-              //   'event' : 'Donation'
-              //   ecommerce: {
-              //   currencyCode: 'ARS',
-              //   purchase: {
-              //       actionField: {
-              //           id: String(transactionId),
-              //           revenue: pesos
-              //             },
-              //         products: [{
-              //   id: String(transactionId),
-              //   name: 'Regular',
-              //   quantity: 1,
-              //   price: pesos
-              //   }]
-              //       }
-              //     }
-              //   });
               goNext();
             }
             

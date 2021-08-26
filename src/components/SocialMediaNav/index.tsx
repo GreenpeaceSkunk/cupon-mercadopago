@@ -1,10 +1,9 @@
-import React, { FunctionComponent, memo, MouseEvent, useMemo } from 'react';
+import React, { FunctionComponent, memo, useMemo } from 'react';
 import { Wrapper, CustomCSSType, Nav, H1, Img, } from '@bit/meema.ui-components.elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
-import { FacebookLogo, EmailLogo, TwitterLogo, WhatsappLogo, } from '../../images/icons'
+import { FacebookLogo, TwitterLogo, WhatsappLogo, } from '../../images/icons'
 import {
-  EmailShareButton,
   FacebookShareButton,
   TwitterShareButton,
   WhatsappShareButton

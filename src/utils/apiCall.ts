@@ -6,12 +6,14 @@ const isRequestError = (object: any): object is AxiosResquestError => {
 }
 
 const ApiCall = async <A>(config: AxiosRequestConfig) => {
+  console.log(config.headers)
+
   try {
     const response: AxiosResponse = await Axios.request({
       method: config.method,
       baseURL: config.baseURL ? config.baseURL : `${process.env.REACT_APP_API_URL}`,
       url: config.url,
-      headers: {},
+      headers: config.headers ? config.headers : {},
       data: config.data,
       params: config.params,
     });

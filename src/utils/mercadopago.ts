@@ -1,3 +1,5 @@
+import { CustomHTMLScriptElement } from 'greenpeace';
+
 // https://www.mercadopago.com.ar/developers/es/guides/online-payments/checkout-api/handling-responses
 export const ERROR_CODES: {[key: string]: string} = {
   'E301': 'Ingresa un número de tarjeta válido.',
@@ -12,6 +14,7 @@ export const ERROR_CODES: {[key: string]: string} = {
 export const initialize = () => {
   (async () => {
     await initializeSdk();
+    await initializeSecurityPayment();
   })();
 }
 
@@ -20,7 +23,15 @@ export const initializeSdk = async () => {
     let script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = `//secure.mlstatic.com/sdk/javascript/v1/mercadopago.js`;
-    // script.src = `//secure.mlstatic.com/sdk/javascript/v2/mercadopago.js`;
+    document.body.appendChild(script);
+  })();
+}
+
+export const initializeSecurityPayment = async () => {
+  return await (async () => {
+    let script: CustomHTMLScriptElement = document.createElement('script');
+    script.src = `//www.mercadopago.com/v2/security.js`;
+    script.view = 'home';
     document.body.appendChild(script);
   })();
 }

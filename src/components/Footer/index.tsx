@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
-import styled, { css } from 'styled-components';
-import { Footer, Wrapper, A, Nav, } from '@bit/meema.ui-components.elements';
+import { css } from 'styled-components';
+import { Footer } from '@bit/meema.ui-components.elements';
 import { pixelToRem } from 'meema.utils';
 
 // const Link = styled(A)`

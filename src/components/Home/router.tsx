@@ -5,7 +5,6 @@ import { Loader } from '../Shared';
 const FormsRouter = lazy(() => import('../Form/router'));
 const TahnkYouRouter = lazy(() => import('../ThankYou/router'));
 
-
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { path } = useRouteMatch();
   

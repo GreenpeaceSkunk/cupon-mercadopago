@@ -2,7 +2,6 @@ import {GreenpeaceLogoWhite as GreenpeaceLogo} from '../../images/icons';
 import Elements from '@bit/meema.ui-components.elements';
 import ThreeCircles from '@bit/meema.ui-components.loaders.three-circles';
 import { css } from 'styled-components';
-import { pixelToRem } from 'meema.utils';
 import Form from './Form';
 import General from './General';
 

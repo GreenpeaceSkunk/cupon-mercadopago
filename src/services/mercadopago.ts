@@ -15,7 +15,6 @@ interface IPaymentParams {
   type?: string,
   marketplace?: 'NONE';
   status?: 'active';
-  // js_version?: string;
 }
 
 export const getPaymentMethods = async (params: IPaymentParams): Promise<any | AxiosResquestError> => {
@@ -73,24 +72,26 @@ export const getIdentificationTypes = async (params: IPaymentParams): Promise<an
 export const getPublicKey = async (): Promise<any | AxiosResquestError> => {
   return ApiCall({
     url: `${process.env.REACT_APP_GREENPEACE_MERCADOPAGO_API_URL}/getPublicKey`,
-    // url: `https://dona.greenpeace.org.ar/gp/getPublicKey`,
     method: 'GET',
     params: {},
   });;
 };
 
-// TODO
 export const doSubscriptionPayment = async (data: any): Promise<any | AxiosResquestError> => ApiCall({
   url: `${process.env.REACT_APP_GREENPEACE_MERCADOPAGO_API_URL}/createStaging`,
   method: 'POST',
   data,
+  headers: {
+    'X-meli-session-id': window.MP_DEVICE_SESSION_ID,
+  },
 });
 
-
-export default {
+const _ = {
   getPaymentMethods,
   getPaymentMethodsSearch,
   getPaymentMethodsInstallments,
   getIdentificationTypes,
   doSubscriptionPayment,
-}
+};
+
+export default _;

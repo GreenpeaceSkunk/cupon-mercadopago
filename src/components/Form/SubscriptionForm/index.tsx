@@ -1,13 +1,11 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, } from 'react';
 import { FormContext, IFormComponent } from '../context';
 import { OnChangeEvent } from 'greenpeace';
-import { validateBirthDate, validateEmail, validateNewAmount, validatePhoneNumber, validateAreaCode, validateEmptyField, validateFirstName, validateLastName } from '../../../utils/validators';
+import { validateEmail, validateNewAmount, validatePhoneNumber, validateAreaCode, validateEmptyField, validateFirstName } from '../../../utils/validators';
 import { css } from 'styled-components';
-import { pixelToRem } from 'meema.utils';
 import { HGroup } from '@bit/meema.ui-components.elements';
 import { 
   Input,
-  Select,
 } from '@bit/meema.gpar-ui-components.form';
 import Shared from '../../Shared';
 import { addOrRemoveSlashToDate } from '../../../utils';
@@ -56,11 +54,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     }
   }, [
     birthDate,
-    email,
-    areaCode,
-    phoneNumber,
-    amount,
-    newAmount,
     dispatch,
   ]);
 
@@ -89,7 +82,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     }
   }, [
     amount,
-    dispatch,
+    dispatchFormErrors,
   ]);
 
   const onSubmitHandler = useCallback((evt: FormEvent) => {
@@ -116,6 +109,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     email,
     areaCode,
     phoneNumber,
+    goNext,
   ]);
   
   useEffect(() => {

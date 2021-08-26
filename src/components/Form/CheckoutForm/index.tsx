@@ -16,7 +16,6 @@ import Shared from '../../Shared';
 import { trackEvent as trackDataCrushEvent } from '../../../utils/dataCrush';
 import { initialState, reducer } from './reducer';
 import { createToken, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
-import { pushToDataLayer } from '../../../utils/googleTagManager';
 
 const Component: React.FunctionComponent<IFormComponent> = memo(({
   formIndex,
@@ -37,7 +36,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
       payload: { [ evt.currentTarget.name ]: evt.currentTarget.value }
     });
   }, [
-    payment,
     dispatch,
   ]);
 
@@ -64,6 +62,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
         setPublishableKey(await getPublicKey());
         const token = await createToken(formRef.current);
         const amount = payment.amount === 'otherAmount' ? payment.newAmount : payment.amount;
+        
         if(token.isValid) {
           const paymentMethod = await getInstallments({
             bin: payment.cardNumber.slice(0, 6),
@@ -72,14 +71,20 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
 
           if(paymentMethod) {
             const merchantAccounts = (paymentMethod.agreements.length) ? paymentMethod.agreements[0].merchant_accounts : [];
+            
             let merchantAccount = merchantAccounts.filter((a: any) => {
-              if(`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && a.branch_id === 'regular') {
+              if(`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && paymentMethod.payment_method_id === 'amex') {
+                return a;
+              }
+              if (`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && a.branch_id === null) {
                 return a;
               }
               if(`${process.env.REACT_APP_COUPON_TYPE}` === 'oneoff' && a.branch_id === null) {
                 return a;
               }
             });
+
+            console.log(window.MP_DEVICE_SESSION_ID)
 
             const payload = {
               payment_method_id: paymentMethod.payment_method_id,
@@ -88,7 +93,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               type: `${process.env.REACT_APP_COUPON_TYPE}`,
               merchant_account_id: (merchantAccount.length) ? merchantAccount[0].id : null,
               payment_method_option_id: (merchantAccount.length) ? merchantAccount[0].payment_method_option_id : null,
-              // 
               amount,
               nombre: payment.cardholderName, // En la doc dice Nombre del titular de la tarjeta de crédito
               apellido: payment.cardholderName, // En la doc dice Apellido del titular de la tarjeta de crédito
@@ -136,7 +140,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               ]
             }
             
-            console.log('Payload', payload);
             const result = await doSubscriptionPayment(payload);
 
             if(result['error']) {

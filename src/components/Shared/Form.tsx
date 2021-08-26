@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import { OnChangeEvent } from '../../types';
 import { SelectArrowIcon, WarningIcon, TickIcon } from '../../images/icons';
-import { carouselItemStyles } from '../../styles/mixins';
 import { ValidationType } from '../../utils/validators';
 
 const sharedStyles = css`

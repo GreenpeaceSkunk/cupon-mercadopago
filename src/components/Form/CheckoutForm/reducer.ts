@@ -79,7 +79,9 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
   }
 }
 
-export default {
+const _ = {
   initialState,
   reducer,
 };
+
+export default _;

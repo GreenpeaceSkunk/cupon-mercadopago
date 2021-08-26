@@ -5,7 +5,6 @@ import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import ErrorBoundary from '../ErrorBoundary';
 import Footer from '../Footer';
-// import { useRouteMatch } from 'react-router';
 import { HomeBackground } from '../../images/backgrounds';
 
 const Header = lazy(() => import('../Header'));

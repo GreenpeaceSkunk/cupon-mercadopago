@@ -1,17 +1,13 @@
-import React, { Suspense, memo, useMemo, lazy, useEffect, useContext } from 'react';
+import React, { Suspense, memo, useMemo, lazy } from 'react';
 import { Wrapper, View, Nav, A } from '@bit/meema.ui-components.elements';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import Shared from '../Shared';
 import { carouselItemStyles } from '../../styles/mixins';
-import { trackEvent as trackDataCrushEvent } from '../../utils/dataCrush';
-import { pushToDataLayer } from '../../utils/googleTagManager';
-import { FormContext } from '../Form/context';
 
 const SocialMediaNav = lazy(() => import('../SocialMediaNav'));
 
 const Link = styled(A)`
-  /* color: white; */
   text-decoration: underline;
   margin-bottom: ${pixelToRem(5)};
   font-family: ${({theme}) => theme.font.family.primary.regular};
@@ -34,32 +30,6 @@ const Link = styled(A)`
 `;
 
 const Component: React.FunctionComponent<{}> = memo(() => {
-  const { data: { payment } } = useContext(FormContext);
-
-  // useEffect(() => {
-    // const id = Math.floor((Math.random() * 100) + 1);
-    // console.log(payment.amount);
-    // pushToDataLayer({
-    //   event: 'eecPurchase',
-    //   ecommerce: {
-    //     currencyCode: 'ARS',
-    //     purchase: {
-    //       actionField: {
-    //         id,
-    //         revenue: payment.amount,              
-    //       },
-    //       products: [{
-    //         id,
-    //         name: 'Suscripcion',                        
-    //         quantity: 1,
-    //         price: 'pesos',
-    //       }],
-    //     },
-    //   },
-    // });
-    // trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_THANK_YOU_PAGE}`);
-  // }, []);
-
   return useMemo(() => (
     <View
       id='thank-you-page'
@@ -94,17 +64,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             font-size: ${pixelToRem(32)};
           `}
         >¡GRACIAS POR APOYAR NUESTRA CAUSA!</Shared.General.Title>
-        {/* <Shared.General.Text
-          customCss={css`
-            font-size: ${pixelToRem(18)};
-            text-align: center;
-          `}
-        >Si querés colaborar con nuestras causas, elegí tu aporte mensual y sé parte.</Shared.General.Text> */}
-        {/* <Shared.General.ButtonLink
-          format='text'
-          href={`${process.env.REACT_APP_DONA_URL}`}
-          target='blank'
-        >¡Doná ahora!</Shared.General.ButtonLink> */}
       </Wrapper>
       <Wrapper
         customCss={css`
@@ -139,9 +98,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         </Wrapper>
       </Nav>
     </View>
-  ), [
-    payment,
-  ]);
+  ), []);
 });
 
 Component.displayName = 'ThankYou';

@@ -81,9 +81,9 @@ export const doSubscriptionPayment = async (data: any): Promise<any | AxiosResqu
   url: `${process.env.REACT_APP_GREENPEACE_MERCADOPAGO_API_URL}/createStaging`,
   method: 'POST',
   data,
-  headers: {
-    'X-meli-session-id': window.MP_DEVICE_SESSION_ID,
-  },
+  // headers: {
+  //   'X-meli-session-id': window.MP_DEVICE_SESSION_ID,
+  // },
 });
 
 const _ = {

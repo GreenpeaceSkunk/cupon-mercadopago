@@ -6,8 +6,6 @@ const isRequestError = (object: any): object is AxiosResquestError => {
 }
 
 const ApiCall = async <A>(config: AxiosRequestConfig) => {
-  console.log(config.headers)
-
   try {
     const response: AxiosResponse = await Axios.request({
       method: config.method,

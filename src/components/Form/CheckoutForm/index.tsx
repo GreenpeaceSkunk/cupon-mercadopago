@@ -74,6 +74,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
             
             let merchantAccount = merchantAccounts.filter((a: any) => {
               if(`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && paymentMethod.payment_method_id === 'amex') {
+                console.log('Amex', a);
                 return a;
               }
               if (`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && a.branch_id === null) {
@@ -84,9 +85,8 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               }
             });
 
-            console.log(window.MP_DEVICE_SESSION_ID)
-
             const payload = {
+              device_id: window.MP_DEVICE_SESSION_ID,
               payment_method_id: paymentMethod.payment_method_id,
               issuer_id: paymentMethod.issuer.id,
               token: window.Mercadopago.tokenId,
@@ -160,7 +160,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
             });
           } else {
             setShowError(true);
-            setErrorMessage('Ocurrió un error inesperado. Revisa el monto.');
+            setErrorMessage('Ocurrió un error inesperado, pruebe con otra tarjeta.');
             dispatchFormErrors({
               type: 'SUBMITTED',
             });

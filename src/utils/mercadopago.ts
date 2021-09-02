@@ -53,7 +53,6 @@ export const createToken = async (form: HTMLFormElement):Promise<{ isValid: bool
           resolve({ isValid: true, message: '' });
         }
       } else {
-        // alert("Verify filled data!\n"+JSON.stringify(response, null, 4));
         const errorCode = (response.cause.length) ? response.cause[0].code as string : 'default';
         resolve({ isValid: false, message: ERROR_CODES[errorCode] });
       }
@@ -65,7 +64,6 @@ export const createToken = async (form: HTMLFormElement):Promise<{ isValid: bool
 
 export const getInstallments = async (params: any): Promise<any> => {
   return new Promise((resolve, reject) => {
-    console.log("getInstallments", params);
     window.Mercadopago.getInstallments(params, (status: number, installments: any[]) => {
       if(installments.length) {
         const paymentMethods = installments.map((paymentMethod: any) => (

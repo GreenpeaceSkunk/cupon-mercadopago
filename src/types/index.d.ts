@@ -26,6 +26,7 @@ declare global {
     userAmount: any;
     MP_DEVICE_SESSION_ID: string;
   };
+
 }
 
 export interface CustomHTMLScriptElement extends HTMLScriptElement {

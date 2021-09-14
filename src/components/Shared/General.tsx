@@ -1,7 +1,7 @@
 import Elements from '@bit/meema.ui-components.elements';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
-import { XIcon } from '../../images/icons';
+import Icons from '../../images/icons';
 
 const Title = styled(Elements.H1)`
   margin-bottom: ${pixelToRem(10)};
@@ -112,7 +112,7 @@ const ButtonClose = styled(Elements.Button)`
     display: flex;
     width: ${pixelToRem(20)};
     height: ${pixelToRem(20)};
-    background-image: url(${XIcon});
+    background-image: url(${Icons.XIcon});
     background-size: ${pixelToRem(20)} ${pixelToRem(20)};
     background-repeat: no-repeat;
     content: "";

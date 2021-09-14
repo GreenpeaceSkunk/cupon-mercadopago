@@ -3,7 +3,7 @@ import Elements, { CustomCSSType } from '@bit/meema.ui-components.elements';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import { OnChangeEvent } from '../../types';
-import { SelectArrowIcon, WarningIcon, TickIcon } from '../../images/icons';
+import Icons from '../../images/icons';
 import { ValidationType } from '../../utils/validators';
 
 const sharedStyles = css`
@@ -69,7 +69,7 @@ const Header = styled(Elements.Header)`
 const Nav: React.FunctionComponent<{
   children?: React.ReactNode | HTMLAllCollection;
   customCss?: CustomCSSType;
-  formIndex: number;
+  formIndex?: number;
 }> = ({
   children,
   customCss,
@@ -84,7 +84,6 @@ const Nav: React.FunctionComponent<{
         align-items: center;
         align-self: flex-end;
         justify-self: flex-end;
-        background-color: rgba(255, 255, 255, 0.7);
         width: 100%;
         height: 100%;
         padding: ${pixelToRem(20)} ${pixelToRem(60)};
@@ -211,7 +210,7 @@ const RadioButton: React.FunctionComponent<{
               background-position: center center;
               background-repeat: no-repeat;
               transform-origin: center;
-              background-image: url(${TickIcon});
+              background-image: url(${Icons.TickIcon});
               position: absolute;
               content: "";
             }
@@ -357,13 +356,15 @@ const Label = styled(Elements.Label)`
 `;
 
 const Input = styled(Elements.Input)`
+  background-color: transparent;
+
   ${sharedStyles};
 `;
 
 export const Select = styled(Elements.Select)<{width?: string, marginRight?: string}>`
   ${sharedStyles};
   height: ${pixelToRem(46)};
-  background: url(${SelectArrowIcon}) no-repeat right ${pixelToRem(14)} top 50% white;
+  background: url(${Icons.SelectArrowIcon}) no-repeat right ${pixelToRem(14)} top 50% white;
   cursor: pointer;
 `;
 
@@ -444,7 +445,7 @@ const ErrorMessage = styled(Elements.Wrapper)`
     background-position: center center;
     background-repeat: no-repeat;
     transform-origin: center;
-    background-image: url(${WarningIcon});
+    background-image: url(${Icons.WarningIcon});
     content: "";
 
     @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {

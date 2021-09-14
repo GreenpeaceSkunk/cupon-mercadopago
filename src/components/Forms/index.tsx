@@ -2,16 +2,17 @@ import React, { FunctionComponent, memo, useContext, useEffect, useMemo, useRef,
 import { HGroup, View, Wrapper } from '@bit/meema.ui-components.elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
-import Carousel, { IRef as ICarouselRef } from '@bit/meema.ui-components.carousel';
+// import Carousel, { IRef as ICarouselRef } from '@bit/meema.ui-components.carousel';
 import { FormContext, FormProvider, FormComponentsType } from './context';
 import Shared from '../Shared';
-
-const ThankYouPage = React.lazy(() => import('../ThankYou'))
+import FormRouter from './router';
+import { AppContext } from '../App/context';
 
 const Component: FunctionComponent<{}> = memo(() => {
-  const { step, Forms } = useContext(FormContext); 
-  const carouselRef = useRef<ICarouselRef>(null);
-  const [ isOpen, setIsOpen ] = useState<boolean>(false);
+  const { step, Forms } = useContext(FormContext);
+  const { isOpen, setIsOpen } = useContext(AppContext);
+  // const carouselRef = useRef<ICarouselRef>(null);
+  // const [ isOpen, setIsOpen ] = useState<boolean>(false);
   const [ showPreview, setShowPreview ] = useState<boolean>(false);
 
   const onScrollHandler = useCallback(() => {
@@ -23,14 +24,13 @@ const Component: FunctionComponent<{}> = memo(() => {
   }, [
   ]);
 
-  useEffect(() => {
-    if(carouselRef && carouselRef.current) {
-      // carouselRef.current.setIndex(parseInt(step) - 1);
-      carouselRef.current.setIndex(step - 1); // Used only for Data Crush Router
-    }
-  }, [
-    step,
-  ]);
+  // useEffect(() => {
+  //   if(carouselRef && carouselRef.current) {
+  //     carouselRef.current.setIndex(step - 1); // Used only for Data Crush Router
+  //   }
+  // }, [
+  //   step,
+  // ]);
 
   useEffect(() => {
     window.addEventListener('scroll', onScrollHandler);
@@ -47,22 +47,24 @@ const Component: FunctionComponent<{}> = memo(() => {
       className="form-view"
       customCss={css`
         display: flex;
-        position: fixed;
+        /* position: fixed; */
         flex-grow: 0;
         flex-shrink: 0;
         flex-basis: ${pixelToRem(480)};
         width: ${pixelToRem(480)};
         flex-direction: row;
         justify-content: space-between;
-        height: 100vh;
-        /* background-color: ${({theme}) => theme.color.secondary.light}; */
-        background-color: white;
+        /* height: 100vh; */
+        height: 100%;
+        background-color: ${({theme}) => theme.color.secondary.light};
+        /* background-color: rgba(255,255,255,.5); */
         transition: all 250ms ease;
         bottom: 0;
 
         @media (max-width: ${({theme}) => pixelToRem(theme.responsive.tablet.maxWidth)}) {
           width: 100%;
           bottom: ${pixelToRem((showPreview) ? 0 : -200)};
+          position: fixed;
           
           ${(!isOpen) && css`
             padding: ${pixelToRem(30)} ${pixelToRem(40)};
@@ -77,6 +79,7 @@ const Component: FunctionComponent<{}> = memo(() => {
           display: flex;
           flex-direction: column;
           width: 100%;
+          height: 100%;
 
           @media (max-width: ${({theme}) => pixelToRem(theme.responsive.tablet.maxWidth)}) {
             ${(isOpen) ? css`
@@ -99,7 +102,8 @@ const Component: FunctionComponent<{}> = memo(() => {
             }
           `}
         />
-        <Carousel
+        <FormRouter />
+        {/* <Carousel
           ref={carouselRef}
           showControls={false}
           showIndicators={false}
@@ -119,7 +123,7 @@ const Component: FunctionComponent<{}> = memo(() => {
               </React.Suspense>
             ) : null}
           </>
-        </Carousel>
+        </Carousel> */}
       </Wrapper>
 
       <Wrapper
@@ -130,7 +134,6 @@ const Component: FunctionComponent<{}> = memo(() => {
           width: 100%;
           height: 100%;
 
-          
           @media (max-width: ${({theme}) => pixelToRem(theme.responsive.tablet.maxWidth)}) {
             ${(isOpen) && css`
               display: none;

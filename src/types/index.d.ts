@@ -3,7 +3,7 @@ import { EventType as GoogleTagManagerEventType } from 'google-tag-manager';
 declare global {
   interface Window {
     dataLayer: [{
-      event: EventType,
+      event: any,
     }];
     
     dcS: {
@@ -12,7 +12,7 @@ declare global {
 
     dc: {
       track: {
-        event: (portalId: string, eventId: string, userEmail: string) => void;
+        event: (portalId: string, eventId: string, userEmail: string, callback?: any) => void;
       }
     };
 
@@ -23,11 +23,16 @@ declare global {
       key: string;
       tokenId: string;
     };
-    userAmount: any;
     MP_DEVICE_SESSION_ID: string;
+    
+    userAmount: any;
   };
 
 }
+
+export type ParamsType = {
+  couponType: string;
+};
 
 export interface CustomHTMLScriptElement extends HTMLScriptElement {
   view?: string;
@@ -83,10 +88,6 @@ export interface IData {
 }
 
 export type SharedState = {
-  // data: {
-  //   user: IUserData;
-  //   payment: IPaymentData;
-  // };
   submitting?: boolean,
   submitted?: boolean,
   error: string | null,
@@ -98,25 +99,6 @@ export type SharedActions =
   | { type: 'CANCEL' }
   | { type: 'FAILURE', error: any }
   
-export type FormFields = 
-  'birthDate'
-  | 'email'
-  | 'genre'
-  | 'cardExpirationMonth'
-  | 'cardExpirationYear'
-  | 'cardholderName'
-  | 'cardNumber'
-  | 'issuerInput'
-  | 'paymentMethodId'
-  | 'securityCode'
-  | 'transactionAmount'
-  | 'docType'
-  | 'docNumber';
-
-export type FormFieldsType = {
-  [Key in FormFields]?: boolean;
-}
-
 export type OnChangeEvent = MouseEvent<HTMLButtonElement> | ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLSelectElement>;
 export type OnClickEvent = MouseEvent<HTMLButtonElement>;
 export type FeedbackType = 'positive' | 'negative';

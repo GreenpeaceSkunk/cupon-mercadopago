@@ -39,7 +39,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               
         @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
           padding-top: ${pixelToRem(200)};
-    
         }
       `}
     >
@@ -73,11 +72,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         `}
       >
         <Suspense fallback={<Shared.Loader />}>
-        <SocialMediaNav
-          customCss={css`
-            margin-top: ${pixelToRem(40)};
-          `}
-        />
+          <SocialMediaNav
+            customCss={css`
+              margin-top: ${pixelToRem(40)};
+            `}
+            theme='color'
+          />
         </Suspense>
       </Wrapper>
       
@@ -91,11 +91,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           height: 100%;
         `}
       >
-        <Wrapper>
+        {/* <Wrapper>
           <Link
             href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}
           >Politicas de privacidad</Link>
-        </Wrapper>
+        </Wrapper> */}
       </Nav>
     </View>
   ), []);

@@ -1,23 +1,28 @@
-import {GreenpeaceLogoWhite as GreenpeaceLogo} from '../../images/icons';
-import Elements from '@bit/meema.ui-components.elements';
+// import {GreenpeaceLogoWhite as GreenpeaceLogo} from '../../images/icons';
+import Images from '../../images';
+import Elements, { CustomCSSType } from '@bit/meema.ui-components.elements';
 import ThreeCircles from '@bit/meema.ui-components.loaders.three-circles';
+import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
 import Form from './Form';
 import General from './General';
 
-export const Logo = () => (
+export const Logo: React.FunctionComponent<{ color?: 'white' | 'green'; customCss?: CustomCSSType }> = ({
+  customCss,
+  color,
+}) => (
   <Elements.A
     href='https://greenpeace.org.ar'
   >
     <Elements.Img 
       alt='Greenpeace'
-      src={GreenpeaceLogo}
-      style={{
-        width: '10rem',
-        height: 'auto',
-      }}
-      width='10rem'
-      height='auto'
+      src={(color === 'green') ? Images.Icons.GreenpeaceLogoGreen : Images.Icons.GreenpeaceLogoWhite }
+      customCss={css`
+        width: ${pixelToRem(140)};
+        height: auto;
+
+        ${(customCss) && customCss};
+      `}
     />
   </Elements.A>
 );

@@ -1,21 +1,18 @@
-import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useState, useRef, useReducer } from 'react';
+import React, { FormEvent, memo, useCallback, useContext, useState, useRef, useReducer, useMemo } from 'react';
+import { generatePath, useHistory } from 'react-router-dom';
 import { FormContext, IFormComponent } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import { validateCardHolderName, validateCitizenId, validateCreditCard, validateCvv, validateEmptyField, validateMonth, validateYear } from '../../../utils/validators';
 import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import { HGroup } from '@bit/meema.ui-components.elements';
-import {
-  getPublicKey,
-  doSubscriptionPayment,
-} from '../../../services/mercadopago';
-import { 
-  Input,
-} from '@bit/meema.gpar-ui-components.form';
+import { getPublicKey, doSubscriptionPayment } from '../../../services/mercadopago';
+import { Input } from '@bit/meema.gpar-ui-components.form';
 import Shared from '../../Shared';
 import { trackEvent as trackDataCrushEvent } from '../../../utils/dataCrush';
 import { initialState, reducer } from './reducer';
 import { createToken, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
+import { useUrlParams } from '../../../hooks/useUrlParams';
 
 const Component: React.FunctionComponent<IFormComponent> = memo(({
   formIndex,
@@ -23,11 +20,13 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
   const { data: {
     payment,
     user,
-  }, step, dispatch, goNext } = useContext(FormContext);
+  }, step, params, dispatch } = useContext(FormContext);
+  const history = useHistory();
   const [ showError, setShowError ] = useState<boolean>(false);
   const [ errorMessage, setErrorMessage ] = useState<string>('');
   const formRef = useRef<HTMLFormElement>(null);
   const [{ errors, submitting, submitted }, dispatchFormErrors ] = useReducer(reducer, initialState);
+  const { couponType } = useUrlParams();
 
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
@@ -53,6 +52,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
+    
     (async () => {
       dispatchFormErrors({
         type: 'SUBMIT',
@@ -71,16 +71,14 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
 
           if(paymentMethod) {
             const merchantAccounts = (paymentMethod.agreements.length) ? paymentMethod.agreements[0].merchant_accounts : [];
-            
             let merchantAccount = merchantAccounts.filter((a: any) => {
               if(`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && paymentMethod.payment_method_id === 'amex') {
-                console.log('Amex', a);
                 return a;
               }
-              if (`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && a.branch_id === null) {
+              if (params.couponType === 'regular' && a.branch_id === 'regular') {
                 return a;
               }
-              if(`${process.env.REACT_APP_COUPON_TYPE}` === 'oneoff' && a.branch_id === null) {
+              if(params.couponType === 'oneoff' && a.branch_id === null) {
                 return a;
               }
             });
@@ -90,7 +88,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               payment_method_id: paymentMethod.payment_method_id,
               issuer_id: paymentMethod.issuer.id,
               token: window.Mercadopago.tokenId,
-              type: `${process.env.REACT_APP_COUPON_TYPE}`,
+              type: params.couponType,
               merchant_account_id: (merchantAccount.length) ? merchantAccount[0].id : null,
               payment_method_option_id: (merchantAccount.length) ? merchantAccount[0].payment_method_option_id : null,
               amount,
@@ -152,12 +150,18 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
 
               window.userAmount = amount;
 
-              goNext();
+              history.push(generatePath(`/:couponType/forms/thank-you`, {
+                couponType: params.couponType,
+              }));
             }
             
             dispatchFormErrors({
               type: 'SUBMITTED',
             });
+
+            return () => {
+              result.cancel();
+            }
           } else {
             setShowError(true);
             setErrorMessage('Ocurrió un error inesperado, pruebe con otra tarjeta.');
@@ -177,39 +181,14 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     })();
   }, [
     formRef,
-    // formId,
     payment,
     user,
     showError,
     errorMessage,
-    goNext,
   ]);
-
-  // useEffect(() => {
-  //   (() => {
-  //     if(fetching) {
-  //       const timeOut = setTimeout(() => {
-  //         setFetching(false);
-  //         goNext();
-  //       }, 1000);
-        
-  //       return () => {
-  //         clearTimeout(timeOut);
-  //       }
-  //     }
-  //   })();
-  // }, [
-  //   fetching,
-  //   goNext,
-  // ]);
-
-  useEffect(() => {
-    // setFormId(`checkout-form-id-${new Date().getTime()}`);
-  }, [])
 
   return useMemo(() => (
     <Shared.Form.Main
-      // id={formId}
       id='transaction-form'
       ref={formRef}
       onSubmit={onSubmitHandler}
@@ -413,14 +392,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
         </Shared.Form.ErrorMessage>
       ) : null}
 
-      <Shared.Form.Nav
-        formIndex={formIndex}
-        customCss={css`
-          ${((step - 1) !== formIndex) && css`
-            display: none;
-          `}
-        `}
-      >
+      <Shared.Form.Nav>
         <Shared.General.Button
           type='submit'
           disabled={(submitting) ? true : false}
@@ -432,10 +404,10 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               padding-bottom: ${pixelToRem(10)};
             `}
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : `Doná`}</Shared.General.Button>
-        <Shared.General.Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>
+        >{(submitting) ? <Shared.Loader mode='light' /> : 'Doná'}</Shared.General.Button>
+        {/* <Shared.General.Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>
           Politicas de privacidad
-        </Shared.General.Link>
+        </Shared.General.Link> */}
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
@@ -455,7 +427,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     onSubmitHandler,
     onChangeHandler,
     onUpdateFieldHandler,
-    goNext,
   ]);
 });
 

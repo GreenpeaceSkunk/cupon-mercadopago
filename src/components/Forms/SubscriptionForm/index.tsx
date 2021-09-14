@@ -1,17 +1,17 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, } from 'react';
+import { generatePath, useHistory } from 'react-router-dom';
 import { FormContext, IFormComponent } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import { validateEmail, validateNewAmount, validatePhoneNumber, validateAreaCode, validateEmptyField, validateFirstName } from '../../../utils/validators';
 import { css } from 'styled-components';
 import { HGroup } from '@bit/meema.ui-components.elements';
-import { 
-  Input,
-} from '@bit/meema.gpar-ui-components.form';
+// import { Shared.Form.Input } from '@bit/meema.gpar-ui-components.form';
 import Shared from '../../Shared';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import { initialState, reducer } from './reducer';
 import { synchroInit } from '../../../utils/dataCrush';
 import { pushToDataLayer } from '../../../utils/googleTagManager';
+import { pixelToRem } from 'meema.utils';
 
 const Component: React.FunctionComponent<IFormComponent> = memo(({
   formIndex,
@@ -29,8 +29,9 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
       amount,
       newAmount,
     }
-  }, step, dispatch, goNext } = useContext(FormContext);
+  }, step, params, dispatch } = useContext(FormContext);
   const [{ errors, submitting, submitted }, dispatchFormErrors ] = useReducer(reducer, initialState);
+  const history = useHistory();
   
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
@@ -87,6 +88,9 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
 
   const onSubmitHandler = useCallback((evt: FormEvent) => {
     evt.preventDefault();
+    dispatchFormErrors({
+      type: 'SUBMIT',
+    });
     synchroInit({
       first_name: firstName,
       last_name: lastName,
@@ -96,12 +100,16 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
       area_code: areaCode,
       genero: "",
     }, 
-      `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`
+      `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`,
+      () => {
+        history.push(generatePath(`/:couponType/forms/checkout`, {
+          couponType: params.couponType,
+        }));
+      },
     );
     pushToDataLayer({
       'event' : 'petitionSignup',
     });
-    goNext();
   }, [
     firstName,
     lastName,
@@ -109,25 +117,24 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     email,
     areaCode,
     phoneNumber,
-    goNext,
   ]);
   
-  useEffect(() => {
-    (() => {
-      if(submitted) {
-        const timeOut = setTimeout(() => {
-          goNext();
-        }, 200);
+  // useEffect(() => {
+  //   (() => {
+  //     if(submitted) {
+  //       const timeOut = setTimeout(() => {
+  //         goNext();
+  //       }, 200);
         
-        return () => {
-          clearTimeout(timeOut);
-        }
-      }
-    })();
-  }, [
-    submitted,
-    goNext,
-  ]);
+  //       return () => {
+  //         clearTimeout(timeOut);
+  //       }
+  //     }
+  //   })();
+  // }, [
+  //   submitted,
+  //   goNext,
+  // ]);
   
   return useMemo(() => (
     <Shared.Form.Main
@@ -140,14 +147,13 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
         </HGroup>
         <Shared.General.Text>Te enviaremos información sobre nuestras acciones y la forma en que puedes ayudarnos a lograrlo.</Shared.General.Text>
       </Shared.Form.Header>
-      
       <Shared.Form.Content>
         <Shared.Form.Row>
           <Shared.Form.Column>
             <Shared.Form.Group
               value={amount}
               fieldName='amount'
-              labelText='Autorizo el débito automático mensual de:'
+              labelText={`${params.couponType === 'oneoff' ? 'Autorizo el pago por única vez de:' : 'Autorizo el débito automático mensual de:'}`}
               showErrorMessage={true}
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
@@ -199,7 +205,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
                   validateFn={validateNewAmount}
                   onUpdateHandler={onUpdateFieldHandler}
                 >
-                  <Input
+                  <Shared.Form.Input
                     name='newAmount'
                     type='text'
                     disabled={!(amount === 'otherAmount')} 
@@ -223,7 +229,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               validateFn={validateEmail}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Input
+              <Shared.Form.Input
                 name='email'
                 type='email'
                 placeholder='Ej. daniela.lopez@email.com'
@@ -243,7 +249,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
             validateFn={validateBirthDate}
             onUpdateHandler={onUpdateFieldHandler}
           >
-            <Input
+            <Shared.Form.Input
               name='birthDate'
               type='text'
               placeholder='DD/MM/YYYY'
@@ -264,7 +270,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               validateFn={validateFirstName}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Input
+              <Shared.Form.Input
                 name='firstName'
                 type='text'
                 placeholder='Ej. Lucas'
@@ -280,7 +286,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               validateFn={validateFirstName}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Input
+              <Shared.Form.Input
                 name='lastName'
                 type='text'
                 placeholder='Ej. Rodriguez'
@@ -306,7 +312,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
                 width: 40%;
               `}
             >
-              <Input
+              <Shared.Form.Input
                 name='areaCode'
                 type='text'
                 placeholder='Ej. 11'
@@ -323,7 +329,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               validateFn={validatePhoneNumber}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Input
+              <Shared.Form.Input
                 name='phoneNumber'
                 type='text'
                 placeholder='Ej. 41239876'
@@ -335,30 +341,22 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
           </Shared.Form.Column>
         </Shared.Form.Row>
       </Shared.Form.Content>
+      <Shared.Form.Nav>
+        <Shared.General.Button
+          type='submit'
+          disabled={(submitting) ? true : false}
+          customCss={css`
+            width: 100%;
 
-      <Shared.Form.Nav
-        formIndex={formIndex}
-        customCss={css`
-          /* ${((step - 1) !== formIndex) && css`
-            display: none;
-          `} */
-          /* position: relative; */
-        `}
-      >
-        {(!submitting) ? (
-          <Shared.General.Button
-            type='submit'
-            disabled={((errors) && Object.keys(errors).length) ? true : false}
-            customCss={css`
-              width: 100%;
+            ${(submitting) && css`
+              padding-top: ${pixelToRem(10)};
+              padding-bottom: ${pixelToRem(10)};
             `}
-          >Continuar</Shared.General.Button>
-        ) : (
-          <Shared.Loader mode='light' />
-        )}
-        <Shared.General.Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>
+          `}
+        >{(submitting) ? <Shared.Loader mode='light' /> : 'Continuar'}</Shared.General.Button>
+        {/* <Shared.General.Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>
           Politicas de privacidad
-        </Shared.General.Link>
+        </Shared.General.Link> */}
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
@@ -375,7 +373,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     submitting,
     step,
     formIndex,
-    goNext,
+    params,
     onSubmitHandler,
     onChangeHandler,
     onUpdateFieldHandler,

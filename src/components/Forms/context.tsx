@@ -1,13 +1,17 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
-import { /*generatePath,*/ /*useRouteMatch*/ } from 'react-router';
-import { /*useParams,*/ /*useHistory*/ } from 'react-router';
+import React, { createContext, useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { ContextActionType, initialState, reducer } from './reducer';
-import { IData } from 'greenpeace';
-import { AppContext } from '../App/context';
+import { IData, ParamsType } from 'greenpeace';
+import { generatePath, useHistory, useLocation, useParams } from 'react-router-dom';
 
 export interface IFormComponent {
-  formIndex: number;
+  formIndex?: number;
 }
+
+const paths = [
+  '/form/subscribe',
+  '/form/checkout',
+  '/thankyou',
+]
 
 export type FormComponentsType = {
   Component: React.LazyExoticComponent<React.FunctionComponent<IFormComponent>>,
@@ -31,11 +35,11 @@ const Forms = {
 
 export interface IContext {
   data: IData;
-  // step: string;
   step: number;
   Forms: {[key: string]: FormComponentsType};
+  params: ParamsType; 
   dispatch: (action: ContextActionType) => void;
-  goNext: () => void;
+  // goNext: () => void;
 }
 interface IProps {
   children: React.ReactNode | HTMLAllCollection;
@@ -47,39 +51,30 @@ const { Provider, Consumer } = Context;
 
 const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const [{ data, }, dispatch] = useReducer(reducer, initialState);
-  // const history = useHistory();
-  // const routeMatch = useRouteMatch();
-  // const { step } = useParams<{ step: string }>();
-  const [ step, setStep ] = useState<number>(1);
-  const { setGhostRouter } = useContext(AppContext);
+  const history = useHistory();
+  const { pathname } = useLocation();
+  const [ step, setStep ] = useState<number>(0);
+  const params = useParams<ParamsType>();
 
-  const goNext = useCallback(() => {
-    console.log('Go next')
-    // if((parseInt(step) + 1) <= Object.keys(Forms).length) {
-    //   history.push(generatePath(routeMatch.path, { step: parseInt(step) + 1 }));
-    // } else {
-    //   history.push('/thank-you');
-    // }
+  // const goNext = useCallback(() => {
+  //   setStep(step + 1);
+  // }, [
+  //   step,
+  // ]);
 
-    // Used only for Data Crush Router
-    // if((step + 1) <= Object.keys(Forms).length) {
-    //   setStep(step + 1);
-    // }
-    setStep(step + 1);
-  }, [
-    step,
-    // routeMatch,
-    // history,
-  ]);
+  // useEffect(() => {
+  //   history.push(generatePath(`/:couponType(oneoff|regular)${paths[step]}`, {
+  //     couponType,
+  //   }));
+  // }, [
+  //   step,
+  // ]);
 
   useEffect(() => {
-    if((step - 1) < Object.keys(Forms).length) {
-      setGhostRouter(Object.values(Forms)[step - 1].route);
-    }
-  }, [
-    step,
-    setGhostRouter,
-  ])
+    history.push(generatePath(`/:couponType/forms/subscribe`, {
+      couponType: params.couponType,
+    }));
+  }, []);
 
   return useMemo(() => (
     <Provider
@@ -87,7 +82,8 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
         data,
         step,
         Forms,
-        goNext,
+        params,
+        // goNext,
         dispatch,
       }}>
         {children}
@@ -95,10 +91,10 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   ), [
     data,
     step,
+    pathname,
     children,
-    // setGhostRouter,
     dispatch,
-    goNext,
+    // goNext,
   ]);
 };
 

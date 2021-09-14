@@ -6,8 +6,8 @@ export const colorPrimaryNormal = '#66cc00';
 export const colorPrimaryDark = '#005C42';
 
 // export const colorSecondaryLight = '#BDBDBD';
-// export const colorSecondaryNormal = '#2A2929';
-// export const colorSecondaryDark = '#333333';
+export const colorSecondaryNormal = '#C4C4C4';
+export const colorSecondaryDark = '#2A2929';
 
 export const colorTertiaryNormal = '#BDBDBD';
 
@@ -42,7 +42,7 @@ const DefaultTheme: ITheme = {
     secondary: {
       light: '#F3F6F9',
       normal: '#C4C4C4',
-      dark: '#2A2929',
+      dark: colorSecondaryDark,
     },
     tertiary: {
       light: '',
@@ -117,29 +117,29 @@ const DefaultTheme: ITheme = {
   },
   header: {
     mobile: {
-      backgroundColor: 'transparent',
-      height: 90,
+      backgroundColor: colorSecondaryDark,
+      height: 300,
     },
     tablet: {
-      backgroundColor: 'transparent',
-      height: 90,
+      backgroundColor: colorSecondaryDark,
+      height: 300,
     },
     desktop: {
-      backgroundColor: 'transparent',
-      height: 90,
+      backgroundColor: colorSecondaryDark,
+      height: 300,
     },
   },
   footer: {
     mobile: {
-      backgroundColor: 'transparent',
+      backgroundColor: colorSecondaryDark,
       height: 50,
     },
     tablet: {
-      backgroundColor: 'transparent',
+      backgroundColor: colorSecondaryDark,
       height: 50,
     },
     desktop: {
-      backgroundColor: 'transparent',
+      backgroundColor: colorSecondaryDark,
       height: 50,
     },
   },

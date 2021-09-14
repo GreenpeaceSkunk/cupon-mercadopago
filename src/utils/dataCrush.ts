@@ -23,7 +23,7 @@ export const initializeTrackEvent = async () => {
   })();
 }
 
-export const synchroInit = async (data:any = {}, eventId = '') => {
+export const synchroInit = async (data:any = {}, eventId = '', callback?: (() => void) | undefined) => {
   console.log('Synchro init', data);
   if(window.dcS.synchro) {
     window.dcS.synchro.init({
@@ -33,6 +33,9 @@ export const synchroInit = async (data:any = {}, eventId = '') => {
       console.log('Synchronized');
       if(eventId !== '') {
         trackEvent(eventId, data.email || '');
+      }
+      if(callback) {
+        callback();
       }
     });
   } else {

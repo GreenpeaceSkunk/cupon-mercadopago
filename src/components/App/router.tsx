@@ -1,24 +1,55 @@
-import React, { Suspense, lazy, memo, useMemo, } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router';
+import React, { Suspense, lazy, memo, useMemo, useCallback, useEffect, } from 'react';
+import { generatePath, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router';
 import { Loader } from '../Shared';
+import { AppProvider } from './context';
 
-const Home = lazy(() => import('../Home'));
+const App = lazy(() => import('.'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { path } = useRouteMatch();
+  const { pathname } = useLocation();
+  const history = useHistory();
+
+  const validateCouponType = useCallback(() => {
+    let isValid = true;
+    const paths = pathname.split('/').filter((v) => v !== '');
+    if(!paths.length) {
+      isValid = false;
+    } else {
+      if(paths[0] !== 'regular' && paths[0] !== 'oneoff') {
+        isValid = false;
+      }
+    }
+    if(!isValid) {
+      history.push(generatePath(`/:couponType`, {
+        couponType: 'regular',
+      }));
+    }
+  }, [
+    path,
+    pathname,
+  ]);
+
+  useEffect(() => {
+    validateCouponType();
+  }, []);
   
   return useMemo(() => (
-    <Switch>
-      <Route path={path}>
-        <Suspense fallback={<Loader />}>
-          <Home />
-        </Suspense>
-      </Route>
-    </Switch>
+    <AppProvider>
+      <Switch>
+        <Route path={`${path}:couponType`}>
+          <Suspense fallback={<Loader />}>
+            <App />
+          </Suspense>
+        </Route>
+      </Switch>
+    </AppProvider>
+
   ), [
     path,
+    pathname,
   ]);
-})
+});
 
-Component.displayName = 'AppRouter'
+Component.displayName = 'AppRouter';
 export default Component;

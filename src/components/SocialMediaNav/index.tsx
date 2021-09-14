@@ -1,23 +1,28 @@
 import React, { FunctionComponent, memo, useMemo } from 'react';
-import { Wrapper, CustomCSSType, Nav, H1, Img, } from '@bit/meema.ui-components.elements';
+import { Wrapper, CustomCSSType, Nav, H1, A, Img, } from '@bit/meema.ui-components.elements';
 import { pixelToRem } from 'meema.utils';
-import { css } from 'styled-components';
-import { FacebookLogo, TwitterLogo, WhatsappLogo, } from '../../images/icons'
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton
-} from 'react-share';
+import styled, { css } from 'styled-components';
+import Icons from '../../images/icons';
 
-const SHARE_MODAL_HEIGHT = 800;
-const SHARE_MODAL_WIDTH = 600;
+const SocialButton = styled(A)<{ icon: string }>`
+  display: inline-block;
+  width: ${pixelToRem(30)};
+  height: ${pixelToRem(30)};
+  ${({icon}) => icon && css`
+    background-image: url(${icon});
+    background-position: center;
+    background-repeat: no-repeat;
+  `}
+`;
 
 const Component: FunctionComponent<{
   children?: React.ReactNode | HTMLAllCollection;
   customCss?: CustomCSSType;
+  theme?: 'light' | 'color'
 }> = memo(({
   children,
   customCss,
+  theme = 'light',
 }) => useMemo(() => (
   <Wrapper
     customCss={css`
@@ -31,87 +36,35 @@ const Component: FunctionComponent<{
     <H1
       customCss={css`
         text-align: center;
-        font-size: ${pixelToRem(16)};
+        font-size: ${pixelToRem(18)};
         margin-bottom: ${pixelToRem(18)};
+        color: ${(theme === 'color') ? 'black' : 'white'};
       `}
-    >
-      Conocé más sobre Greenpeace en nuestro sitio web o seguinos en redes sociales:
-    </H1>
+    >¡Seamos muchos más los que ayudamos al planeta!</H1>
     <Nav
       customCss={css`
-        display: flex;
-        justify-content: center;
-        margin-bottom: ${pixelToRem(20)};
-
-        button {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 0;
-          margin-right: ${pixelToRem(14)};
-          width: ${pixelToRem(35)};
-          height: ${pixelToRem(35)};
-          background-color: white;
-          border-radius: 50%;
-          box-shadow: 0 0 ${pixelToRem(15)} rgba(0, 0, 0, .1);
-          transition: all 250ms ease;
-
-          &:last-child {
-            margin-right: 0;
-          }
-
-          &:hover {
-            box-shadow: 0 0 ${pixelToRem(15)} rgba(0, 0, 0, .3) !important;
+        > * {
+          &:not(:last-child) {
+            margin-right: ${pixelToRem(20)};
           }
         }
       `}
     >
-      <FacebookShareButton
-        quote={`${process.env.REACT_APP_SHARE_FACEBOOK_TITLE}`}
-        url={`${process.env.REACT_APP_SHARE_URL}`}
-        windowHeight={SHARE_MODAL_HEIGHT}
-        windowWidth={SHARE_MODAL_WIDTH}
-      >
-        <Img src={FacebookLogo} alt='Facebook' width='auto' height='auto' />
-      </FacebookShareButton>
-
-      {/* <EmailShareButton
-        onClick={(evt: MouseEvent<HTMLButtonElement>) => {}}
-        openShareDialogOnClick={true}
-        url={`${process.env.REACT_APP_SHARE_URL}`}
-        subject={`${process.env.REACT_APP_SHARE_EMAIL_SUBJECT}`}
-        body={`${process.env.REACT_APP_SHARE_EMAIL_BODY}`}
-        separator=" "
-        windowHeight={SHARE_MODAL_HEIGHT}
-        windowWidth={SHARE_MODAL_WIDTH}
-      >
-        <Img src={EmailLogo} alt='Email' width='auto' height='auto' />
-      </EmailShareButton> */}
-
-      <TwitterShareButton
-        title={`${process.env.REACT_APP_SHARE_TWITTER_TITLE}`}
-        url={`${process.env.REACT_APP_SHARE_URL}`}
-        windowHeight={SHARE_MODAL_HEIGHT}
-        windowWidth={SHARE_MODAL_WIDTH}
-      >
-        <Img src={TwitterLogo} alt='Twitter' width='auto' height='auto' />
-      </TwitterShareButton>
-      
-      <WhatsappShareButton
-        title={`${process.env.REACT_APP_SHARE_WHATSAPP_TITLE}`}
-        url={`${process.env.REACT_APP_SHARE_URL}`}
-        separator=" "
-        windowHeight={SHARE_MODAL_HEIGHT}
-        windowWidth={SHARE_MODAL_WIDTH}
-      >
-        <Img src={WhatsappLogo} alt='Whatsapp' width='auto' height='auto' />
-      </WhatsappShareButton>
+      <SocialButton
+        href={`${process.env.REACT_APP_GREENPEACE_FACEBOOK}`}
+        icon={theme === 'color' ? Icons.FacebookOrangeLogo : Icons.FacebookLogo} />
+      <SocialButton
+        href={`${process.env.REACT_APP_GREENPEACE_TWITTER}`}
+        icon={theme === 'color' ? Icons.TwitterOrangeLogo : Icons.TwitterLogo} />
+      <SocialButton
+        href={`${process.env.REACT_APP_GREENPEACE_INSTAGRAM}`}
+        icon={theme === 'color' ? Icons.InstagramOrangeLogo : Icons.InstagramLogo} />
     </Nav>
-    {children}
   </Wrapper>
 ), [
   children,
   customCss,
+  theme,
 ]));
 
 Component.displayName = 'SocialMediaNav';

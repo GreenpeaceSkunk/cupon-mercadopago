@@ -1,11 +1,11 @@
 RewriteEngine on
 # Only for app in subdirectory
-RewriteBase /sk/coupon-sandbox/
+RewriteBase /sk/coupon-staging/
 RewriteRule ^index\.html$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule . /sk/coupon-sandbox/index.html [L]
+RewriteRule . /sk/coupon-staging/index.html [L]
 
 # Only for root app
 # RewriteBase /

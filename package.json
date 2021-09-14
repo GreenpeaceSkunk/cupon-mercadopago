@@ -2,7 +2,7 @@
   "name": "greenpeace-mercadopago-coupon",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/sk/coupon-sandbox/",
+  "homepage": "/sk/coupon-staging/",
   "dependencies": {
     "@analytics/google-analytics": "^0.5.3",
     "@bit/meema.gpar-ui-components.form": "0.0.2",

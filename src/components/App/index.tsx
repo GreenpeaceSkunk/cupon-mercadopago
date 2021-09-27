@@ -1,5 +1,6 @@
 import React, { useMemo, lazy, Suspense } from 'react';
 import { initialize as initializeTagManager } from '../../utils/googleTagManager';
+import { initialize as initializeFacebookPixel } from '../../utils/facebookPixel';
 import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as initializeDataCrush } from '../../utils/dataCrush';
 import { View } from '@bit/meema.ui-components.elements';
@@ -9,13 +10,13 @@ import ErrorBoundary from '../ErrorBoundary';
 
 const Home = lazy(() => import('../Home'));
 
-// if(process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {
   initializeTagManager();
   // inititalizeAnalytics();
-  // initializeFacebookPixel();
+  initializeFacebookPixel();
   initializeDataCrush();
   initializeMercadopago();
-// }
+}
 
 const Component: React.FunctionComponent<{}> = () => {
   return useMemo(() => (

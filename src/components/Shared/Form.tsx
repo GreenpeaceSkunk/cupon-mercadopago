@@ -1,26 +1,26 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import Elements, { CustomCSSType } from '@bit/meema.ui-components.elements';
 import styled, { css } from 'styled-components';
-import { pixelToRem } from 'meema.utils';
+import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { OnChangeEvent } from '../../types';
-import Icons from '../../images/icons';
 import { ValidationType } from '../../utils/validators';
+import Icons from '../../images/icons';
+import Elements from '../Shared/Elements';
 
-const sharedStyles = css`
-  margin: 0;
-  padding: ${pixelToRem(8)};
-  width: 100%;
-  height: ${pixelToRem(46)};
-  font-size: ${pixelToRem(16)};
-  border: 1px solid ${({theme}) => theme.color.secondary.normal};
-  border-radius: ${pixelToRem(5)};
-  outline: none;
-  appearance: none;  
+// const sharedStyles = css`
+//   margin: 0;
+//   padding: ${pixelToRem(8)};
+//   width: 100%;
+//   height: ${pixelToRem(46)};
+//   font-size: ${pixelToRem(16)};
+//   border: 1px solid ${({theme}) => theme.color.secondary.normal};
+//   border-radius: ${pixelToRem(5)};
+//   outline: none;
+//   appearance: none;  
 
-  &:focus {
-    border-color: ${({theme}) => theme.color.primary.normal};
-  }
-`;
+//   &:focus {
+//     border-color: ${({theme}) => theme.color.primary.normal};
+//   }
+// `;
 
 /**
  * Defines margin right and left. Also resets margins at first and last child.
@@ -44,7 +44,6 @@ const Main = styled(Elements.Form)`
   flex-shrink: 0;
   flex-basis: 100%;
   width: 100%;
-  /* padding: ${pixelToRem(50)} ${pixelToRem(40)} ${pixelToRem(160)}; */
   padding: ${pixelToRem(50)} ${pixelToRem(40)} ${pixelToRem(160)};;
   height: 100vh;
   overflow-y: scroll;
@@ -115,14 +114,7 @@ const Nav: React.FunctionComponent<{
   ]);
 }
 
-const ContentTitle = styled(Elements.H3)`
-  margin-bottom: ${pixelToRem(10)};
-  font-size: ${pixelToRem(16)};
-  font-family: ${({theme}) => theme.font.family.primary.normal};
-  font-weight: 400;
-  color: ${({theme}) => theme.color.primary.normal};
-  width: 100%;
-`;
+const Title = styled(Elements.H2)``;
 
 const TextArea = styled(Elements.TextArea)`
   border: none;
@@ -274,6 +266,9 @@ const Group: React.FunctionComponent<{
       }
     }
   }, [
+    maxLength,
+    onUpdateHandler,
+    validateFn,
     fieldName,
     value,
   ]);
@@ -285,7 +280,6 @@ const Group: React.FunctionComponent<{
         flex-direction: column;
         justify-content: flex-start;
         width: 100%;
-        /* margin-bottom: ${pixelToRem(16)}; */
         
         &:after {
           width: 100%;
@@ -336,6 +330,7 @@ const Group: React.FunctionComponent<{
       ) : null}
     </Elements.Wrapper>
   ), [
+    errorMessage,
     children,
     fieldName,
     labelText,
@@ -344,9 +339,6 @@ const Group: React.FunctionComponent<{
     value,
     customCss,
     isValid,
-    maxLength,
-    validateFn,
-    onUpdateHandler,
   ]);
 };
 
@@ -355,26 +347,13 @@ const Label = styled(Elements.Label)`
   width: 100%;
 `;
 
-const Input = styled(Elements.Input)`
-  background-color: transparent;
+// const Input = styled(Elements.Input)`
+//   background-color: transparent;
 
-  ${sharedStyles};
-`;
+//   ${sharedStyles};
+// `;
 
-export const Select = styled(Elements.Select)<{width?: string, marginRight?: string}>`
-  ${sharedStyles};
-  height: ${pixelToRem(46)};
-  background: url(${Icons.SelectArrowIcon}) no-repeat right ${pixelToRem(14)} top 50% white;
-  cursor: pointer;
-`;
 
-export const OptGroup = styled(Elements.OptGroup)`
-  background-color: white;
-`;
-
-export const Option = styled(Elements.Option)`
-  background-color: white;
-`;
 
 const Row = styled(Elements.Wrapper)`
   display: grid;
@@ -408,8 +387,7 @@ const Column: React.FunctionComponent<{
       width: 100%;
 
       ${innerMargin(20, 20)};
-      
-      
+    
       @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
         flex-direction: row;
       }
@@ -460,16 +438,12 @@ const defaults = {
   Column,
   Group,
   Header,
-  Input,
   Label,
   Main,
   Nav,
   RadioButton,
-  Select,
-  Option,
-  OptGroup,
   TextArea,
-  ContentTitle,
+  Title,
   ErrorMessage,
 };
 

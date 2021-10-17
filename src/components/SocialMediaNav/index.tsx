@@ -1,10 +1,10 @@
 import React, { FunctionComponent, memo, useMemo } from 'react';
-import { Wrapper, CustomCSSType, Nav, H1, A, Img, } from '@bit/meema.ui-components.elements';
-import { pixelToRem } from 'meema.utils';
+import Elements from '../Shared/Elements';
+import { pixelToRem, CustomCSSType } from 'meema.utils';
 import styled, { css } from 'styled-components';
 import Icons from '../../images/icons';
 
-const SocialButton = styled(A)<{ icon: string }>`
+const SocialButton = styled(Elements.A)<{ icon: string }>`
   display: inline-block;
   width: ${pixelToRem(30)};
   height: ${pixelToRem(30)};
@@ -24,7 +24,7 @@ const Component: FunctionComponent<{
   customCss,
   theme = 'light',
 }) => useMemo(() => (
-  <Wrapper
+  <Elements.Wrapper
     customCss={css`
       display: flex;
       flex-direction: column;
@@ -33,15 +33,15 @@ const Component: FunctionComponent<{
       ${(customCss) && customCss};
     `}
   >
-    <H1
+    <Elements.Span
       customCss={css`
-        text-align: center;
         font-size: ${pixelToRem(18)};
         margin-bottom: ${pixelToRem(18)};
         color: ${(theme === 'color') ? 'black' : 'white'};
+        text-align: center;
       `}
-    >¡Seamos muchos más los que ayudamos al planeta!</H1>
-    <Nav
+    >¡Seamos muchos más los que ayudamos al planeta!</Elements.Span>
+    <Elements.Nav
       customCss={css`
         > * {
           &:not(:last-child) {
@@ -59,10 +59,9 @@ const Component: FunctionComponent<{
       <SocialButton
         href={`${process.env.REACT_APP_GREENPEACE_INSTAGRAM}`}
         icon={theme === 'color' ? Icons.InstagramOrangeLogo : Icons.InstagramLogo} />
-    </Nav>
-  </Wrapper>
+    </Elements.Nav>
+  </Elements.Wrapper>
 ), [
-  children,
   customCss,
   theme,
 ]));

@@ -1,6 +1,5 @@
-import React, { memo, useMemo, } from 'react';
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router';
-import { useLocation } from 'react-router-dom';
+import React, { memo, useMemo } from 'react';
+import { Route, Switch, useRouteMatch } from 'react-router';
 import Shared from '../Shared';
 
 const SubscriptionForm = React.lazy(() => import('./SubscriptionForm'));
@@ -9,7 +8,6 @@ const ThankYou = React.lazy(() => import('../ThankYou'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { path } = useRouteMatch();
-  const { pathname } = useLocation();
   
   return useMemo(() => (
     <Switch>
@@ -33,9 +31,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     </Switch>
   ), [
     path,
-    pathname,
   ]);
-})
+});
 
 Component.displayName = 'RouterForm';
 export default Component;

@@ -1,18 +1,18 @@
-import Elements from '@bit/meema.ui-components.elements';
+import Elements from './Elements';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import Icons from '../../images/icons';
 
-const Title = styled(Elements.H1)`
-  margin-bottom: ${pixelToRem(10)};
-  font-size: ${pixelToRem(32)};
-  font-family: ${({theme}) => theme.font.family.primary.bold};
-  color: ${({theme}) => theme.color.primary.normal};
-  text-align: center;
-  width: 100%;
+// const Title = styled(Elements.H1)`
+//   margin-bottom: ${pixelToRem(10)};
+//   font-size: ${pixelToRem(32)};
+//   font-family: ${({theme}) => theme.font.family.primary.bold};
+//   color: ${({theme}) => theme.color.primary.normal};
+//   text-align: center;
+//   width: 100%;
 
-  ${({customCss}) => (customCss) && customCss};
-`;
+//   ${({customCss}) => (customCss) && customCss};
+// `;
 
 const Subtitle = styled(Elements.H2)`
   margin-bottom: ${pixelToRem(10)};
@@ -35,41 +35,26 @@ const Text = styled(Elements.P)<{ highlighted?: boolean; textAlign?: string; }>`
   `};
 `;
 
-const Button = styled(Elements.Button)`
-  padding: ${pixelToRem(5)} ${pixelToRem(30)};
-  color: white;
-  background-color: ${({theme}) => theme.color.primary.normal};
-  border-radius: ${(({theme}) => pixelToRem(theme.borderRadius))};
-  font-size: ${pixelToRem(18)};
-  font-family: ${({theme}) => theme.font.family.primary.bold};
-  white-space: nowrap;
-
-  &:hover {
-    background-color: ${({theme}) => theme.color.primary.dark};
-  }
+const Link = styled(Elements.A)`
+  text-decoration: underline;
+  margin-bottom: ${pixelToRem(5)};
+  font-family: ${({theme}) => theme.font.family.primary.regular};
   
-  &:disabled {
-    background-color: ${({theme}) => theme.color.secondary.normal};
-    opacity: 1;
-  
-    &:hover {
-      background-color: ${({theme}) => theme.color.secondary.normal};
+  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+    margin-bottom: 0;
+    
+    &:after {
+      content: '|';
+      margin-right: ${pixelToRem(10)};
+      margin-left: ${pixelToRem(10)};
+    }
+    
+    &:last-child {
+      &:after {
+        display: none;
+      }
     }
   }
-
-  ${({format}) => (format === 'text') && css`
-    background-color: transparent;
-    color: ${({theme}) => theme.color.primary.normal};
-    text-decoration: underline;
-    padding: 0;
-
-    &:hover {
-      background-color: transparent;
-      box-shadow: none !important;
-    }
-  `}
-
-  ${({customCss}) => (customCss) && customCss};
 `;
 
 const ButtonLink = styled(Elements.A)<{ format?: 'contained' | 'outlined' | 'text' }>`
@@ -126,33 +111,11 @@ const ButtonClose = styled(Elements.Button)`
   ${({customCss}) => (customCss) && customCss};
 `;
 
-const Link = styled(Elements.A)`
-  text-decoration: underline;
-  margin-bottom: ${pixelToRem(5)};
-  font-family: ${({theme}) => theme.font.family.primary.regular};
-  
-  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-    margin-bottom: 0;
-    
-    &:after {
-      content: '|';
-      margin-right: ${pixelToRem(10)};
-      margin-left: ${pixelToRem(10)};
-    }
-    
-    &:last-child {
-      &:after {
-        display: none;
-      }
-    }
-  }
-`;
-
 const defaults = {
   Text,
-  Title,
+  // Title,
   Subtitle,
-  Button,
+  // Button,
   ButtonClose,
   ButtonLink,
   Link,

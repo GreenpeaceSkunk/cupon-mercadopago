@@ -3,7 +3,8 @@ import { initialize as initializeTagManager } from '../../utils/googleTagManager
 import { initialize as initializeFacebookPixel } from '../../utils/facebookPixel';
 import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as initializeDataCrush } from '../../utils/dataCrush';
-import { View } from '@bit/meema.ui-components.elements';
+// import { View } from '@bit/meema.ui-components.elements';
+import Elements from '../Shared/Elements';
 import { Loader } from '../Shared';
 import { css } from 'styled-components';
 import ErrorBoundary from '../ErrorBoundary';
@@ -20,7 +21,7 @@ if(process.env.NODE_ENV === 'production') {
 
 const Component: React.FunctionComponent<{}> = () => {
   return useMemo(() => (
-    <View
+    <Elements.View
       customCss={css`
         display: flex;
         flex-direction: column;
@@ -33,7 +34,7 @@ const Component: React.FunctionComponent<{}> = () => {
           <Home />
         </Suspense>
       </ErrorBoundary>
-    </View>
+    </Elements.View>
   ), []);
 };
 

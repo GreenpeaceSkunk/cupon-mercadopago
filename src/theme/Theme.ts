@@ -42,7 +42,7 @@ const DefaultTheme: ITheme = {
     secondary: {
       light: '#F3F6F9',
       normal: '#C4C4C4',
-      dark: colorSecondaryDark,
+      dark: '#2A2929',
     },
     tertiary: {
       light: '',
@@ -70,10 +70,14 @@ const DefaultTheme: ITheme = {
   text: {
     color: {
       primary: {
-        normal: "#2A2929",
+        light: '#F3F6F9',
+        normal: '#000000',
+        dark: '#2A2929',
       },
       secondary: {
-        normal: "",
+        light: '#73BE1E',
+        normal: '#6ACA25',
+        dark: '#005C42',
       },
     },
   },
@@ -117,29 +121,29 @@ const DefaultTheme: ITheme = {
   },
   header: {
     mobile: {
-      backgroundColor: colorSecondaryDark,
+      backgroundColor: '#2A2929',
       height: 300,
     },
     tablet: {
-      backgroundColor: colorSecondaryDark,
+      backgroundColor: '#2A2929',
       height: 300,
     },
     desktop: {
-      backgroundColor: colorSecondaryDark,
+      backgroundColor: '#2A2929',
       height: 300,
     },
   },
   footer: {
     mobile: {
-      backgroundColor: colorSecondaryDark,
+      backgroundColor: '#2A2929',
       height: 50,
     },
     tablet: {
-      backgroundColor: colorSecondaryDark,
+      backgroundColor: '#2A2929',
       height: 50,
     },
     desktop: {
-      backgroundColor: colorSecondaryDark,
+      backgroundColor: '#2A2929',
       height: 50,
     },
   },

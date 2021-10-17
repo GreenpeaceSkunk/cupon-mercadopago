@@ -9,9 +9,7 @@ import ErrorBoundary from '../ErrorBoundary';
 interface IContext {
   refParam: string;
   queryParams: URLSearchParams;
-  // ghostRoute: string;
   isOpen: boolean;
-  // setGhostRouter: React.Dispatch<React.SetStateAction<string>>;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -27,9 +25,6 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
   const [ refParam, setRefParam ] = useState<string>(`${process.env.REACT_APP_DEFAULT_REF_PARAM}`);
   const [ isOpen, setIsOpen ] = useState<boolean>(false);
   const queryParams = useQuery();
-
-  /* Only for Ghost Router */
-  // const [ ghostRoute, setGhostRouter ] = useState<string>('/'); 
   
   useEffect(() => {
     if(queryParams) {
@@ -47,8 +42,6 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
       queryParams,
       isOpen,
       setIsOpen,
-      // ghostRoute,
-      // setGhostRouter,
     }}>
       <ThemeProvider theme={Theme}>
         <GlobalStyle />
@@ -64,7 +57,6 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
     children,
   ]);
 };
-
 
 const WrappedProvider = withRouter(ContextProvider);
 

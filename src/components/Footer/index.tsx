@@ -1,11 +1,12 @@
 import React, { memo, useMemo } from 'react';
 import styled, { css } from 'styled-components';
-import { Footer, A, Nav, Span, Wrapper, } from '@bit/meema.ui-components.elements';
+// import { Footer, A, Nav, Span, Elements.Wrapper, } from '@bit/meema.ui-components.elements';
+import Elements from '../Shared/Elements';
 import { pixelToRem } from 'meema.utils';
 import SocialMediaNav from '../SocialMediaNav';
 import { Logo } from '../Shared';
 
-const Link = styled(A)`
+const Link = styled(Elements.A)`
   color: white;
   text-decoration: underline;
   font-family: ${({theme}) => theme.font.family.primary.regular};
@@ -17,7 +18,7 @@ const Link = styled(A)`
 `;
 
 const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
-  <Footer
+  <Elements.Footer
     customCss={css`
       display: flex;
       flex-direction: column;
@@ -46,7 +47,7 @@ const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
       `}
   >
     <SocialMediaNav />
-    <Wrapper>
+    <Elements.Wrapper>
       <Logo customCss={css`
         display: none;
         
@@ -55,7 +56,7 @@ const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
         }
 
       `}/>
-      <Nav
+      <Elements.Nav
         customCss={css`
           display: flex;
           justify-content: center;
@@ -68,11 +69,11 @@ const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
         `}
       >
         <Link href={`${process.env.REACT_APP_TERMS_AND_CONDITIONS_URL}`}>Términos y condiciones</Link>
-        <Span customCss={css`color: white; margin: 0 ${pixelToRem(10)};`}>|</Span>
+        <Elements.Span customCss={css`color: white; margin: 0 ${pixelToRem(10)};`}>|</Elements.Span>
         <Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>Política de privacidad</Link>
-      </Nav>
-    </Wrapper>
-  </Footer>
+      </Elements.Nav>
+    </Elements.Wrapper>
+  </Elements.Footer>
 ), []));
 
 Component.displayName = 'MainFooter';

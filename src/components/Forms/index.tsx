@@ -1,18 +1,14 @@
-import React, { FunctionComponent, memo, useContext, useEffect, useMemo, useRef, useState, MouseEvent, useCallback } from 'react';
-import { HGroup, View, Wrapper } from '@bit/meema.ui-components.elements';
+import React, { FunctionComponent, memo, useContext, useEffect, useMemo, useState, MouseEvent, useCallback } from 'react';
+import Elements from '../Shared/Elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
-// import Carousel, { IRef as ICarouselRef } from '@bit/meema.ui-components.carousel';
-import { FormContext, FormProvider, FormComponentsType } from './context';
+import { FormProvider } from './context';
 import Shared from '../Shared';
 import FormRouter from './router';
 import { AppContext } from '../App/context';
 
 const Component: FunctionComponent<{}> = memo(() => {
-  const { step, Forms } = useContext(FormContext);
   const { isOpen, setIsOpen } = useContext(AppContext);
-  // const carouselRef = useRef<ICarouselRef>(null);
-  // const [ isOpen, setIsOpen ] = useState<boolean>(false);
   const [ showPreview, setShowPreview ] = useState<boolean>(false);
 
   const onScrollHandler = useCallback(() => {
@@ -23,14 +19,6 @@ const Component: FunctionComponent<{}> = memo(() => {
     }
   }, [
   ]);
-
-  // useEffect(() => {
-  //   if(carouselRef && carouselRef.current) {
-  //     carouselRef.current.setIndex(step - 1); // Used only for Data Crush Router
-  //   }
-  // }, [
-  //   step,
-  // ]);
 
   useEffect(() => {
     window.addEventListener('scroll', onScrollHandler);
@@ -43,21 +31,18 @@ const Component: FunctionComponent<{}> = memo(() => {
   ]);
 
   return useMemo(() => (
-    <View
+    <Elements.View
       className="form-view"
       customCss={css`
         display: flex;
-        /* position: fixed; */
         flex-grow: 0;
         flex-shrink: 0;
         flex-basis: ${pixelToRem(480)};
         width: ${pixelToRem(480)};
         flex-direction: row;
         justify-content: space-between;
-        /* height: 100vh; */
         height: 100%;
         background-color: ${({theme}) => theme.color.secondary.light};
-        /* background-color: rgba(255,255,255,.5); */
         transition: all 250ms ease;
         bottom: 0;
 
@@ -74,7 +59,7 @@ const Component: FunctionComponent<{}> = memo(() => {
         }
       `}
     >
-      <Wrapper
+      <Elements.Wrapper
         customCss={css`
           display: flex;
           flex-direction: column;
@@ -103,30 +88,8 @@ const Component: FunctionComponent<{}> = memo(() => {
           `}
         />
         <FormRouter />
-        {/* <Carousel
-          ref={carouselRef}
-          showControls={false}
-          showIndicators={false}
-          allowSlide={false}
-        >
-          <>
-            <React.Suspense fallback={<Shared.Loader />}>
-              {Object.values(Forms).map(
-                (Child: FormComponentsType, key: number) => (
-                  <Child.Component key={key} formIndex={key} />
-                )
-              )}
-            </React.Suspense>
-            {((step - 1) === Object.values(Forms).length) ? (
-              <React.Suspense fallback={<Shared.Loader />}>
-                <ThankYouPage />
-              </React.Suspense>
-            ) : null}
-          </>
-        </Carousel> */}
-      </Wrapper>
-
-      <Wrapper
+      </Elements.Wrapper>
+      <Elements.Wrapper
         customCss={css`
           display: flex;
           flex-direction: column;
@@ -145,34 +108,35 @@ const Component: FunctionComponent<{}> = memo(() => {
           }
         `}
       >
-        <HGroup>
-          <Shared.General.Title
+        <Elements.HGroup>
+          {/* <Shared.General.Title
             customCss={css`
               font-size: ${pixelToRem(20)};
               text-align: left;
             `}
-          >Firmá ahora!</Shared.General.Title>
+          >Firmá ahora!</Shared.General.Title> */}
+          <Elements.H1>Firmá ahora!</Elements.H1>
           <Shared.General.Subtitle
             customCss={css`
               font-size: ${pixelToRem(18)};
             `}
           >Sumate y conocé nuestras causas</Shared.General.Subtitle>
-        </HGroup>
-        <Shared.General.Button
+        </Elements.HGroup>
+        <Elements.Button
+          variant='contained'
           onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
           customCss={css`
             width: 100%;
             box-shadow: 0 ${pixelToRem(4)} ${pixelToRem(14)} rgba(0, 0, 0, .25);
           `}
-        >FIRMAR</Shared.General.Button>
-      </Wrapper>
-    </View>
+        >FIRMAR</Elements.Button>
+      </Elements.Wrapper>
+    </Elements.View>
   ), [
-    step,
-    Forms,
     isOpen,
+    setIsOpen,
     showPreview,
-  ])
+  ]);
 });
 
 Component.displayName = 'CancellationForm';
@@ -182,6 +146,4 @@ export default function CancellationForm() {
       <Component />
     </FormProvider>
   ), []);
-} 
-
-
+};

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Wrapper } from '@bit/meema.ui-components.elements';
+// import { Wrapper } from '@bit/meema.ui-components.elements';
+import Elements from '../Shared/Elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
 
@@ -26,7 +27,7 @@ class ErrorBoundary extends React.Component<IProps, IState> {
       <>
         {
           (this.state.hasError) ? (
-            <Wrapper
+            <Elements.Wrapper
               className='error-boundary'
               customCss={css`
                 position: relative;
@@ -44,7 +45,7 @@ class ErrorBoundary extends React.Component<IProps, IState> {
                   this.props.fallback
                 ) : 'Something went wrong'
               }
-            </Wrapper>
+            </Elements.Wrapper>
           ) : this.props.children
         }
       </>

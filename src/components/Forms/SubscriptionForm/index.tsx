@@ -1,12 +1,11 @@
-import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, } from 'react';
+import React, { FormEvent, memo, useCallback, useContext, useMemo, useReducer, } from 'react';
 import { generatePath, useHistory } from 'react-router-dom';
 import { FormContext, IFormComponent } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import { validateEmail, validateNewAmount, validatePhoneNumber, validateAreaCode, validateEmptyField, validateFirstName } from '../../../utils/validators';
 import { css } from 'styled-components';
-import { HGroup } from '@bit/meema.ui-components.elements';
-// import { Shared.Form.Input } from '@bit/meema.gpar-ui-components.form';
 import Shared from '../../Shared';
+import Elements from '../../Shared/Elements';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import { initialState, reducer } from './reducer';
 import { synchroInit } from '../../../utils/dataCrush';
@@ -29,7 +28,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
       amount,
       newAmount,
     }
-  }, step, params, dispatch } = useContext(FormContext);
+  }, params, dispatch } = useContext(FormContext);
   const [{ errors, submitting, submitted }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const history = useHistory();
   
@@ -91,25 +90,37 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     dispatchFormErrors({
       type: 'SUBMIT',
     });
-    synchroInit({
-      first_name: firstName,
-      last_name: lastName,
-      email,
-      fecha_de_nacimiento: birthDate,
-      phone: phoneNumber,
-      area_code: areaCode,
-      genero: "",
-    }, 
-      `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`,
-      () => {
+    if(process.env.NODE_ENV === 'production') {
+      synchroInit({
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        fecha_de_nacimiento: birthDate,
+        phone: phoneNumber,
+        area_code: areaCode,
+        genero: "",
+      }, 
+        `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`,
+        () => {
+          history.push(generatePath(`/:couponType/forms/checkout`, {
+            couponType: params.couponType,
+          }));
+        },
+      );
+      pushToDataLayer({
+        'event' : 'petitionSignup',
+      });
+    } else {
+      const timer = setTimeout(() => {
         history.push(generatePath(`/:couponType/forms/checkout`, {
           couponType: params.couponType,
         }));
-      },
-    );
-    pushToDataLayer({
-      'event' : 'petitionSignup',
-    });
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+      }
+    }
   }, [
     firstName,
     lastName,
@@ -119,32 +130,13 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     phoneNumber,
   ]);
   
-  // useEffect(() => {
-  //   (() => {
-  //     if(submitted) {
-  //       const timeOut = setTimeout(() => {
-  //         goNext();
-  //       }, 200);
-        
-  //       return () => {
-  //         clearTimeout(timeOut);
-  //       }
-  //     }
-  //   })();
-  // }, [
-  //   submitted,
-  //   goNext,
-  // ]);
-  
   return useMemo(() => (
-    <Shared.Form.Main
-      id='sign-form'
-      onSubmit={onSubmitHandler}
-    >
+    <Shared.Form.Main id='sign-form' onSubmit={onSubmitHandler}>
       <Shared.Form.Header>
-        <HGroup>
-          <Shared.General.Title>DONÁ AHORA</Shared.General.Title>
-        </HGroup>
+        <Elements.HGroup>
+          {/* <Shared.General.Title>DONÁ AHORA</Shared.General.Title> */}
+          <Shared.Form.Title>DONÁ AHORA</Shared.Form.Title>
+        </Elements.HGroup>
         <Shared.General.Text>Te enviaremos información sobre nuestras acciones y la forma en que puedes ayudarnos a lograrlo.</Shared.General.Text>
       </Shared.Form.Header>
       <Shared.Form.Content>
@@ -174,26 +166,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
                   />
                 ))}
             </Shared.Form.Group>
-
-            {/* <Shared.Form.Group
-              fieldName='amount'
-              value={amount}
-              labelText='Elegí con cuánto querés ayudar al planeta:'
-              showErrorMessage={true}
-              validateFn={validateEmptyField}
-              onUpdateHandler={onUpdateFieldHandler}
-            >
-              <Select
-                name='amount'
-                value={amount}
-                onChange={onChangeHandler}
-              >
-                {(['500', '700', '1500']).map((value: string, key: number) => (
-                  <option key={key} value={value}>${value}</option>
-                ))}
-                <option value='otherAmount'>Otro importe</option>
-              </Select>
-            </Shared.Form.Group> */}
             </Shared.Form.Column>
             {(amount === 'otherAmount') ? (
               <Shared.Form.Column>
@@ -205,7 +177,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
                   validateFn={validateNewAmount}
                   onUpdateHandler={onUpdateFieldHandler}
                 >
-                  <Shared.Form.Input
+                  <Elements.Input
                     name='newAmount'
                     type='text'
                     disabled={!(amount === 'otherAmount')} 
@@ -218,7 +190,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               </Shared.Form.Column>
             ) : null}
         </Shared.Form.Row>
-
         <Shared.Form.Row>
           <Shared.Form.Column>
             <Shared.Form.Group
@@ -229,7 +200,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               validateFn={validateEmail}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Form.Input
+              <Elements.Input
                 name='email'
                 type='email'
                 placeholder='Ej. daniela.lopez@email.com'
@@ -239,27 +210,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
             </Shared.Form.Group>
           </Shared.Form.Column>
         </Shared.Form.Row>
-        
-        {/* <Shared.Form.Row>
-          <Shared.Form.Group
-            fieldName='birthDate'
-            value={birthDate}
-            labelText='Fecha de nacimiento'
-            showErrorMessage={true}
-            validateFn={validateBirthDate}
-            onUpdateHandler={onUpdateFieldHandler}
-          >
-            <Shared.Form.Input
-              name='birthDate'
-              type='text'
-              placeholder='DD/MM/YYYY'
-              value={birthDate}
-              maxLength={10}
-              onChange={onChangeHandler}
-            />
-          </Shared.Form.Group>
-        </Shared.Form.Row> */}
-
         <Shared.Form.Row>
           <Shared.Form.Column>
             <Shared.Form.Group
@@ -270,7 +220,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               validateFn={validateFirstName}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Form.Input
+              <Elements.Input
                 name='firstName'
                 type='text'
                 placeholder='Ej. Lucas'
@@ -286,7 +236,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               validateFn={validateFirstName}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Form.Input
+              <Elements.Input
                 name='lastName'
                 type='text'
                 placeholder='Ej. Rodriguez'
@@ -296,7 +246,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
             </Shared.Form.Group>
           </Shared.Form.Column>
         </Shared.Form.Row>
-              
         <Shared.Form.Row>
           <Shared.Form.Column
             bottomText='Escribe solo números y no agregues guiones.'
@@ -312,7 +261,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
                 width: 40%;
               `}
             >
-              <Shared.Form.Input
+              <Elements.Input
                 name='areaCode'
                 type='text'
                 placeholder='Ej. 11'
@@ -329,7 +278,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               validateFn={validatePhoneNumber}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Form.Input
+              <Elements.Input
                 name='phoneNumber'
                 type='text'
                 placeholder='Ej. 41239876'
@@ -342,8 +291,9 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
         </Shared.Form.Row>
       </Shared.Form.Content>
       <Shared.Form.Nav>
-        <Shared.General.Button
+        <Elements.Button
           type='submit'
+          variant='contained'
           disabled={(submitting) ? true : false}
           customCss={css`
             width: 100%;
@@ -353,10 +303,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               padding-bottom: ${pixelToRem(10)};
             `}
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : 'Continuar'}</Shared.General.Button>
-        {/* <Shared.General.Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>
-          Politicas de privacidad
-        </Shared.General.Link> */}
+        >{(submitting) ? <Shared.Loader mode='light' /> : 'Continuar'}</Elements.Button>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
@@ -371,7 +318,6 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     errors,
     submitted,
     submitting,
-    step,
     formIndex,
     params,
     onSubmitHandler,

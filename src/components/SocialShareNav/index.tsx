@@ -1,8 +1,7 @@
 import React, { FunctionComponent, memo, useMemo } from 'react';
-import { Wrapper, CustomCSSType, Nav, H1, Img, } from '@bit/meema.ui-components.elements';
-import { pixelToRem } from 'meema.utils';
+import Elements from '../Shared/Elements';
+import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { css } from 'styled-components';
-// import { FacebookLogo, TwitterLogo, WhatsappLogo, } from '../../images/icons'
 import Icons from '../../images/icons';
 import {
   FacebookShareButton,
@@ -20,7 +19,7 @@ const Component: FunctionComponent<{
   children,
   customCss,
 }) => useMemo(() => (
-  <Wrapper
+  <Elements.Wrapper
     customCss={css`
       display: flex;
       flex-direction: column;
@@ -29,16 +28,14 @@ const Component: FunctionComponent<{
       ${(customCss) && customCss};
     `}
   >
-    <H1
+    <Elements.H1
       customCss={css`
         text-align: center;
         font-size: ${pixelToRem(16)};
         margin-bottom: ${pixelToRem(18)};
       `}
-    >
-      Conocé más sobre Greenpeace en nuestro sitio web o seguinos en redes sociales:
-    </H1>
-    <Nav
+    >Conocé más sobre Greenpeace en nuestro sitio web o seguinos en redes sociales:</Elements.H1>
+    <Elements.Nav
       customCss={css`
         display: flex;
         justify-content: center;
@@ -73,7 +70,7 @@ const Component: FunctionComponent<{
         windowHeight={SHARE_MODAL_HEIGHT}
         windowWidth={SHARE_MODAL_WIDTH}
       >
-        <Img src={Icons.FacebookLogo} alt='Facebook' width='auto' height='auto' />
+        <Elements.Img src={Icons.FacebookLogo} alt='Facebook' width='auto' height='auto' />
       </FacebookShareButton>
 
       {/* <EmailShareButton
@@ -95,7 +92,7 @@ const Component: FunctionComponent<{
         windowHeight={SHARE_MODAL_HEIGHT}
         windowWidth={SHARE_MODAL_WIDTH}
       >
-        <Img src={Icons.TwitterLogo} alt='Twitter' width='auto' height='auto' />
+        <Elements.Img src={Icons.TwitterLogo} alt='Twitter' width='auto' height='auto' />
       </TwitterShareButton>
       
       <WhatsappShareButton
@@ -105,15 +102,15 @@ const Component: FunctionComponent<{
         windowHeight={SHARE_MODAL_HEIGHT}
         windowWidth={SHARE_MODAL_WIDTH}
       >
-        <Img src={Icons.WhatsappLogo} alt='Whatsapp' width='auto' height='auto' />
+        <Elements.Img src={Icons.WhatsappLogo} alt='Whatsapp' width='auto' height='auto' />
       </WhatsappShareButton>
-    </Nav>
+    </Elements.Nav>
     {children}
-  </Wrapper>
+  </Elements.Wrapper>
 ), [
   children,
   customCss,
 ]));
 
-Component.displayName = 'SocialShareNav';
+Component.displayName = 'SocialShareElements.Nav';
 export default Component;

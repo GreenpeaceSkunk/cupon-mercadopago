@@ -1,37 +1,17 @@
 import React, { FunctionComponent, memo, useMemo } from 'react';
-import Elements, { Wrapper, Header, HGroup, CustomCSSType } from '@bit/meema.ui-components.elements';
-import { pixelToRem } from 'meema.utils';
-import styled, { css } from 'styled-components';
+import Elements from '../Shared/Elements';
+import { pixelToRem, CustomCSSType } from 'meema.utils';
+import { css } from 'styled-components';
 import { Logo } from '../Shared';
 import { HomeBackground } from '../../images/backgrounds';
-
-const Heading1 = styled(Elements.H1)`
-  color: ${({theme}) => theme.color.tertiary.normal};
-  font-size: ${pixelToRem(32)};
-  line-height: 110%;
-
-  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
-    font-size: ${pixelToRem(36)};
-  }
-
-  ${({customCss}) => (customCss) && customCss};
-`;
-
-const Heading2 = styled(Elements.H2)`
-  color: white;
-  font-size: ${pixelToRem(24)};
-
-  ${({customCss}) => (customCss) && customCss};
-`;
 
 const MainHeader: FunctionComponent<{
   customCss?: CustomCSSType;
 }> = memo(({
   customCss,
 }) => useMemo(() => (
-  <Header
+  <Elements.Header
     customCss={css`
-      /* position: absolute; */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -58,21 +38,18 @@ const MainHeader: FunctionComponent<{
       ${customCss && customCss};
     `}
   >
-    <Wrapper>
+    <Elements.Wrapper>
       <Logo />
-    </Wrapper>
-    <Wrapper
+    </Elements.Wrapper>
+    <Elements.Wrapper
       customCss={css`
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        /* padding: ${pixelToRem(40)}; */
         width: 100%;
-        /* height: ${pixelToRem(300)}; */
-
       `}
     >
-      <HGroup
+      <Elements.HGroup
         customCss={css`
           @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
             padding-right: ${pixelToRem(10)};
@@ -91,19 +68,9 @@ const MainHeader: FunctionComponent<{
             }
           `}
         >CAMBIO CLIMÁTICO</Elements.H1>
-        {/* <Heading1>Repensemos la sustentabilidad.</Heading1> */}
-        {/* <Heading2
-          customCss={css`
-            display: none;
-            
-            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
-              display: block;
-            }
-          `}
-        >En Greenpeace creemos, como vos, que un mejor futuro es posible. ¡Unite!</Heading2> */}
-      </HGroup>
-    </Wrapper>
-  </Header>
+      </Elements.HGroup>
+    </Elements.Wrapper>
+  </Elements.Header>
 ), [
   customCss,
 ]));

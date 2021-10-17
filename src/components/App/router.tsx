@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, memo, useMemo, useCallback, useEffect, } from 'react';
+import React, { Suspense, lazy, memo, useMemo, useCallback, useEffect } from 'react';
 import { generatePath, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router';
 import { Loader } from '../Shared';
 import { AppProvider } from './context';

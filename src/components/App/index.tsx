@@ -3,7 +3,8 @@ import { initialize as initializeTagManager, pushToDataLayer } from '../../utils
 import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
 import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as initializeDataCrush } from '../../utils/dataCrush';
-// import { View } from '@bit/meema.ui-components.elements';
+import { initialize as inititalizeAnalytics, trackPage } from '../../utils/googleAnalytics';
+import { initialize as initializeHotjar } from '../../utils/hotjar';
 import Elements from '../Shared/Elements';
 import { Loader } from '../Shared';
 import { css } from 'styled-components';
@@ -14,10 +15,11 @@ const Home = lazy(() => import('../Home'));
 
 if(process.env.NODE_ENV === 'production') {
   initializeTagManager();
-  // inititalizeAnalytics();
+  inititalizeAnalytics();
   initializeFacebookPixel();
   initializeDataCrush();
   initializeMercadopago();
+  initializeHotjar();
 }
 
 const Component: React.FunctionComponent<{}> = () => {

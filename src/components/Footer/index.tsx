@@ -1,12 +1,11 @@
 import React, { memo, useMemo } from 'react';
 import styled, { css } from 'styled-components';
-// import { Footer, A, Nav, Span, Elements.Wrapper, } from '@bit/meema.ui-components.elements';
-import Elements from '../Shared/Elements';
+import { Footer, A, Nav, Span, Wrapper, } from '@bit/meema.ui-components.elements';
 import { pixelToRem } from 'meema.utils';
 import SocialMediaNav from '../SocialMediaNav';
 import { Logo } from '../Shared';
 
-const Link = styled(Elements.A)`
+const Link = styled(A)`
   color: white;
   text-decoration: underline;
   font-family: ${({theme}) => theme.font.family.primary.regular};
@@ -18,16 +17,14 @@ const Link = styled(Elements.A)`
 `;
 
 const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
-  <Elements.Footer
+  <Footer
     customCss={css`
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-between;
-      /* justify-content: flex-start; */
       padding: ${pixelToRem(30)};
-      /* width: 100%; */
-      width: 100vw;
+      width: 100%;
       min-height: ${({theme}) => pixelToRem(theme.footer.mobile.height)};
       background-color: ${({theme}) => theme.footer.mobile.backgroundColor};
       color: white;
@@ -35,7 +32,6 @@ const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
 
       @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
         flex-direction: row-reverse;
-        align-items: flex-start;
         min-height: ${({theme}) => pixelToRem(theme.footer.tablet.height)};
         background-color: ${({theme}) => theme.footer.tablet.backgroundColor};
       }
@@ -46,8 +42,30 @@ const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
       }
       `}
   >
-    <SocialMediaNav />
-    <Elements.Wrapper>
+    <Wrapper
+      customCss={css`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      `}
+    >
+      <SocialMediaNav />
+      <Wrapper
+        customCss={css`
+          margin-top: ${pixelToRem(20)};
+        `}
+      >
+        <a href="//www.hotjar.com/?utm_source=badge"><img src="https://static.hotjar.com/b/hotjar-badge.png" alt="Hotjar - Unlimited insights from your web and mobile sites" /></a>
+      </Wrapper>
+
+    </Wrapper>
+    <Wrapper
+      customCss={css`
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        `}
+    >
       <Logo customCss={css`
         display: none;
         
@@ -56,7 +74,7 @@ const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
         }
 
       `}/>
-      <Elements.Nav
+      <Nav
         customCss={css`
           display: flex;
           justify-content: center;
@@ -65,15 +83,16 @@ const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
 
           @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
             justify-content: flex-start;
+            margin-top: 0;
           }
         `}
       >
         <Link href={`${process.env.REACT_APP_TERMS_AND_CONDITIONS_URL}`}>Términos y condiciones</Link>
-        <Elements.Span customCss={css`color: white; margin: 0 ${pixelToRem(10)};`}>|</Elements.Span>
+        <Span customCss={css`color: white; margin: 0 ${pixelToRem(10)};`}>|</Span>
         <Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>Política de privacidad</Link>
-      </Elements.Nav>
-    </Elements.Wrapper>
-  </Elements.Footer>
+      </Nav>
+    </Wrapper>
+  </Footer>
 ), []));
 
 Component.displayName = 'MainFooter';

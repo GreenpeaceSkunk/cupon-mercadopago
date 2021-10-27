@@ -1,0 +1,34 @@
+{
+  "data": {
+    "campaign": {
+      "regular": {
+        "texts": {
+          "header": {
+            "title": "Unite a Greenpeace y trabajemos por las causas que más nos necesitan"
+          },
+          "home": {
+            "title": "Todos nuestros aportes provienen de donaciones particulares de persona cómo vos, que deciden apoyar nuestras campañas para seguir defendiendo el planeta.",
+            "text": "<p>Unite para que podamos seguir trabajando de manera independiente y con libertad de acción. Recordá que no recibimos aportes de empresas privadas, <strong>no recibimos aportes de partidos políticos ni estamos vinculados con ellos.</strong></p>",
+            "highlighted_text": "¡Sumate ahora, seamos muchos más!"
+          },
+          "forms": {
+            "subscription": {
+              "title": "DONÁ AHORA",
+              "text": "Te enviaremos información sobre nuestras acciones y la forma en que puedes ayudarnos a lograrlo.",
+              "button_text": "Continuar"
+            },
+            "checkout": {
+              "title": "DONÁ AHORA",
+              "text": "Te enviaremos información sobre nuestras acciones y la forma en que puedes ayudarnos a lograrlo.",
+              "button_text": "Doná"
+            }
+          },
+          "thank_you": {
+            "title": "¡GRACIAS POR APOYAR NUESTRA CAUSA!",
+            "social_media_text": "¡Seamos muchos más los que ayudamos al planeta!"
+          }
+        }
+      }
+    }
+  }
+}

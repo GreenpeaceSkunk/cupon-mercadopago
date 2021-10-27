@@ -4,6 +4,7 @@ import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { css } from 'styled-components';
 import { Logo } from '../Shared';
 import { HomeBackground } from '../../images/backgrounds';
+import { data as jsonData } from '../../data/data.json';
 
 const MainHeader: FunctionComponent<{
   customCss?: CustomCSSType;
@@ -61,13 +62,13 @@ const MainHeader: FunctionComponent<{
             color: white;
             font-size: ${pixelToRem(24)};
             font-family: ${({theme}) => theme.font.family.primary.bold};
-            letter-spacing: ${pixelToRem(6)};
+            letter-spacing: ${pixelToRem(0)};
             
             @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
               font-size: ${pixelToRem(30)};
             }
           `}
-        >CAMBIO CLIMÁTICO</Elements.H1>
+        >{jsonData.campaign.regular.texts.header.title}</Elements.H1>
       </Elements.HGroup>
     </Elements.Wrapper>
   </Elements.Header>

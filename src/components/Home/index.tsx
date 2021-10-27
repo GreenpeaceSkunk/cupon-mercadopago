@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import ErrorBoundary from '../ErrorBoundary';
 import { AppContext } from '../App/context';
+import { data as jsonData } from '../../data/data.json';
 
 const Header = lazy(() => import('../Header'));
 const Router = lazy(() => import('./router'));
@@ -85,36 +86,25 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 }
               `}
             >
-              <Elements.HGroup
+              <Heading3
                 customCss={css`
-                  > * {
-                  margin-bottom: ${pixelToRem(28)};
-
-                  &:last-child {
-                    margin-bottom: 0;
+                  font-size: ${pixelToRem(20)};
+                  font-family: ${({theme}) => theme.font.family.primary.bold};
+                  line-height: 1.2;
+                  
+                  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
+                    font-size: ${pixelToRem(24)};
                   }
-                }
                 `}
-              >
-                <Heading3
-                  customCss={css`
-                    font-size: ${pixelToRem(20)};
-                    font-family: ${({theme}) => theme.font.family.primary.bold};
-                    line-height: 1.2;
-                    
-                    @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
-                      font-size: ${pixelToRem(24)};
-                    }
-                  `}
-                >Firmá esta petición para que se prohíban y penalicen los desmontes y los incendios forestales. Destruir bosques es un crimen y no podemos perder ni una hectárea más.</Heading3>
-              </Elements.HGroup>
-              <Elements.P
+              >{jsonData.campaign.regular.texts.home.title}</Heading3>
+              <Elements.WrapperHtml
                 customCss={css`
                   color: ${({theme}) => theme.color.secondary.dark};
                   font-size: ${pixelToRem(18)};
                   line-height: 140%;
-                  `}
-              >En las últimas tres décadas perdimos cerca de <Elements.Strong>8 millones de hectáreas</Elements.Strong> y somos uno de los 10 países que más destruyen sus bosques. Las principales razones son el avance de la frontera agropecuaria (ganadería y soja), los incendios forestales y los desarrollos inmobiliarios.<br/><strong>ESTAMOS EN UNA EMERGENCIA CLIMÁTICA, SANITARIA Y DE BIODEVIRSIDAD.</strong> Más desmonte significa más cambio climático, más inundaciones, más desalojos de comunidades campesinas e indígenas, más desaparición de especies en peligro de extinción y más enfermedades.</Elements.P>
+                `}
+                dangerouslySetInnerHTML={{__html: jsonData.campaign.regular.texts.home.text }}
+              />
               <Elements.A
                 customCss={css`
                   font-family: ${({theme}) => theme.font.family.primary.bold};
@@ -125,7 +115,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >¡Sumate ahora, seamos muchos más!</Elements.A>
+              >{jsonData.campaign.regular.texts.home.highlighted_text}</Elements.A>
 
               <Elements.Button
                 variant='contained'

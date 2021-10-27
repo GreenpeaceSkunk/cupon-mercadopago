@@ -4,6 +4,7 @@ import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import Shared from '../Shared';
 import { carouselItemStyles } from '../../styles/mixins';
+import { data as jsonData } from '../../data/data.json';
 
 const SocialMediaNav = lazy(() => import('../SocialMediaNav'));
 
@@ -36,16 +37,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           }
         `}
       >
-        {/* <Shared.General.Title
-          customCss={css`
-            font-size: ${pixelToRem(32)};
-          `}
-        >¡GRACIAS POR APOYAR NUESTRA CAUSA!</Shared.General.Title> */}
         <Elements.H1
           customCss={css`
             text-align: center;
           `}
-        >¡GRACIAS POR APOYAR NUESTRA CAUSA!</Elements.H1>
+        >{jsonData.campaign.regular.texts.thank_you.title}</Elements.H1>
       </Elements.Wrapper>
       <Elements.Wrapper
         customCss={css`
@@ -60,6 +56,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               margin-top: ${pixelToRem(40)};
             `}
             theme='color'
+            text={jsonData.campaign.regular.texts.thank_you.social_media_text}
           />
         </Suspense>
       </Elements.Wrapper>

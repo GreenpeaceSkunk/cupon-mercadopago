@@ -18,11 +18,14 @@ const SocialButton = styled(Elements.A)<{ icon: string }>`
 const Component: FunctionComponent<{
   children?: React.ReactNode | HTMLAllCollection;
   customCss?: CustomCSSType;
-  theme?: 'light' | 'color'
+  theme?: 'light' | 'color';
+  text?: string;
+  textWeight?: 'normal' | 'bold';
 }> = memo(({
-  children,
   customCss,
   theme = 'light',
+  text = '¡Seamos muchos más los que ayudamos al planeta!',
+  textWeight = 'normal',
 }) => useMemo(() => (
   <Elements.Wrapper
     customCss={css`
@@ -39,8 +42,10 @@ const Component: FunctionComponent<{
         margin-bottom: ${pixelToRem(18)};
         color: ${(theme === 'color') ? 'black' : 'white'};
         text-align: center;
+        font-family: ${({theme}) => (textWeight === 'bold') ? theme.font.family.primary.bold : theme.font.family.primary.normal };
       `}
-    >¡Seamos muchos más los que ayudamos al planeta!</Elements.Span>
+      dangerouslySetInnerHTML={{__html: text}}
+    />
     <Elements.Nav
       customCss={css`
         > * {
@@ -64,6 +69,8 @@ const Component: FunctionComponent<{
 ), [
   customCss,
   theme,
+  text,
+  textWeight,
 ]));
 
 Component.displayName = 'SocialMediaNav';

@@ -109,12 +109,6 @@ const Component: FunctionComponent<{}> = memo(() => {
         `}
       >
         <Elements.HGroup>
-          {/* <Shared.General.Title
-            customCss={css`
-              font-size: ${pixelToRem(20)};
-              text-align: left;
-            `}
-          >Firmá ahora!</Shared.General.Title> */}
           <Elements.H1>Doná ahora!</Elements.H1>
           <Shared.General.Subtitle
             customCss={css`

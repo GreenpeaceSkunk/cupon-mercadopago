@@ -11,6 +11,7 @@ import Shared from '../../Shared';
 import { trackEvent as trackDataCrushEvent } from '../../../utils/dataCrush';
 import { initialState, reducer } from './reducer';
 import { createToken, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
+import { data as jsonData } from '../../../data/data.json';
 
 const Component: React.FunctionComponent<IFormComponent> = memo(({
   formIndex,
@@ -204,10 +205,9 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
     >
       <Shared.Form.Header>
         <Elements.HGroup>
-          {/* <Shared.General.Title>DONÁ AHORA</Shared.General.Title> */}
-          <Shared.Form.Title>DONÁ AHORA</Shared.Form.Title>
+          <Shared.Form.Title>{jsonData.campaign.regular.texts.forms.checkout.title}</Shared.Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>Te enviaremos información sobre nuestras acciones y la forma en que puedes ayudarnos a lograrlo.</Shared.General.Text>
+        <Shared.General.Text>{jsonData.campaign.regular.texts.forms.checkout.text}</Shared.General.Text>
       </Shared.Form.Header>
       <Shared.Form.Content>
         <Shared.Form.Row>
@@ -389,7 +389,7 @@ const Component: React.FunctionComponent<IFormComponent> = memo(({
               padding-bottom: ${pixelToRem(10)};
             `}
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : 'Doná'}</Elements.Button>
+        >{(submitting) ? <Shared.Loader mode='light' /> : jsonData.campaign.regular.texts.forms.checkout.button_text}</Elements.Button>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [

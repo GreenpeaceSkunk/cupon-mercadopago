@@ -82,6 +82,7 @@ export const OptGroup = styled(StyledElements.OptGroup)`
 export const P = styled(StyledElements.P)`
   color: ${({theme}) => theme.text.color.primary.normal};
   font-family: ${({theme}) => theme.font.family.primary.regular};
+  margin-bottom: ${pixelToRem(14)};
   ${customStyles};
 `;
 export const Select = styled(StyledElements.Select)`
@@ -94,13 +95,28 @@ export const Span = styled(StyledElements.Span)`
   font-family: ${({theme}) => theme.font.family.primary.regular};
   ${customStyles};
 `;
-export const Strong = styled.strong``; // Import from @meema.StyledElements
+export const Strong = styled.strong`
+  font-family: ${({theme}) => theme.font.family.primary.bold};
+`; // Import from @meema.StyledElements
 export const TextArea = styled(StyledElements.TextArea)``;
 export const View = styled(StyledElements.View)``;
 export const Wrapper = styled(StyledElements.Wrapper)``;
+export const WrapperHtml = styled(StyledElements.Wrapper)`
+  color: ${({theme}) => theme.text.color.primary.normal};
+  font-family: ${({theme}) => theme.font.family.primary.regular};
+  
+  p {
+    margin-bottom: ${pixelToRem(14)};
+  }
+
+  strong {
+    font-family: ${({theme}) => theme.font.family.primary.bold};
+  }
+
+  ${customStyles};
+`;
 
 export const Button = styled(StyledButton)`
-  /* padding: ${pixelToRem(5)} ${pixelToRem(30)}; */
   padding: ${pixelToRem(13)} 0;
   color: white;
   background-color: ${({theme}) => theme.color.primary.normal};
@@ -161,6 +177,7 @@ const _ = {
   TextArea,
   View,
   Wrapper,
+  WrapperHtml,
 };
 
 export default _;

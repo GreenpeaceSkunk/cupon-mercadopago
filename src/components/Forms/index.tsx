@@ -115,7 +115,7 @@ const Component: FunctionComponent<{}> = memo(() => {
               text-align: left;
             `}
           >Firmá ahora!</Shared.General.Title> */}
-          <Elements.H1>Firmá ahora!</Elements.H1>
+          <Elements.H1>Doná ahora!</Elements.H1>
           <Shared.General.Subtitle
             customCss={css`
               font-size: ${pixelToRem(18)};

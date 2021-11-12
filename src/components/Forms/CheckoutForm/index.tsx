@@ -1,6 +1,6 @@
 import React, { FormEvent, memo, useCallback, useContext, useState, useRef, useReducer, useMemo } from 'react';
 import { generatePath, useHistory } from 'react-router-dom';
-import { FormContext, IFormComponent } from '../context';
+import { FormContext } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import { validateCardHolderName, validateCitizenId, validateCreditCard, validateCvv, validateEmptyField, validateMonth, validateYear } from '../../../utils/validators';
 import { css } from 'styled-components';

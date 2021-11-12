@@ -50,18 +50,24 @@ export const Form = styled(StyledElements.Form)``;
 export const H1 = styled(StyledElements.H1)`
   margin-bottom: ${pixelToRem(10)};
   color: ${({theme}) => theme.text.color.primary.normal};
-  font-size: ${pixelToRem(30)};
+  font-size: ${pixelToRem(36)};
   font-family: ${({theme}) => theme.font.family.primary.bold};
   ${customStyles};
 `;
 export const H2 = styled(StyledElements.H2)`
   margin-bottom: ${pixelToRem(10)};
   color: ${({theme}) => theme.text.color.secondary.normal};
-  font-size: ${pixelToRem(30)};
+  font-size: ${pixelToRem(32)};
   font-family: ${({theme}) => theme.font.family.primary.bold};
   ${customStyles};
 `;
-export const H3 = styled(StyledElements.H3)``;
+export const H3 = styled(StyledElements.H3)`
+  margin-bottom: ${pixelToRem(10)};
+  color: ${({theme}) => theme.text.color.primary.normal};
+  font-size: ${pixelToRem(28)};
+  font-family: ${({theme}) => theme.font.family.primary.bold};
+  ${customStyles};
+`;
 export const Header = styled(StyledElements.Header)``;
 export const HGroup = styled(StyledElements.HGroup)``;
 export const Img = styled(StyledElements.Img)``;

@@ -1,18 +1,27 @@
 import { SharedState, SharedActions, GenericReducerFn, IData, IUserData, IPaymentData, } from 'greenpeace';
 
+export type FieldErrorType = { [fieldName: string]:boolean } | null;
+export type ErrorsType = { [index: string]: FieldErrorType } | null;
+
+type PayloadType = { [x: string]: string | number }; 
+
 export type ContextStateType = {
   data: {
     user: IUserData;
     payment: IPaymentData;
   };
+  errors: ErrorsType;
+  isEdited: boolean;
 } & SharedState;
 
-type PayloadType = { [x: string]: string | number }; 
-
 export type ContextActionType = 
+// | { type: 'UPDATE_FIELD_ERRORS', payload: { fieldName: string; isValid: boolean; indexForm: number; } }
+// | { type: 'RESET_FIELD_ERRORS' }
 | { type: 'UPDATE_USER_DATA', payload: PayloadType }
 | { type: 'UPDATE_PAYMENT_DATA', payload: PayloadType }
 | { type: 'SET_ERROR', error: string | null }
+| { type: 'UPDATE_FORM_STATUS' }
+| { type: 'RESET' }
 | SharedActions;
 
 export const initialState: ContextStateType = {
@@ -34,7 +43,7 @@ export const initialState: ContextStateType = {
   //     cardExpirationYear: '',
   //     docNumber: '',
   //     docType: 'DNI',
-  //     amount: '',
+  //     amount: '500',
   //     newAmount: '',
   //   } as IPaymentData,
   // } as IData,
@@ -65,7 +74,9 @@ export const initialState: ContextStateType = {
   } as IData,
   submitting: false,
   submitted: false,
+  isEdited: false,
   error: null,
+  errors: null,
 }
 
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
@@ -81,41 +92,82 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
           },
         },
       }
-      case 'UPDATE_PAYMENT_DATA':
-        return {
-          ...state,
-          data: {
-            ...state.data,
-            payment: {
-              ...state.data.payment,
-              ...action.payload['amount']
-                ? {
-                    amount: action.payload['amount'],
-                    newAmount: '',
-                  }
-                : action.payload,
-            },
+    case 'UPDATE_PAYMENT_DATA':
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          payment: {
+            ...state.data.payment,
+            ...action.payload['amount']
+              ? {
+                  amount: action.payload['amount'],
+                  newAmount: '',
+                }
+              : action.payload,
           },
-        }
-    case 'SUBMIT':
+        },
+      }
+    // case 'UPDATE_FIELD_ERRORS':
+    //   console.log('Entra??')
+    //   let tmpErrors = (state.errors) ? {...state.errors} : {};
+    //   console.log(tmpErrors, action.payload);
+
+    //   if(action.payload.isValid) {
+    //     if(tmpErrors[`${action.payload.indexForm}`]) {
+    //       const tmpFormIndex = {...tmpErrors[`${action.payload.indexForm}`]};
+    //       delete tmpFormIndex[`${action.payload.fieldName}`];
+    //       tmpErrors[`${action.payload.indexForm}`] = {...tmpFormIndex};
+    //     }
+    //   } else {
+    //     tmpErrors[`${action.payload.indexForm}`] = {
+    //       ...tmpErrors[`${action.payload.indexForm}`],
+    //       [`${action.payload.fieldName}`]: !!action.payload.isValid,
+    //     };
+    //   }
+      
+    //   return {
+    //     ...state,
+    //     allowNext: Object.values(tmpErrors).length,
+    //     errors: tmpErrors,
+    //   }
+    // case 'RESET_FIELD_ERRORS': {
+    //   return {
+    //     ...state,
+    //     errors: null,
+    //     isEdited: false,
+    //   }
+    // }
+    // case 'UPDATE_FORM_STATUS': {
+    //   return {
+    //     ...state,
+    //     isEdited: true,
+    //   };
+    // }
+    case 'RESET': {
+      return {
+        ...state,
+        errors: null,
+        submitting: false,
+        submitted: false,
+      };
+    }
+    case 'SUBMIT': {
       return {
         ...state,
         submitting: true,
         submitted: false,
+        isEdited: false,
       };
-    case 'SUBMITTED':
+    }
+    case 'SUBMITTED': {
       return {
         ...state,
         submitting: false,
         submitted: true,
+        isEdited: false,
       };
-    case 'SET_ERROR':
-      return {
-        ...state,
-        submitting: false,
-        submitted: false,
-        error: action.error,
-      };
+    }
     default: {
       throw new Error('Context Error');
     }

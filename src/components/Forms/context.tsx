@@ -41,7 +41,6 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
     <Provider
       value={{
         data,
-        Forms,
         params,
         dispatch,
       }}>

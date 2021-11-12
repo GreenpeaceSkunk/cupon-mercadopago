@@ -5,6 +5,7 @@ export type FieldErrorType = { [fieldName: string]:boolean } | null;
 export type ContextStateType = {
   errors: FieldErrorType;
   isEdited: boolean;
+  allowNext: boolean;
 } & SharedState;
 
 export type ContextActionType = 
@@ -21,6 +22,7 @@ export const initialState: ContextStateType = {
   submitted: false,
   submitting: false,
   isEdited: false,
+  allowNext: false,
 }
 
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
@@ -35,6 +37,7 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
       return {
         ...state,
         errors: tmpErrors,
+        allowNext: Object.values(tmpErrors).length ? false : true,
       }
     case 'RESET_FIELD_ERRORS': {
       return {

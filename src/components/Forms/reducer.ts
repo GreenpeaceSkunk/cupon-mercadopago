@@ -25,53 +25,53 @@ export type ContextActionType =
 | SharedActions;
 
 export const initialState: ContextStateType = {
-  // data: {
-  //   user: {
-  //     firstName: '',
-  //     lastName: '',
-  //     birthDate: '',
-  //     email: '',
-  //     genre: '',
-  //     phoneNumber: '',
-  //     areaCode: '',
-  //   } as IUserData,
-  //   payment: {
-  //     cardNumber: '', 
-  //     cardholderName: '',
-  //     securityCode: '',
-  //     cardExpirationMonth: '',
-  //     cardExpirationYear: '',
-  //     docNumber: '',
-  //     docType: 'DNI',
-  //     amount: '500',
-  //     newAmount: '',
-  //   } as IPaymentData,
-  // } as IData,
   data: {
     user: {
-      firstName: 'Doe',
-      lastName: 'Deer',
-      birthDate: '20/03/1985',
-      email: 'doe.deer@email.com',
+      firstName: '',
+      lastName: '',
+      birthDate: '',
+      email: '',
       genre: '',
-      phoneNumber: '44440000',
-      areaCode: '11',
+      phoneNumber: '',
+      areaCode: '',
     } as IUserData,
     payment: {
-      cardNumber: '4509953566233704', // Visa
-      // cardNumber: '5031755734530604', // Mastercard
-      // cardNumber: '371180303257522', // AMEX
-      securityCode: '123',
-      // securityCode: '1234',
-      cardholderName: 'APRO',
-      cardExpirationMonth: '11',
-      cardExpirationYear: '2025',
-      docNumber: '31533422',
+      cardNumber: '', 
+      cardholderName: '',
+      securityCode: '',
+      cardExpirationMonth: '',
+      cardExpirationYear: '',
+      docNumber: '',
       docType: 'DNI',
-      amount: '700',
+      amount: '500',
       newAmount: '',
     } as IPaymentData,
   } as IData,
+  // data: {
+  //   user: {
+  //     firstName: 'Doe',
+  //     lastName: 'Deer',
+  //     birthDate: '20/03/1985',
+  //     email: 'doe.deer@email.com',
+  //     genre: '',
+  //     phoneNumber: '44440000',
+  //     areaCode: '11',
+  //   } as IUserData,
+  //   payment: {
+  //     cardNumber: '4509953566233704', // Visa
+  //     // cardNumber: '5031755734530604', // Mastercard
+  //     // cardNumber: '371180303257522', // AMEX
+  //     securityCode: '123',
+  //     // securityCode: '1234',
+  //     cardholderName: 'APRO',
+  //     cardExpirationMonth: '11',
+  //     cardExpirationYear: '2025',
+  //     docNumber: '31533422',
+  //     docType: 'DNI',
+  //     amount: '700',
+  //     newAmount: '',
+  //   } as IPaymentData,
+  // } as IData,
   submitting: false,
   submitted: false,
   isEdited: false,

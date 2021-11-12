@@ -2,6 +2,7 @@ import React, { Suspense, lazy, memo, useMemo, useCallback, useEffect } from 're
 import { generatePath, Route, Switch, useHistory, useLocation, useRouteMatch } from 'react-router';
 import { Loader } from '../Shared';
 import { AppProvider } from './context';
+import useQuery from '../../hooks/useQuery';
 
 const App = lazy(() => import('.'));
 
@@ -9,6 +10,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const { path } = useRouteMatch();
   const { pathname } = useLocation();
   const history = useHistory();
+  const { searchParams } = useQuery();
 
   const validateCouponType = useCallback(() => {
     let isValid = true;
@@ -21,18 +23,24 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       }
     }
     if(!isValid) {
-      history.push(generatePath(`/:couponType`, {
-        couponType: 'regular',
-      }));
+      history.push({
+        pathname: generatePath(`/:couponType`, {
+          couponType: 'regular',
+        }),
+        search: `${searchParams}`,
+      });
     }
   }, [
-    path,
+    searchParams,
     pathname,
+    history,
   ]);
 
   useEffect(() => {
     validateCouponType();
-  }, []);
+  }, [
+    validateCouponType,
+  ]);
   
   return useMemo(() => (
     <AppProvider>
@@ -47,7 +55,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
   ), [
     path,
-    pathname,
   ]);
 });
 

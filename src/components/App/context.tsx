@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useMemo, useState } from "react";
-import { RouteComponentProps, withRouter } from "react-router-dom";
+import { RouteComponentProps, useLocation, useHistory, withRouter } from "react-router-dom";
 import useQuery from "../../hooks/useQuery";
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../theme/globalStyle';
@@ -7,8 +7,8 @@ import Theme from '../../theme/Theme';
 import ErrorBoundary from '../ErrorBoundary';
 
 interface IContext {
-  refParam: string;
-  queryParams: URLSearchParams;
+  // refParam: string;
+  urlSearchParams: URLSearchParams;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -22,24 +22,30 @@ Context.displayName = 'AppContext';
 const { Provider, Consumer } = Context;
 
 const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = ({ children }) => {
-  const [ refParam, setRefParam ] = useState<string>(`${process.env.REACT_APP_DEFAULT_REF_PARAM}`);
   const [ isOpen, setIsOpen ] = useState<boolean>(false);
-  const queryParams = useQuery();
+  const { searchParams, urlSearchParams } = useQuery();
+  const location = useLocation();
+  const history = useHistory();
   
   useEffect(() => {
-    if(queryParams) {
-      if(queryParams.get('ref')) {
-        setRefParam(queryParams.get('ref') || `${process.env.REACT_APP_DEFAULT_REF_PARAM}`);
+    if(urlSearchParams) {
+      if(!urlSearchParams.get('ref')) {
+        history.replace({
+          pathname: location.pathname,
+          search: `?ref=${`${process.env.REACT_APP_DEFAULT_REF_PARAM}`}${searchParams.replace('?', '&')}`,
+        })
       }
     }
   }, [
-    queryParams,
+    urlSearchParams,
+    history,
+    location.pathname,
+    searchParams,
   ])
 
   return useMemo(() => (
     <Provider value={{
-      refParam,
-      queryParams,
+      urlSearchParams,
       isOpen,
       setIsOpen,
     }}>
@@ -51,12 +57,12 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
       </ThemeProvider>
     </Provider>
   ), [
-    refParam,
-    queryParams,
-    // ghostRoute,
+    urlSearchParams,
+    isOpen,
     children,
   ]);
 };
+
 
 const WrappedProvider = withRouter(ContextProvider);
 

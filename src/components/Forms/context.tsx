@@ -2,31 +2,11 @@ import React, { createContext, useEffect, useMemo, useReducer } from 'react';
 import { ContextActionType, initialState, reducer } from './reducer';
 import { IData, ParamsType } from 'greenpeace';
 import { generatePath, useHistory, useParams } from 'react-router-dom';
-
-export interface IFormComponent {
-  formIndex?: number;
-}
-
-export type FormComponentsType = {
-  Component: React.LazyExoticComponent<React.FunctionComponent<IFormComponent>>,
-  route: string,
-}
-
-const Forms = {
-  subscriptionForm: {
-    Component: React.lazy(() => import('./SubscriptionForm')),
-    route: 'form/user', // Used only for Data Crush Route
-  },
-  checkoutForm: {
-    Component: React.lazy(() => import('./CheckoutForm')),
-    route: 'form/checkout', // Used only for Data Crush Route
-  },
-};
+import useQuery from '../../hooks/useQuery';
 
 export interface IContext {
   data: IData;
-  Forms: {[key: string]: FormComponentsType};
-  params: ParamsType; 
+  params: ParamsType;
   dispatch: (action: ContextActionType) => void;
 }
 
@@ -39,16 +19,21 @@ Context.displayName = 'FormContext';
 const { Provider, Consumer } = Context;
 
 const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
-  const [{ data, }, dispatch] = useReducer(reducer, initialState);
+  const [{ data }, dispatch] = useReducer(reducer, initialState);
   const history = useHistory();
   const params = useParams<ParamsType>();
+  const { searchParams } = useQuery();
   
   useEffect(() => {
-    history.push(generatePath(`/:couponType/forms/subscribe`, {
-      couponType: params.couponType,
-    }));
+    history.push({
+      pathname: generatePath(`/:couponType/forms/subscribe`, {
+        couponType: params.couponType,
+      }),
+      search: `${searchParams}`,
+    });
   }, [
     history,
+    searchParams,
     params.couponType,
   ]);
 

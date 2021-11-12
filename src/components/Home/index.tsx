@@ -6,6 +6,7 @@ import { pixelToRem } from 'meema.utils';
 import ErrorBoundary from '../ErrorBoundary';
 import { AppContext } from '../App/context';
 import { data as jsonData } from '../../data/data.json';
+import ModalOpenForm from '../ModalOpenForm';
 
 const Header = lazy(() => import('../Header'));
 const Router = lazy(() => import('./router'));
@@ -150,17 +151,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       </Elements.View>
       <ErrorBoundary fallback='Footer Error.'>
         <Suspense fallback={<Shared.Loader />}>
-          <Elements.Wrapper
-            customCss={css`
-              @media (max-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-                padding-bottom: ${pixelToRem(180)};
-              }
-            `}
-          >  
+          <Elements.Wrapper>  
             <Footer />
           </Elements.Wrapper>
         </Suspense>
       </ErrorBoundary>
+      <ModalOpenForm />
     </>
   ), [
     viewRef,

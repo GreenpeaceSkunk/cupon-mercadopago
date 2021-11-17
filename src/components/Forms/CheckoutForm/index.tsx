@@ -26,7 +26,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const history = useHistory();
   const formRef = useRef<HTMLFormElement>(null);
   const snackbarRef = useRef<ISnackbarRef>(null);
-  const { searchParams } = useQuery();
+  const { searchParams, urlSearchParams } = useQuery();
 
   const showSnackbar = useCallback(() => {
     if(snackbarRef && snackbarRef.current) {
@@ -103,51 +103,36 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   merchant_account_id: (merchantAccount.length) ? merchantAccount[0].id : null,
                   payment_method_option_id: (merchantAccount.length) ? merchantAccount[0].payment_method_option_id : null,
                   amount,
-                  nombre: payment.cardholderName, // En la doc dice Nombre del titular de la tarjeta de crédito
-                  apellido: payment.cardholderName, // En la doc dice Apellido del titular de la tarjeta de crédito
+                  nombre: payment.cardholderName,
+                  apellido: payment.cardholderName,
                   cod_area: user.areaCode,
                   telefono: user.phoneNumber,
                   email: user.email,
-                  genero: '', // No diferencia genero
-                  pais: '', // Argentina
-                  direccion: '', // Avenida siempre viva 742
-                  localidad: '', // Capital Federal
-                  provincia: '', // Buenos Aires
-                  codigo_provincia: '', // 001
-                  codigo_postal: '', // 1258
-                  ocupacion: '', // Empleado
-                  tipodocumento: payment.docType, // No hay enum
+                  genero: '',
+                  pais: '',
+                  direccion: '',
+                  localidad: '',
+                  provincia: '',
+                  codigo_provincia: '',
+                  codigo_postal: '',
+                  ocupacion: '',
+                  tipodocumento: payment.docType,
                   mes_vencimiento: payment.cardExpirationMonth,
                   ano_vencimiento: payment.cardExpirationYear,
                   documento: payment.docNumber,
                   firstDigits: payment.cardNumber.slice(0, 6),
                   lastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
-                  date: new Date(),// '2021-6-28',
+                  date: new Date(),
                   today: 1,
                   tomorrow: 2,
                   utms: [
-                  {
-                    campo: 'gpi__utm_campaign__c',
-                    valor: 'campaña'
-                  },
-                  {
-                    campo: 'gpi__utm_medium__c',
-                    valor: 'medium'
-                  },
-                  {
-                    campo: 'gpi__utm_source__c',
-                    valor: 'source'
-                  },
-                  {
-                    campo: 'gpi__utm_content__c',
-                    valor: 'content'
-                  },
-                  {
-                    campo: 'gpi__utm_term__c',
-                      valor: 'term'
-                    }
-                  ]
-                }
+                    { campo: 'gpi__utm_campaign__c', valor: urlSearchParams.get('utm_campaign') },
+                    { campo: 'gpi__utm_medium__c', valor: urlSearchParams.get('utm_medium') },
+                    { campo: 'gpi__utm_source__c', valor: urlSearchParams.get('utm_source') },
+                    { campo: 'gpi__utm_content__c', valor: urlSearchParams.get('utm_content') },
+                    { campo: 'gpi__utm_term__c', valor: urlSearchParams.get('utm_term') }
+                  ],
+                };
                 
                 const result = await doSubscriptionPayment(payload);
     
@@ -213,6 +198,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     user,
     history,
     params.couponType,
+    urlSearchParams,
     showSnackbar,
   ]);
 

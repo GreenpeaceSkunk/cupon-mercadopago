@@ -14,7 +14,7 @@ interface IProps {
 
 const Component: React.ForwardRefRenderFunction<IRef, IProps> = ({
   text = '',
-  milliseconds = 500,
+  milliseconds = 2500,
 }, innerRef: React.ForwardedRef<IRef>) => {
   const [ animate, setAnimate ] = useState<boolean>(false);
 

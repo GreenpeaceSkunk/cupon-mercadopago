@@ -3,11 +3,7 @@ import Elements from '../Shared/Elements';
 import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { css } from 'styled-components';
 import Icons from '../../images/icons';
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton
-} from 'react-share';
+import { FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 'react-share';
 
 const SHARE_MODAL_HEIGHT = 800;
 const SHARE_MODAL_WIDTH = 600;

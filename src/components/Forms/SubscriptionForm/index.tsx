@@ -299,7 +299,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 type='text'
                 placeholder='Ej. 11'
                 value={areaCode}
-                maxLength={2}
+                maxLength={4}
                 onChange={onChangeHandler}
               />
             </Shared.Form.Group>
@@ -316,7 +316,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 type='text'
                 placeholder='Ej. 41239876'
                 value={phoneNumber}
-                maxLength={8}
                 onChange={onChangeHandler}
               />
             </Shared.Form.Group>

@@ -3,7 +3,9 @@ import { SharedState, SharedActions, GenericReducerFn, IData, IUserData, IPaymen
 export type FieldErrorType = { [fieldName: string]:boolean } | null;
 export type ErrorsType = { [index: string]: FieldErrorType } | null;
 
-type PayloadType = { [x: string]: string | number }; 
+type PayloadType = { [x: string]: string | number };
+
+const autofill = process.env.REACT_APP_AUTOFILL_VALUES ? (process.env.REACT_APP_AUTOFILL_VALUES === 'true') ? true : false : false;
 
 export type ContextStateType = {
   data: {
@@ -15,8 +17,6 @@ export type ContextStateType = {
 } & SharedState;
 
 export type ContextActionType = 
-// | { type: 'UPDATE_FIELD_ERRORS', payload: { fieldName: string; isValid: boolean; indexForm: number; } }
-// | { type: 'RESET_FIELD_ERRORS' }
 | { type: 'UPDATE_USER_DATA', payload: PayloadType }
 | { type: 'UPDATE_PAYMENT_DATA', payload: PayloadType }
 | { type: 'SET_ERROR', error: string | null }
@@ -34,6 +34,15 @@ export const initialState: ContextStateType = {
       genre: '',
       phoneNumber: '',
       areaCode: '',
+      ...(autofill ? {
+        firstName: 'Doe',
+        lastName: 'Deer',
+        birthDate: '20/03/1985',
+        email: 'doe.deer@email.com',
+        genre: '',
+        phoneNumber: '44440000',
+        areaCode: '11',
+      } : {}),
     } as IUserData,
     payment: {
       cardNumber: '', 
@@ -45,33 +54,22 @@ export const initialState: ContextStateType = {
       docType: 'DNI',
       amount: '500',
       newAmount: '',
+      ...(autofill ? {
+        cardNumber: '4509953566233704', // Visa
+        // cardNumber: '5031755734530604', // Mastercard
+        // cardNumber: '371180303257522', // AMEX
+        securityCode: '123',
+        // securityCode: '1234',
+        cardholderName: 'APRO',
+        cardExpirationMonth: '11',
+        cardExpirationYear: '2025',
+        docNumber: '31533422',
+        docType: 'DNI',
+        amount: '700',
+        newAmount: '',
+      } : {})
     } as IPaymentData,
   } as IData,
-  // data: {
-  //   user: {
-  //     firstName: 'Doe',
-  //     lastName: 'Deer',
-  //     birthDate: '20/03/1985',
-  //     email: 'doe.deer@email.com',
-  //     genre: '',
-  //     phoneNumber: '44440000',
-  //     areaCode: '11',
-  //   } as IUserData,
-  //   payment: {
-  //     cardNumber: '4509953566233704', // Visa
-  //     // cardNumber: '5031755734530604', // Mastercard
-  //     // cardNumber: '371180303257522', // AMEX
-  //     securityCode: '123',
-  //     // securityCode: '1234',
-  //     cardholderName: 'APRO',
-  //     cardExpirationMonth: '11',
-  //     cardExpirationYear: '2025',
-  //     docNumber: '31533422',
-  //     docType: 'DNI',
-  //     amount: '700',
-  //     newAmount: '',
-  //   } as IPaymentData,
-  // } as IData,
   submitting: false,
   submitted: false,
   isEdited: false,

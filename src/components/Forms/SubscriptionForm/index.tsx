@@ -184,8 +184,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               onUpdateHandler={onUpdateFieldHandler}
               >
                 {[
-                  { text: '$500', value: '500' },
-                  { text: '$700', value: '700' },
+                  { text: '$699', value: '699' },
+                  { text: '$799', value: '799' },
                   { text: '$1500', value: '1500' },
                   { text: 'Otras donaciones', value: 'otherAmount' },
                 ].map((option: { text: string; value: string; }) => (

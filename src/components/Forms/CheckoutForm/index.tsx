@@ -132,6 +132,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     { campo: 'gpi__utm_content__c', valor: urlSearchParams.get('utm_content') },
                     { campo: 'gpi__utm_term__c', valor: urlSearchParams.get('utm_term') }
                   ],
+                  campaign_id: `${process.env.REACT_APP_CAMPAIGN_ID}`,
                 };
                 
                 const result = await doSubscriptionPayment(payload);

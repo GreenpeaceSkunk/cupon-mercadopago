@@ -13,20 +13,23 @@ import { useLocation } from 'react-router';
 
 const Home = lazy(() => import('../Home'));
 
-if(process.env.NODE_ENV === 'production') {
+if(process.env.REACT_APP_ENVIRONMENT === 'production') {
   initializeTagManager();
   inititalizeAnalytics();
   initializeFacebookPixel();
   initializeDataCrush();
-  initializeMercadopago();
   initializeHotjar();
+}
+
+if(process.env.REACT_APP_ENVIRONMENT === 'test' || process.env.REACT_APP_ENVIRONMENT === 'production') {
+  initializeMercadopago();
 }
 
 const Component: React.FunctionComponent<{}> = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    if(process.env.NODE_ENV === 'production') {
+    if(process.env.REACT_APP_ENVIRONMENT === 'production') {
       trackEvent('PageView');
       pushToDataLayer('pageview');
     }

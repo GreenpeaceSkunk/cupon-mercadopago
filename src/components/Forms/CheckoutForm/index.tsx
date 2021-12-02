@@ -67,7 +67,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           type: 'SUBMIT',
         });
   
-        if(process.env.NODE_ENV === 'production') {
+        if(process.env.REACT_APP_ENVIRONMENT === 'production' || process.env.REACT_APP_ENVIRONMENT === 'test') {
           if(formRef.current) {
             setPublishableKey(await getPublicKey());
             const token = await createToken(formRef.current);
@@ -134,13 +134,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   ],
                   campaign_id: `${process.env.REACT_APP_CAMPAIGN_ID}`,
                 };
-                
                 const result = await doSubscriptionPayment(payload);
     
                 if(result['error']) {
                   showSnackbar();
                 } else {
-                  trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_2}`, user.email);
+                  if(process.env.REACT_APP_ENVIRONMENT === 'production') {
+                    trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_2}`, user.email);
+                  }
                   
                   window.userAmount = amount;
   
@@ -150,14 +151,15 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     }),
                     search: `${searchParams}`,
                   });
-                }
                 
-                dispatchFormErrors({
-                  type: 'SUBMITTED',
-                });
-    
-                return () => {
-                  result.cancel();
+                  dispatchFormErrors({
+                    type: 'SUBMITTED',
+                  });
+                  
+                  return () => {
+                    paymentMethod.cancel();
+                    result.cancel();
+                  }
                 }
               } else {
                 showSnackbar();

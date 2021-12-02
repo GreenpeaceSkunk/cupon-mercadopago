@@ -113,7 +113,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SUBMIT',
       });
 
-      if(process.env.NODE_ENV === 'production') {
+      if(process.env.REACT_APP_ENVIRONMENT === 'production') {
         synchroInit({
           first_name: firstName,
           last_name: lastName,

@@ -184,10 +184,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               onUpdateHandler={onUpdateFieldHandler}
               >
                 {[
-                  { text: '$699', value: '699' },
-                  { text: '$799', value: '799' },
+                  { text: '$900', value: '900' },
+                  { text: '$1200', value: '1200' },
                   { text: '$1500', value: '1500' },
-                  { text: 'Otras donaciones', value: 'otherAmount' },
+                  { text: 'Otros', value: 'otherAmount' },
                 ].map((option: { text: string; value: string; }) => (
                   <Shared.Form.RadioButton
                     key={option.text}

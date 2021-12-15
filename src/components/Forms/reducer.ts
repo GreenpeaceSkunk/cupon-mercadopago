@@ -52,7 +52,7 @@ export const initialState: ContextStateType = {
       cardExpirationYear: '',
       docNumber: '',
       docType: 'DNI',
-      amount: '699',
+      amount: '900',
       newAmount: '',
       ...(autofill ? {
         cardNumber: '4509953566233704', // Visa

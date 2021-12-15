@@ -1,13 +1,22 @@
 # Landing cupon mercado pago
 
-Este cupón está integrado con Mercadopago
+Cupón está integrado con Mercadopago
+
+# Cupones Regular y Oneoff
+Para ser usado como `oneoff` simplemente agregar `/oneoff` al final del path, por defecto es de tipo `regular`. 
+
+Domino y subdominio -> `https://unite.greenpeace.org.ar/`
+Path ->  sk/coupon/`regular|oneoff`/forms/subscribe
+Parametros -> `?ref=skunk&..`
+
+Regular: https://unite.greenpeace.org.ar/sk/coupon/`regular`
+Oneoff: https://unite.greenpeace.org.ar/sk/coupon/`oneoff`
 
 ## UTMS
 Se puede probar con los siguientes parametros de UTM
 `?utm_source=source_stg&utm_medium=medium_test&utm_campaign=campaign_test&utm_term=term_test&utm_content=content_test`
 
 https://unite.greenpeace.org.ar/sk/coupon-test?utm_source=source_test&utm_medium=medium_test&utm_campaign=campaign_test&utm_term=term_test&utm_content=content_test
-
 
 # Variables de entorno
 

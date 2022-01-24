@@ -66,4 +66,6 @@ REACT_APP_GREENPEACE_INSTAGRAM="https://www.instagram.com/greenpeacearg/"
 CHANGELOG
 - 2.28.0 
   - Se modificó el script de Hotjar
+- 2.28.1 
+  - Se modificó el ID de Hotjar por 2797198
   

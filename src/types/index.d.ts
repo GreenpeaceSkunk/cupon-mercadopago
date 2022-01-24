@@ -26,7 +26,7 @@ declare global {
     MP_DEVICE_SESSION_ID: string;
     
     userAmount: any;
-
+    hj: any;
     _hjSettings: {
       hjid: number;
       hjsv: number;

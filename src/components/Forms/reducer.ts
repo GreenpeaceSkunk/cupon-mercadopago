@@ -52,7 +52,7 @@ export const initialState: ContextStateType = {
       cardExpirationYear: '',
       docNumber: '',
       docType: 'DNI',
-      amount: '699',
+      // amount: '699',
       newAmount: '',
       ...(autofill ? {
         cardNumber: '4509953566233704', // Visa
@@ -98,48 +98,12 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
             ...action.payload['amount']
               ? {
                   amount: action.payload['amount'],
-                  newAmount: '',
+                  newAmount: (action.payload['amount'] === 'otherAmount') ? action.payload['newAmount'] : '',
                 }
               : action.payload,
           },
         },
       }
-    // case 'UPDATE_FIELD_ERRORS':
-    //   console.log('Entra??')
-    //   let tmpErrors = (state.errors) ? {...state.errors} : {};
-    //   console.log(tmpErrors, action.payload);
-
-    //   if(action.payload.isValid) {
-    //     if(tmpErrors[`${action.payload.indexForm}`]) {
-    //       const tmpFormIndex = {...tmpErrors[`${action.payload.indexForm}`]};
-    //       delete tmpFormIndex[`${action.payload.fieldName}`];
-    //       tmpErrors[`${action.payload.indexForm}`] = {...tmpFormIndex};
-    //     }
-    //   } else {
-    //     tmpErrors[`${action.payload.indexForm}`] = {
-    //       ...tmpErrors[`${action.payload.indexForm}`],
-    //       [`${action.payload.fieldName}`]: !!action.payload.isValid,
-    //     };
-    //   }
-      
-    //   return {
-    //     ...state,
-    //     allowNext: Object.values(tmpErrors).length,
-    //     errors: tmpErrors,
-    //   }
-    // case 'RESET_FIELD_ERRORS': {
-    //   return {
-    //     ...state,
-    //     errors: null,
-    //     isEdited: false,
-    //   }
-    // }
-    // case 'UPDATE_FORM_STATUS': {
-    //   return {
-    //     ...state,
-    //     isEdited: true,
-    //   };
-    // }
     case 'RESET': {
       return {
         ...state,

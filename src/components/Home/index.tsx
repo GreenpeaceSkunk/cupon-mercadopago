@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import ErrorBoundary from '../ErrorBoundary';
 import { AppContext } from '../App/context';
-import { data as jsonData } from '../../data/data.json';
+// import { data as jsonData } from '../../data/data.json';
 import ModalOpenForm from '../ModalOpenForm';
 
 const Header = lazy(() => import('../Header'));
@@ -20,11 +20,12 @@ const Heading3 = styled(Elements.H3)`
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const viewRef = useRef<HTMLElement>(null);
-  const { setIsOpen } = useContext(AppContext);
+  const { appData, setIsOpen } = useContext(AppContext);
 
   return useMemo(() => (
     <>
-      <Elements.View
+      {appData && (
+        <Elements.View
         ref={viewRef}
         customCss={css`
           display: flex;
@@ -97,16 +98,16 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{jsonData.campaign.regular.texts.home.title}</Heading3>
+              >{appData.layout.home.title}</Heading3>
               <Elements.WrapperHtml
                 customCss={css`
                   color: ${({theme}) => theme.color.secondary.dark};
                   font-size: ${pixelToRem(18)};
                   line-height: 140%;
                 `}
-                dangerouslySetInnerHTML={{__html: jsonData.campaign.regular.texts.home.text }}
+                dangerouslySetInnerHTML={{__html: appData.layout.home.text }}
               />
-              <Elements.A
+              <Elements.Span
                 customCss={css`
                   font-family: ${({theme}) => theme.font.family.primary.bold};
                   font-size: ${pixelToRem(18)};
@@ -116,7 +117,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{jsonData.campaign.regular.texts.home.highlighted_text}</Elements.A>
+              >{appData.layout.home.highlighted_text}</Elements.Span>
 
               <Elements.Button
                 variant='contained'
@@ -149,6 +150,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           <Router />
         </Elements.Wrapper>
       </Elements.View>
+      )}
       <ErrorBoundary fallback='Footer Error.'>
         <Suspense fallback={<Shared.Loader />}>
           <Elements.Wrapper>  
@@ -160,6 +162,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     </>
   ), [
     viewRef,
+    appData,
     setIsOpen,
   ]);
 });

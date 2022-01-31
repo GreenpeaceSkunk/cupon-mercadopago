@@ -35,3 +35,9 @@ export const addOrRemoveSlashToDate = (value: string):string => {
     }
   }
 };
+
+export const getAppName = (pathname: string) => {
+  const paths = pathname.split('/').filter((a: string) => a !== "" );
+  console.log(paths, paths.length ? paths[0].replaceAll('/', '') : 'default')
+  return paths.length ? paths[0].replaceAll('/', '') : 'default';
+} 

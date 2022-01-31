@@ -1,4 +1,4 @@
-import React, { FormEvent, memo, useCallback, useContext, useMemo, useReducer, useRef, useState } from 'react';
+import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { generatePath, useHistory } from 'react-router-dom';
 import { FormContext } from '../context';
 import { OnChangeEvent } from 'greenpeace';
@@ -15,14 +15,15 @@ import Shared from '../../Shared';
 import Elements from '../../Shared/Elements';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import { initialState, reducer } from './reducer';
-import { synchroInit } from '../../../utils/dataCrush';
 import { pushToDataLayer } from '../../../utils/googleTagManager';
 import { pixelToRem } from 'meema.utils';
-import { data as jsonData } from '../../../data/data.json';
 import useQuery from '../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
+import { createContact } from '../../../utils/greenlabApi';
+import { AppContext } from '../../App/context';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
+  const { appData } = useContext(AppContext);
   const {
     data: {
       user: {
@@ -36,7 +37,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       payment: {
         amount,
         newAmount,
-      }
+      },
     },
     params,
     dispatch,
@@ -100,7 +101,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     dispatchFormErrors,
   ]);
 
-  const onSubmitHandler = useCallback((evt: FormEvent) => {
+  const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
 
     if(!allowNext) {
@@ -114,28 +115,23 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       });
 
       if(process.env.REACT_APP_ENVIRONMENT === 'production') {
-        synchroInit({
-          first_name: firstName,
-          last_name: lastName,
+        const contact = await createContact({
           email,
-          fecha_de_nacimiento: birthDate,
-          phone: phoneNumber,
-          area_code: areaCode,
-          genero: "",
-        }, 
-          `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`,
-          () => {
-            history.push({
-              pathname: generatePath(`/:couponType/forms/checkout`, {
-                couponType: params.couponType,
-              }),
-              search: `${searchParams}`,
-            });
-          },
-        );
-        pushToDataLayer({
-          'event' : 'petitionSignup',
+          firstname: firstName,
+          lastname: lastName,
+          phone: `${areaCode}${phoneNumber}`,
         });
+
+        if(contact) {
+          pushToDataLayer({ 'event' : 'petitionSignup' });
+
+          history.push({
+            pathname: generatePath(`/:couponType/forms/checkout`, {
+              couponType: params.couponType,
+            }),
+            search: `${searchParams}`,
+          });
+        }
       } else {
         const timer = setTimeout(() => {
           history.push({
@@ -154,7 +150,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   }, [
     firstName,
     lastName,
-    birthDate,
     email,
     areaCode,
     phoneNumber,
@@ -163,14 +158,36 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     allowNext,
     searchParams,
   ]);
+
+  useEffect(() => {
+    if(appData) {
+      if(appData.settings.amounts.values.filter((v: number) => v === appData.settings.amounts.default).length) {
+        dispatch({
+          type: 'UPDATE_PAYMENT_DATA',
+          payload: { 'amount': `${appData.settings.amounts.default}` }
+        });
+      } else {
+        dispatch({
+          type: 'UPDATE_PAYMENT_DATA',
+          payload: { 
+            'amount': 'otherAmount',
+            'newAmount': `${appData.settings.amounts.default}`,
+          }
+        });
+      }
+    }
+  }, [
+    appData,
+    dispatch,
+  ]);
   
   return useMemo(() => (
     <Shared.Form.Main id='sign-form' onSubmit={onSubmitHandler}>
       <Shared.Form.Header>
         <Elements.HGroup>
-          <Shared.Form.Title>{jsonData.campaign.regular.texts.forms.subscription.title}</Shared.Form.Title>
+          <Shared.Form.Title>{appData && appData.layout.form.subscription.title}</Shared.Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>{jsonData.campaign.regular.texts.forms.subscription.text}</Shared.General.Text>
+        <Shared.General.Text>{appData && appData.layout.form.subscription.text}</Shared.General.Text>
       </Shared.Form.Header>
       <Shared.Form.Content>
         <Shared.Form.Row>
@@ -183,21 +200,24 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
               >
-                {[
-                  { text: '$699', value: '699' },
-                  { text: '$799', value: '799' },
-                  { text: '$1500', value: '1500' },
-                  { text: 'Otras donaciones', value: 'otherAmount' },
-                ].map((option: { text: string; value: string; }) => (
+                {appData.settings.amounts.values.map((value: number) => (
                   <Shared.Form.RadioButton
-                    key={option.text}
-                    text={option.text}
+                    key={`${value}`}
+                    text={`$${value}`}
                     name='amount'
-                    value={option.value}
+                    value={`${value}`}
                     checkedValue={amount}
                     onChangeHandler={onChangeHandler}
                   />
                 ))}
+                <Shared.Form.RadioButton
+                  key='otherAmount'
+                  text='Otras donaciones'
+                  name='amount'
+                  value='otherAmount'
+                  checkedValue={amount}
+                  onChangeHandler={onChangeHandler}
+                />
             </Shared.Form.Group>
             </Shared.Form.Column>
             {(amount === 'otherAmount') ? (
@@ -339,7 +359,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               padding-bottom: ${pixelToRem(10)};
             `}
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : jsonData.campaign.regular.texts.forms.subscription.button_text}</Elements.Button>
+        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.layout.form.subscription.button_text)}</Elements.Button>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
@@ -354,6 +374,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     params,
     snackbarRef,
     showFieldErrors,
+    appData,
     onSubmitHandler,
     onChangeHandler,
     onUpdateFieldHandler,

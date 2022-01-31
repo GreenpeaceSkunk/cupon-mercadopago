@@ -87,9 +87,9 @@ const Component: React.FunctionComponent<{}> = memo(() => useMemo(() => (
           }
         `}
       >
-        <Link href={`${process.env.REACT_APP_TERMS_AND_CONDITIONS_URL}`}>Términos y condiciones</Link>
+        <Link href={'https://www.greenpeace.org/argentina/terminos-y-condiciones/'}>Términos y condiciones</Link>
         <Span customCss={css`color: white; margin: 0 ${pixelToRem(10)};`}>|</Span>
-        <Link href={`${process.env.REACT_APP_PRIVACY_POLICY_URL}`}>Política de privacidad</Link>
+        <Link href={'https://www.greenpeace.org/argentina/politica-privacidad/'}>Política de privacidad</Link>
       </Nav>
     </Wrapper>
   </Footer>

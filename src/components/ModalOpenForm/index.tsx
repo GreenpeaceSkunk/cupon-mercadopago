@@ -7,7 +7,7 @@ import Shared from '../Shared';
 import { AppContext } from '../App/context';
 
 const Component: FunctionComponent<{}> = memo(() => {
-  const { isOpen, setIsOpen } = useContext(AppContext);
+  const { appData, isOpen, setIsOpen } = useContext(AppContext);
   const [ showPreview, setShowPreview ] = useState<boolean>(true);
 
   const onScrollHandler = useCallback(() => {
@@ -57,13 +57,13 @@ const Component: FunctionComponent<{}> = memo(() => {
           right: ${pixelToRem(15)};
         `}
       />
-      <Elements.H3
+      {appData && <Elements.H3
         customCss={css`
           font-size: ${pixelToRem(20)};
           margin-bottom: 0;
         `}
-      >Doná ahora</Elements.H3>
-      <Elements.P>Sumate y conocé nuestras causas</Elements.P>
+      >{appData.layout.modal_form.title}</Elements.H3>}
+      {appData && <Elements.P>{appData.layout.modal_form.text}</Elements.P>}
       <Elements.Button
         variant='contained'
         onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
@@ -72,11 +72,12 @@ const Component: FunctionComponent<{}> = memo(() => {
           box-shadow: 0 ${pixelToRem(4)} ${pixelToRem(14)} rgba(0, 0, 0, .25);
           padding: ${pixelToRem(7)} 0;
         `}
-      >¡Sumate!</Elements.Button>
+      >{appData && appData.layout.modal_form.button_text}</Elements.Button>
     </Elements.Wrapper>
   ), [
     isOpen,
     setIsOpen,
+    appData,
     showPreview,
   ]);
 });

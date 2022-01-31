@@ -103,7 +103,7 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
   ]);
 
   useEffect(() => {
-    setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'default')
+    setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'general')
   }, [ ])
 
   return useMemo(() => (

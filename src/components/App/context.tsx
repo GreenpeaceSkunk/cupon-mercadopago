@@ -39,16 +39,7 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
   useEffect(() => {
     if(appName !== null) {
       (async () => {
-        let sufix = '';
-        switch(process.env.REACT_APP_ENVIRONMENT) {
-          case 'development':
-            sufix = '-dev';
-          break;
-          case 'test':
-            sufix = '-test';
-          break;
-        }
-        const payload = await getCoupon(`${appName}${sufix}`) as any;
+        const payload = await getCoupon(appName) as any;
         if(payload) {
           window.sessionStorage.setItem('greenlab_app', payload.name)
           dispatch({

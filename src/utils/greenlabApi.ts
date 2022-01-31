@@ -22,7 +22,7 @@ export const getCoupon = async (appName = '') => {
       headers: {
         'X-Greenlab-App': window.sessionStorage.getItem('greenlab_app'),
       },
-      baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/application/coupon/${appName}`,
+      baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/application/coupon/${appName}/${process.env.REACT_APP_ENVIRONMENT}`,
       method: 'GET',
     });
     return response;

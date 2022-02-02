@@ -98,14 +98,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData.layout.home.title}</Heading3>
+              >{appData.content.home.title}</Heading3>
               <Elements.WrapperHtml
                 customCss={css`
                   color: ${({theme}) => theme.color.secondary.dark};
                   font-size: ${pixelToRem(18)};
                   line-height: 140%;
                 `}
-                dangerouslySetInnerHTML={{__html: appData.layout.home.text }}
+                dangerouslySetInnerHTML={{__html: appData.content.home.text }}
               />
               <Elements.Span
                 customCss={css`
@@ -117,7 +117,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData.layout.home.highlighted_text}</Elements.Span>
+              >{appData.content.home.highlighted_text}</Elements.Span>
 
               <Elements.Button
                 variant='contained'

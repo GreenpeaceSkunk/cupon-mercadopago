@@ -32,7 +32,7 @@ const MainHeader: FunctionComponent<{
             0deg,
             rgba(0, 0, 0, .75) 0%,
             rgba(0, 0, 0, 0) 100%),
-            url(${process.env.REACT_APP_GREENLAB_API_IMAGES}${appData.layout.header.picture});
+            url(${process.env.REACT_APP_GREENLAB_API_IMAGES}${appData.content.header.picture});
         `}
   
         @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
@@ -78,7 +78,7 @@ const MainHeader: FunctionComponent<{
                   font-size: ${pixelToRem(30)};
                 }
               `}
-            >{appData.layout.header.title}</Elements.H1>
+            >{appData.content.header.title}</Elements.H1>
           )} 
         </Elements.HGroup>
       </Elements.Wrapper>

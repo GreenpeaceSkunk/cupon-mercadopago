@@ -161,17 +161,17 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
   useEffect(() => {
     if(appData) {
-      if(appData.settings.amounts.values.filter((v: number) => v === appData.settings.amounts.default).length) {
+      if(appData.content.amounts.values.filter((v: number) => v === appData.content.amounts.default).length) {
         dispatch({
           type: 'UPDATE_PAYMENT_DATA',
-          payload: { 'amount': `${appData.settings.amounts.default}` }
+          payload: { 'amount': `${appData.content.amounts.default}` }
         });
       } else {
         dispatch({
           type: 'UPDATE_PAYMENT_DATA',
           payload: { 
             'amount': 'otherAmount',
-            'newAmount': `${appData.settings.amounts.default}`,
+            'newAmount': `${appData.content.amounts.default}`,
           }
         });
       }
@@ -185,9 +185,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     <Shared.Form.Main id='sign-form' onSubmit={onSubmitHandler}>
       <Shared.Form.Header>
         <Elements.HGroup>
-          <Shared.Form.Title>{appData && appData.layout.form.subscription.title}</Shared.Form.Title>
+          <Shared.Form.Title>{appData && appData.content.form.subscription.title}</Shared.Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>{appData && appData.layout.form.subscription.text}</Shared.General.Text>
+        <Shared.General.Text>{appData && appData.content.form.subscription.text}</Shared.General.Text>
       </Shared.Form.Header>
       <Shared.Form.Content>
         <Shared.Form.Row>
@@ -200,7 +200,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
               >
-                {appData.settings.amounts.values.map((value: number) => (
+                {appData.content.amounts.values.map((value: number) => (
                   <Shared.Form.RadioButton
                     key={`${value}`}
                     text={`$${value}`}
@@ -359,7 +359,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               padding-bottom: ${pixelToRem(10)};
             `}
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.layout.form.subscription.button_text)}</Elements.Button>
+        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content.form.subscription.button_text)}</Elements.Button>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [

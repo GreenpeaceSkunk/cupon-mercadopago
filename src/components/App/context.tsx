@@ -59,8 +59,6 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
 
       switch (process.env.REACT_APP_ENVIRONMENT) {
         case 'test':
-          initializeMercadopago();
-        break;
         case 'production':
           initializeTagManager(appData.settings.tracking.google.tag_manager.id);
           inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
@@ -73,7 +71,8 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
   }, [ appData ]);
 
   useEffect(() => {
-    if(process.env.REACT_APP_ENVIRONMENT === 'production') {
+    if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
+      process.env.REACT_APP_ENVIRONMENT === 'production') {
       trackEvent('PageView');
       pushToDataLayer('pageview');
     }

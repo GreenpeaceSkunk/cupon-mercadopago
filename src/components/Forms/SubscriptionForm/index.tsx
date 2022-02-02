@@ -114,7 +114,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SUBMIT',
       });
 
-      if(process.env.REACT_APP_ENVIRONMENT === 'production') {
+      if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
+        process.env.REACT_APP_ENVIRONMENT === 'production') {
         const contact = await createContact({
           email,
           firstname: firstName,
@@ -126,19 +127,20 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           pushToDataLayer({ 'event' : 'petitionSignup' });
 
           history.push({
-            pathname: generatePath(`/:couponType/forms/checkout`, {
+            pathname: generatePath('/:couponType/forms/checkout', {
               couponType: params.couponType,
             }),
-            search: `${searchParams}`,
+            search: searchParams,
           });
         }
       } else {
+        console.log('Contact will not be synchronized')
         const timer = setTimeout(() => {
           history.push({
-            pathname: generatePath(`/:couponType/forms/checkout`, {
+            pathname: generatePath('/:couponType/forms/checkout', {
               couponType: params.couponType,
             }),
-            search: `${searchParams}`,
+            search: searchParams,
           });
         }, 1000);
   

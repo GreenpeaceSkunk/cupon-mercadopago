@@ -131,7 +131,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     display: none;
                   }
                 `}
-              >¡Sumate!</Elements.Button>
+              >{appData.content.home.button_text}</Elements.Button>
             </Elements.Wrapper>
           </Elements.Wrapper>
         </Elements.Wrapper>

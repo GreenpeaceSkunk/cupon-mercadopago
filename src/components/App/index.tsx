@@ -2,7 +2,6 @@ import React, { useMemo, lazy, Suspense, useEffect } from 'react';
 import { initialize as initializeTagManager, pushToDataLayer } from '../../utils/googleTagManager';
 import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
 import { initialize as initializeMercadopago } from '../../utils/mercadopago';
-import { initialize as initializeDataCrush } from '../../utils/dataCrush';
 import { initialize as inititalizeAnalytics } from '../../utils/googleAnalytics';
 import { initialize as initializeHotjar } from '../../utils/hotjar';
 import Elements from '../Shared/Elements';
@@ -17,7 +16,6 @@ if(process.env.REACT_APP_ENVIRONMENT === 'production') {
   initializeTagManager();
   inititalizeAnalytics();
   initializeFacebookPixel();
-  initializeDataCrush();
   initializeHotjar();
 }
 

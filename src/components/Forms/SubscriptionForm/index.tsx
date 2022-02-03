@@ -15,12 +15,12 @@ import Shared from '../../Shared';
 import Elements from '../../Shared/Elements';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import { initialState, reducer } from './reducer';
-import { synchroInit } from '../../../utils/dataCrush';
 import { pushToDataLayer } from '../../../utils/googleTagManager';
 import { pixelToRem } from 'meema.utils';
 import { data as jsonData } from '../../../data/data.json';
 import useQuery from '../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
+import { createContact } from '../../../utils/greenlabApi';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const {
@@ -100,7 +100,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     dispatchFormErrors,
   ]);
 
-  const onSubmitHandler = useCallback((evt: FormEvent) => {
+  const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
 
     if(!allowNext) {
@@ -113,30 +113,31 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SUBMIT',
       });
 
-      if(process.env.REACT_APP_ENVIRONMENT === 'production') {
-        synchroInit({
-          first_name: firstName,
-          last_name: lastName,
+      if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
+        process.env.REACT_APP_ENVIRONMENT === 'production') {
+        
+        const contact = await createContact({
           email,
-          fecha_de_nacimiento: birthDate,
-          phone: phoneNumber,
-          area_code: areaCode,
-          genero: "",
-        }, 
-          `${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_1}`,
-          () => {
-            history.push({
-              pathname: generatePath(`/:couponType/forms/checkout`, {
-                couponType: params.couponType,
-              }),
-              search: `${searchParams}`,
-            });
-          },
-        );
+          firstname: firstName,
+          lastname: lastName,
+          phone: `${areaCode}${phoneNumber}`,
+        });
+        
+        if(contact) {
+          pushToDataLayer({ 'event' : 'petitionSignup' });
+
+          history.push({
+            pathname: generatePath('/:couponType/forms/checkout', {
+              couponType: params.couponType,
+            }),
+            search: searchParams,
+          });
+        }
         pushToDataLayer({
           'event' : 'petitionSignup',
         });
       } else {
+        console.log('Contact will not be synchronized');
         const timer = setTimeout(() => {
           history.push({
             pathname: generatePath(`/:couponType/forms/checkout`, {

@@ -8,7 +8,6 @@ import { pixelToRem } from 'meema.utils';
 import Elements from '../../Shared/Elements';
 import { getPublicKey, doSubscriptionPayment } from '../../../services/mercadopago';
 import Shared from '../../Shared';
-import { trackEvent as trackDataCrushEvent } from '../../../utils/dataCrush';
 import { initialState, reducer } from './reducer';
 import { createToken, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
 import { data as jsonData } from '../../../data/data.json';
@@ -93,7 +92,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   }
                   return a;
                 });
-    
+
                 const payload = {
                   device_id: window.MP_DEVICE_SESSION_ID,
                   payment_method_id: paymentMethod.payment_method_id,
@@ -132,17 +131,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     { campo: 'gpi__utm_content__c', valor: urlSearchParams.get('utm_content') },
                     { campo: 'gpi__utm_term__c', valor: urlSearchParams.get('utm_term') }
                   ],
-                  campaign_id: `${process.env.REACT_APP_CAMPAIGN_ID}`,
+                  campaign_id: `${urlSearchParams.get('campaign_id') || process.env.REACT_APP_CAMPAIGN_ID}`,
                 };
                 const result = await doSubscriptionPayment(payload);
     
                 if(result['error']) {
                   showSnackbar();
                 } else {
-                  if(process.env.REACT_APP_ENVIRONMENT === 'production') {
-                    trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_2}`, user.email);
-                  }
-                  
                   window.userAmount = amount;
   
                   history.push({

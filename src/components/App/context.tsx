@@ -12,6 +12,7 @@ import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/f
 import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as inititalizeAnalytics } from '../../utils/googleAnalytics';
 import { initialize as initializeHotjar } from '../../utils/hotjar';
+import { initialize as initializeHubspot } from '../../utils/hubspot';
 
 interface IContext {
   urlSearchParams: URLSearchParams;
@@ -64,6 +65,7 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
           inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
           initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
           initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
+          initializeHubspot(appData.settings.tracking.hubspot.id);
           initializeMercadopago();
           break;
       }

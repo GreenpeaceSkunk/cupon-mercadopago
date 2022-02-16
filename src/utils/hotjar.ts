@@ -6,9 +6,7 @@ export const initialize = async (hjid: number, hjsv: number) => {
       q: [ window, document, HOTJAR_URL, HOTJAR_EXTENSION],
     }
     window._hjSettings = {
-      // hjid: parseInt(`${process.env.REACT_APP_HOTJAR_ID}`),
       hjid,
-      // hjsv: parseInt(`${process.env.REACT_APP_HOTJAR_SV}`),
       hjsv,
     };
     let script = document.createElement('script');

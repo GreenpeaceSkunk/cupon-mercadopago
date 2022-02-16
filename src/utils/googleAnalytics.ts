@@ -5,11 +5,9 @@ let analytics: AnalyticsInstance;
 
 export const initialize = (app: string, trackingId: string) => {
   analytics = Analytics({
-    // app: `${process.env.REACT_APP_NAME}`,
     app,
     plugins: [
       googleAnalytics({
-        // trackingId: `${process.env.REACT_APP_GOOGLE_ANALYTICS_ID}`,
         trackingId,
       })
     ]

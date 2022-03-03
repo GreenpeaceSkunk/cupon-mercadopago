@@ -162,7 +162,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ]);
 
   useEffect(() => {
-    if(appData) {
+    if(appData && appData.content) {
       if(appData.content.amounts.values.filter((v: number) => v === appData.content.amounts.default).length) {
         dispatch({
           type: 'UPDATE_PAYMENT_DATA',
@@ -187,9 +187,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     <Shared.Form.Main id='sign-form' onSubmit={onSubmitHandler}>
       <Shared.Form.Header>
         <Elements.HGroup>
-          <Shared.Form.Title>{appData && appData.content.form.subscription.title}</Shared.Form.Title>
+          <Shared.Form.Title>{appData && appData.content && appData.content.form.subscription.title}</Shared.Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>{appData && appData.content.form.subscription.text}</Shared.General.Text>
+        <Shared.General.Text>{appData && appData.content && appData.content.form.subscription.text}</Shared.General.Text>
       </Shared.Form.Header>
       <Shared.Form.Content>
         <Shared.Form.Row>
@@ -202,7 +202,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
               >
-                {appData.content.amounts.values.map((value: number) => (
+                {appData && appData.content && appData.content.amounts.values.map((value: number) => (
                   <Shared.Form.RadioButton
                     key={`${value}`}
                     text={`$${value}`}
@@ -361,7 +361,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               padding-bottom: ${pixelToRem(10)};
             `}
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content.form.subscription.button_text)}</Elements.Button>
+        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.subscription.button_text)}</Elements.Button>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [

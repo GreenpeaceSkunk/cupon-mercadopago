@@ -53,7 +53,7 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
   }, [ appName ]);
 
   useEffect(() => {
-    if(appData) {
+    if(appData && appData.settings) {
       document.title = appData.settings.title 
         ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
         : 'Greenpeace Argentina';

@@ -39,11 +39,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           }
         `}
       >
-        {appData && <Elements.H1
+        <Elements.H1
           customCss={css`
             text-align: center;
           `}
-        >{appData.content.thankyou.title}</Elements.H1>}
+        >{appData && appData.content && appData.content.thankyou.title}</Elements.H1>
       </Elements.Wrapper>
       <Elements.Wrapper
         customCss={css`
@@ -58,7 +58,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               margin-top: ${pixelToRem(40)};
             `}
             theme='color'
-            text={appData && appData.content.thankyou.social_media_text}
+            text={appData && appData.content && appData.content.thankyou.social_media_text}
           />
         </Suspense>
       </Elements.Wrapper>

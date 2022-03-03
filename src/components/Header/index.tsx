@@ -7,7 +7,7 @@ import { AppContext } from '../App/context';
 
 const MainHeader: FunctionComponent<{
   customCss?: CustomCSSType;
-}> =({
+}> = ({
   customCss,
 }) => {
   const { appData } = useContext(AppContext);
@@ -32,7 +32,7 @@ const MainHeader: FunctionComponent<{
             0deg,
             rgba(0, 0, 0, .75) 0%,
             rgba(0, 0, 0, 0) 100%),
-            url(${process.env.REACT_APP_GREENLAB_API_IMAGES}${appData.content.header.picture});
+            url(${process.env.REACT_APP_GREENLAB_API_IMAGES}${appData && appData.content && appData.content.header.picture});
         `}
   
         @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
@@ -64,7 +64,7 @@ const MainHeader: FunctionComponent<{
             @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
               padding-right: ${pixelToRem(10)};
             }
-            `}
+          `}
         >
           {appData && (
             <Elements.H1
@@ -78,7 +78,7 @@ const MainHeader: FunctionComponent<{
                   font-size: ${pixelToRem(30)};
                 }
               `}
-            >{appData.content.header.title}</Elements.H1>
+            >{appData && appData.content && appData.content.header.title}</Elements.H1>
           )} 
         </Elements.HGroup>
       </Elements.Wrapper>

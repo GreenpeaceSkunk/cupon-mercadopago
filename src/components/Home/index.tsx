@@ -24,8 +24,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
   return useMemo(() => (
     <>
-      {appData && (
-        <Elements.View
+      <Elements.View
         ref={viewRef}
         customCss={css`
           display: flex;
@@ -98,14 +97,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData.content.home.title}</Heading3>
+              >{appData && appData.content && appData.content.home.title}</Heading3>
               <Elements.WrapperHtml
                 customCss={css`
                   color: ${({theme}) => theme.color.secondary.dark};
                   font-size: ${pixelToRem(18)};
                   line-height: 140%;
                 `}
-                dangerouslySetInnerHTML={{__html: appData.content.home.text }}
+                dangerouslySetInnerHTML={{__html: appData && appData.content && appData.content.home.text }}
               />
               <Elements.Span
                 customCss={css`
@@ -117,8 +116,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData.content.home.highlighted_text}</Elements.Span>
-
+              >{appData && appData.content && appData.content.home.highlighted_text}</Elements.Span>
               <Elements.Button
                 variant='contained'
                 onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
@@ -131,7 +129,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     display: none;
                   }
                 `}
-              >{appData.content.home.button_text}</Elements.Button>
+              >{appData && appData.content && appData.content.home.button_text}</Elements.Button>
             </Elements.Wrapper>
           </Elements.Wrapper>
         </Elements.Wrapper>
@@ -150,7 +148,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           <Router />
         </Elements.Wrapper>
       </Elements.View>
-      )}
       <ErrorBoundary fallback='Footer Error.'>
         <Suspense fallback={<Shared.Loader />}>
           <Elements.Wrapper>  

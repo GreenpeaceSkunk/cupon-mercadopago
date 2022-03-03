@@ -57,13 +57,13 @@ const Component: FunctionComponent<{}> = memo(() => {
           right: ${pixelToRem(15)};
         `}
       />
-      {appData && <Elements.H3
+      {appData && appData.content && <Elements.H3
         customCss={css`
           font-size: ${pixelToRem(20)};
           margin-bottom: 0;
         `}
       >{appData.content.modal_form.title}</Elements.H3>}
-      {appData && <Elements.P>{appData.content.modal_form.text}</Elements.P>}
+      {appData && appData.content && <Elements.P>{appData.content.modal_form.text}</Elements.P>}
       <Elements.Button
         variant='contained'
         onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
@@ -72,7 +72,7 @@ const Component: FunctionComponent<{}> = memo(() => {
           box-shadow: 0 ${pixelToRem(4)} ${pixelToRem(14)} rgba(0, 0, 0, .25);
           padding: ${pixelToRem(7)} 0;
         `}
-      >{appData && appData.content.modal_form.button_text}</Elements.Button>
+      >{appData && appData.content && appData.content.modal_form.button_text}</Elements.Button>
     </Elements.Wrapper>
   ), [
     isOpen,

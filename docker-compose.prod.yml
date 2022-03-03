@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  api:
+    container_name: api
+    image: greenpeace_greenlab_api:prod
+    build:
+      context: ../greenpeace-greenlab-api
+      dockerfile: Dockerfile
+      target: production

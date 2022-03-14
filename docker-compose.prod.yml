@@ -1,10 +1,10 @@
 version: "3.7"
 
 services:
-  api:
-    container_name: api
-    image: greenpeace_greenlab_api:prod
+  app:
+    image: greenpeace_mercadopago_coupon:prod
+    container_name: greenpeace_mercadopago_coupon
     build:
-      context: ../greenpeace-greenlab-api
+      context: .
       dockerfile: Dockerfile
       target: production

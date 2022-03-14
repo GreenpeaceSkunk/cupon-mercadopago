@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  coupon:
+  app:
     image: greenpeace_mercadopago_coupon:dev
     container_name: greenpeace_mercadopago_coupon
     build:
@@ -9,8 +9,8 @@ services:
       dockerfile: Dockerfile
       target: base
     volumes:
-      - ./repos/app/:/home/app/coupon/
-      - /home/app/coupon/node_modules
+      - ./:/home/app/coupon/
+      - /home/app/coupon/node_modules/
     expose:
       - '3000'
     ports:
@@ -18,3 +18,4 @@ services:
     environment:
       - PORT=3000
     command: npm run client:start:development
+    stdin_open: true

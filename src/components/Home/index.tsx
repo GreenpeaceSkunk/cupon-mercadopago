@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import ErrorBoundary from '../ErrorBoundary';
 import { AppContext } from '../App/context';
-import { data as jsonData } from '../../data/data.json';
+// import { data as jsonData } from '../../data/data.json';
 import ModalOpenForm from '../ModalOpenForm';
 
 const Header = lazy(() => import('../Header'));
@@ -20,7 +20,7 @@ const Heading3 = styled(Elements.H3)`
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const viewRef = useRef<HTMLElement>(null);
-  const { setIsOpen } = useContext(AppContext);
+  const { appData, setIsOpen } = useContext(AppContext);
 
   return useMemo(() => (
     <>
@@ -97,16 +97,16 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{jsonData.campaign.regular.texts.home.title}</Heading3>
+              >{appData && appData.content && appData.content.home.title}</Heading3>
               <Elements.WrapperHtml
                 customCss={css`
                   color: ${({theme}) => theme.color.secondary.dark};
                   font-size: ${pixelToRem(18)};
                   line-height: 140%;
                 `}
-                dangerouslySetInnerHTML={{__html: jsonData.campaign.regular.texts.home.text }}
+                dangerouslySetInnerHTML={{__html: appData && appData.content && appData.content.home.text }}
               />
-              <Elements.A
+              <Elements.Span
                 customCss={css`
                   font-family: ${({theme}) => theme.font.family.primary.bold};
                   font-size: ${pixelToRem(18)};
@@ -116,8 +116,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{jsonData.campaign.regular.texts.home.highlighted_text}</Elements.A>
-
+              >{appData && appData.content && appData.content.home.highlighted_text}</Elements.Span>
               <Elements.Button
                 variant='contained'
                 onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
@@ -130,7 +129,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     display: none;
                   }
                 `}
-              >¡Sumate!</Elements.Button>
+              >{appData && appData.content && appData.content.home.button_text}</Elements.Button>
             </Elements.Wrapper>
           </Elements.Wrapper>
         </Elements.Wrapper>
@@ -160,6 +159,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     </>
   ), [
     viewRef,
+    appData,
     setIsOpen,
   ]);
 });

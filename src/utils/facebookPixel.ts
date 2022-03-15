@@ -1,7 +1,7 @@
 import ReactPixel from 'react-facebook-pixel';
 
-export const initialize = () => {
-  ReactPixel.init(`${process.env.REACT_APP_FACEBOOK_PIXEL_ID}`);
+export const initialize = (pixelId: number) => {
+  ReactPixel.init(`${pixelId}`);
 }
 
 export const trackEvent = (event: 'PageView' | 'Donate' ) => {

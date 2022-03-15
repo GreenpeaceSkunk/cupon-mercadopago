@@ -8,14 +8,14 @@ import { pixelToRem } from 'meema.utils';
 import Elements from '../../Shared/Elements';
 import { getPublicKey, doSubscriptionPayment } from '../../../services/mercadopago';
 import Shared from '../../Shared';
-import { trackEvent as trackDataCrushEvent } from '../../../utils/dataCrush';
 import { initialState, reducer } from './reducer';
 import { createToken, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
-import { data as jsonData } from '../../../data/data.json';
 import useQuery from '../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
+import { AppContext } from '../../App/context';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
+  const { appData } = useContext(AppContext);
   const { data: {
     payment,
     user,
@@ -132,17 +132,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     { campo: 'gpi__utm_content__c', valor: urlSearchParams.get('utm_content') },
                     { campo: 'gpi__utm_term__c', valor: urlSearchParams.get('utm_term') }
                   ],
-                  campaign_id: `${process.env.REACT_APP_CAMPAIGN_ID}`,
+                  campaign_id: `${appData.settings.tracking.salesforce.campaign_id}`,
                 };
                 const result = await doSubscriptionPayment(payload);
     
                 if(result['error']) {
                   showSnackbar();
                 } else {
-                  if(process.env.REACT_APP_ENVIRONMENT === 'production') {
-                    trackDataCrushEvent(`${process.env.REACT_APP_DATA_CRUSH_EVENT_SK_DONACION_PASO_2}`, user.email);
-                  }
-                  
                   window.userAmount = amount;
   
                   history.push({
@@ -202,6 +198,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     history,
     params.couponType,
     urlSearchParams,
+    appData,
     showSnackbar,
   ]);
 
@@ -213,9 +210,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     >
       <Shared.Form.Header>
         <Elements.HGroup>
-          <Shared.Form.Title>{jsonData.campaign.regular.texts.forms.checkout.title}</Shared.Form.Title>
+          <Shared.Form.Title>{appData && appData.content && appData.content.form.checkout.title}</Shared.Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>{jsonData.campaign.regular.texts.forms.checkout.text}</Shared.General.Text>
+        <Shared.General.Text>{appData && appData.content && appData.content.form.checkout.text}</Shared.General.Text>
       </Shared.Form.Header>
       <Shared.Form.Content>
         <Shared.Form.Row>
@@ -394,7 +391,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               padding-bottom: ${pixelToRem(10)};
             `}
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : jsonData.campaign.regular.texts.forms.checkout.button_text}</Elements.Button>
+        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}</Elements.Button>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
@@ -404,6 +401,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     snackbarRef,
     showFieldErrors,
     errorMessage,
+    appData,
     onSubmitHandler,
     onChangeHandler,
     onUpdateFieldHandler,

@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  app:
+    image: greenpeace_mercadopago_coupon:prod
+    container_name: greenpeace_mercadopago_coupon
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production

@@ -52,7 +52,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         </Route>
       </Switch>
     </AppProvider>
-
   ), [
     path,
   ]);

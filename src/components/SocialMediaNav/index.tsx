@@ -56,13 +56,13 @@ const Component: FunctionComponent<{
       `}
     >
       <SocialButton
-        href={`${process.env.REACT_APP_GREENPEACE_FACEBOOK}`}
+        href={'https://www.facebook.com/GreenpeaceArg/'}
         icon={theme === 'color' ? Icons.FacebookOrangeLogo : Icons.FacebookLogo} />
       <SocialButton
-        href={`${process.env.REACT_APP_GREENPEACE_TWITTER}`}
+        href={'https://twitter.com/GreenpeaceArg'}
         icon={theme === 'color' ? Icons.TwitterOrangeLogo : Icons.TwitterLogo} />
       <SocialButton
-        href={`${process.env.REACT_APP_GREENPEACE_INSTAGRAM}`}
+        href={'https://www.instagram.com/greenpeacearg/'}
         icon={theme === 'color' ? Icons.InstagramOrangeLogo : Icons.InstagramLogo} />
     </Elements.Nav>
   </Elements.Wrapper>

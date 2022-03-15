@@ -1,6 +1,8 @@
 import { AxiosResquestError } from 'greenpeace';
 import {ApiCall} from '../utils/apiCall';
 
+const API_URL = 'https://api.mercadopago.com/v1';
+
 interface IPaymentParams {
   active?: boolean;
   payment_method_id?: string;
@@ -19,7 +21,7 @@ interface IPaymentParams {
 
 export const getPaymentMethods = async (params: IPaymentParams): Promise<any | AxiosResquestError> => {
   return ApiCall({
-    url: `${process.env.REACT_APP_MERCADOPAGO_API_URL}/payment_methods`,
+    url: `${API_URL}/payment_methods`,
     method: 'GET',
     params: {
       ...params,
@@ -32,7 +34,7 @@ export const getPaymentMethods = async (params: IPaymentParams): Promise<any | A
 
 export const getPaymentMethodsSearch = async (params: IPaymentParams): Promise<any | AxiosResquestError> => {
   return ApiCall({
-    url: `${process.env.REACT_APP_MERCADOPAGO_API_URL}/payment_methods/search`,
+    url: `${API_URL}/payment_methods/search`,
     method: 'GET',
     params: {
       ...params,
@@ -45,7 +47,7 @@ export const getPaymentMethodsSearch = async (params: IPaymentParams): Promise<a
 
 export const getPaymentMethodsInstallments = async (params: IPaymentParams): Promise<any | AxiosResquestError> => {
   return ApiCall({
-    url: `${process.env.REACT_APP_MERCADOPAGO_API_URL}/payment_methods/installments`,
+    url: `${API_URL}/payment_methods/installments`,
     method: 'GET',
     params: {
       ...params,
@@ -58,7 +60,7 @@ export const getPaymentMethodsInstallments = async (params: IPaymentParams): Pro
 
 export const getIdentificationTypes = async (params: IPaymentParams): Promise<any | AxiosResquestError> => {
   return ApiCall({
-    url: `${process.env.REACT_APP_MERCADOPAGO_API_URL}/identification_types`,
+    url: `${API_URL}/identification_types`,
     method: 'GET',
     params: {
       ...params,

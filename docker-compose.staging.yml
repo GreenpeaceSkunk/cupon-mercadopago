@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  app:
+    image: greenpeace_mercadopago_coupon:staging
+    container_name: greenpeace_mercadopago_coupon_staging
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: staging
+    volumes:
+      - ./:/home/app/coupon/
+      - /home/app/coupon/node_modules/
+    expose:
+      - '3001'
+    ports:
+      - '3001:3001'
+    environment:
+      - PORT=3001
+    # command: npm run client:start:test

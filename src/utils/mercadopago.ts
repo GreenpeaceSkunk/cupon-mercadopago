@@ -9,7 +9,7 @@ export const ERROR_CODES: {[key: string]: string} = {
   '325': 'El mes es inválido.',
   '326': 'El año es inválido.',
   'default': 'Revisa los datos.',
-}
+};
 
 export const initialize = () => {
   (async () => {

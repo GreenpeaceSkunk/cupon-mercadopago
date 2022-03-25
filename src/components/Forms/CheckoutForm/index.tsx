@@ -1,4 +1,4 @@
-import React, { FormEvent, memo, useCallback, useContext, useState, useRef, useReducer, useMemo } from 'react';
+import React, { FormEvent, memo, useCallback, useContext, useState, useRef, useReducer, useMemo, useEffect } from 'react';
 import { generatePath, useHistory } from 'react-router-dom';
 import { FormContext } from '../context';
 import { OnChangeEvent } from 'greenpeace';
@@ -16,23 +16,21 @@ import { AppContext } from '../../App/context';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
-  const { data: {
-    payment,
-    user,
-  }, params, dispatch } = useContext(FormContext);
-  const [{ submitting, allowNext }, dispatchFormErrors ] = useReducer(reducer, initialState);
+  const { data: { payment, user }, params, dispatch } = useContext(FormContext);
+  const [{ submitting, submitted, allowNext }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
   const [ errorMessage, setErrorMessage ] = useState<string>('');
+  const [ attemps, setAttemps ] = useState<number>(0);
   const history = useHistory();
   const formRef = useRef<HTMLFormElement>(null);
   const snackbarRef = useRef<ISnackbarRef>(null);
   const { searchParams, urlSearchParams } = useQuery();
 
-  const showSnackbar = useCallback(() => {
-    if(snackbarRef && snackbarRef.current) {
-      snackbarRef.current.showSnackbar();
-    }
-  }, []);
+  // const showSnackbar = useCallback(() => {
+  //   if(snackbarRef && snackbarRef.current) {
+  //     snackbarRef.current.showSnackbar();
+  //   }
+  // }, []);
 
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
@@ -54,139 +52,160 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     });
   }, []);
 
+  const goToThankYou = useCallback(() => {
+    const timer = setTimeout(() => {
+      console.log('End timer');
+      // history.push({
+      //   pathname: generatePath(`/:couponType/forms/thank-you`, {
+      //     couponType: params.couponType,
+      //   }),
+      //   search: `${searchParams}`,
+      // });
+    }, 1000);
+  }, [
+    history,
+    params,
+    searchParams,
+  ]);
+
+  /**
+   * Backup to Forma.
+   */
+  const backupInformation = useCallback(( payload = null ) => {
+    console.log('Backup information');
+    // Backup information
+    // dispatchFormErrors({ type: 'SUBMITTED' });
+  }, [ dispatchFormErrors ]);
+
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
-    
+
     if(!allowNext) {
       setShowFieldErrors(true);
       setErrorMessage('Tenés campos incompletos o con errores. Revisalos para continuar.')
-      showSnackbar();
     } else {
       (async () => {
-        dispatchFormErrors({
-          type: 'SUBMIT',
-        });
+        dispatchFormErrors({ type: 'SUBMIT' });
   
-        if(process.env.REACT_APP_ENVIRONMENT === 'production' || process.env.REACT_APP_ENVIRONMENT === 'test') {
-          if(formRef.current) {
-            setPublishableKey(await getPublicKey());
-            const token = await createToken(formRef.current);
-            const amount = payment.amount === 'otherAmount' ? payment.newAmount : payment.amount;
-            
-            if(token.isValid) {
-              const paymentMethod = await getInstallments({
-                bin: payment.cardNumber.slice(0, 6),
-                amount,
-              });
-    
-              if(paymentMethod) {
-                const merchantAccounts = (paymentMethod.agreements.length) ? paymentMethod.agreements[0].merchant_accounts : [];
-                let merchantAccount = merchantAccounts.filter((a: any) => {
-                  if(`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && paymentMethod.payment_method_id === 'amex') {
-                    return a;
-                  }
-                  if (params.couponType === 'regular' && a.branch_id === 'regular') {
-                    return a;
-                  }
-                  if(params.couponType === 'oneoff' && a.branch_id === null) {
-                    return a;
-                  }
+        // if(process.env.REACT_APP_ENVIRONMENT === 'production' || process.env.REACT_APP_ENVIRONMENT === 'test') {
+        if(formRef.current) {
+          setPublishableKey(await getPublicKey());
+          const token = await createToken(formRef.current);
+          const amount = payment.amount === 'otherAmount' ? payment.newAmount : payment.amount;
+          
+          if(token.isValid) {
+            const paymentMethod = await getInstallments({
+              bin: payment.cardNumber.slice(0, 6),
+              amount,
+            });
+
+            if(paymentMethod) {
+              const merchantAccounts = (paymentMethod.agreements.length) ? paymentMethod.agreements[0].merchant_accounts : [];
+              let merchantAccount = merchantAccounts.filter((a: any) => {
+                if(`${process.env.REACT_APP_COUPON_TYPE}` === 'regular' && paymentMethod.payment_method_id === 'amex') {
                   return a;
-                });
-    
-                const payload = {
-                  device_id: window.MP_DEVICE_SESSION_ID,
-                  payment_method_id: paymentMethod.payment_method_id,
-                  issuer_id: paymentMethod.issuer.id,
-                  token: window.Mercadopago.tokenId,
-                  type: params.couponType,
-                  merchant_account_id: (merchantAccount.length) ? merchantAccount[0].id : null,
-                  payment_method_option_id: (merchantAccount.length) ? merchantAccount[0].payment_method_option_id : null,
-                  amount,
-                  nombre: user.firstName,
-                  apellido: user.lastName,
-                  cod_area: user.areaCode,
-                  telefono: user.phoneNumber,
-                  email: user.email,
-                  genero: '',
-                  pais: '',
-                  direccion: '',
-                  localidad: '',
-                  provincia: '',
-                  codigo_provincia: '',
-                  codigo_postal: '',
-                  ocupacion: '',
-                  tipodocumento: payment.docType,
-                  mes_vencimiento: payment.cardExpirationMonth,
-                  ano_vencimiento: payment.cardExpirationYear,
-                  documento: payment.docNumber,
-                  firstDigits: payment.cardNumber.slice(0, 6),
-                  lastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
-                  date: new Date(),
-                  today: 1,
-                  tomorrow: 2,
-                  utms: [
-                    { campo: 'gpi__utm_campaign__c', valor: urlSearchParams.get('utm_campaign') },
-                    { campo: 'gpi__utm_medium__c', valor: urlSearchParams.get('utm_medium') },
-                    { campo: 'gpi__utm_source__c', valor: urlSearchParams.get('utm_source') },
-                    { campo: 'gpi__utm_content__c', valor: urlSearchParams.get('utm_content') },
-                    { campo: 'gpi__utm_term__c', valor: urlSearchParams.get('utm_term') }
-                  ],
-                  campaign_id: `${appData.settings.tracking.salesforce.campaign_id}`,
-                };
-                const result = await doSubscriptionPayment(payload);
-    
-                if(result['error']) {
-                  showSnackbar();
-                } else {
-                  window.userAmount = amount;
-  
-                  history.push({
-                    pathname: generatePath(`/:couponType/forms/thank-you`, {
-                      couponType: params.couponType,
-                    }),
-                    search: `${searchParams}`,
-                  });
-                
-                  dispatchFormErrors({
-                    type: 'SUBMITTED',
-                  });
-                  
-                  return () => {
-                    paymentMethod.cancel();
-                    result.cancel();
-                  }
                 }
+                if (params.couponType === 'regular' && a.branch_id === 'regular') {
+                  return a;
+                }
+                if(params.couponType === 'oneoff' && a.branch_id === null) {
+                  return a;
+                }
+                return a;
+              });
+  
+              const payload = {
+                device_id: window.MP_DEVICE_SESSION_ID,
+                payment_method_id: paymentMethod.payment_method_id,
+                issuer_id: paymentMethod.issuer.id,
+                token: window.Mercadopago.tokenId,
+                type: params.couponType,
+                merchant_account_id: (merchantAccount.length) ? merchantAccount[0].id : null,
+                payment_method_option_id: (merchantAccount.length) ? merchantAccount[0].payment_method_option_id : null,
+                amount,
+                nombre: user.firstName,
+                apellido: user.lastName,
+                cod_area: user.areaCode,
+                telefono: user.phoneNumber,
+                email: user.email,
+                genero: '',
+                pais: '',
+                direccion: '',
+                localidad: '',
+                provincia: '',
+                codigo_provincia: '',
+                codigo_postal: '',
+                ocupacion: '',
+                tipodocumento: payment.docType,
+                mes_vencimiento: payment.cardExpirationMonth,
+                ano_vencimiento: payment.cardExpirationYear,
+                documento: payment.docNumber,
+                firstDigits: payment.cardNumber.slice(0, 6),
+                lastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
+                date: new Date(),
+                today: 1,
+                tomorrow: 2,
+                utms: [
+                  { campo: 'gpi__utm_campaign__c', valor: urlSearchParams.get('utm_campaign') },
+                  { campo: 'gpi__utm_medium__c', valor: urlSearchParams.get('utm_medium') },
+                  { campo: 'gpi__utm_source__c', valor: urlSearchParams.get('utm_source') },
+                  { campo: 'gpi__utm_content__c', valor: urlSearchParams.get('utm_content') },
+                  { campo: 'gpi__utm_term__c', valor: urlSearchParams.get('utm_term') },
+                ],
+                campaign_id: `${appData.settings.tracking.salesforce.campaign_id}`,
+              };
+              
+              const result = await doSubscriptionPayment(payload);
+              console.log(result);
+              if(result['error']) {
+                // console.log(result)
+                setErrorMessage(result.message);
+                // backupInformation(payload);
               } else {
-                showSnackbar();
-                setErrorMessage('Ocurrió un error inesperado, pruebe con otra tarjeta.');
-                dispatchFormErrors({
-                  type: 'SUBMITTED',
-                });
+                window.userAmount = amount;
+                // console.log(result)
+
+                // history.push({
+                //   pathname: generatePath(`/:couponType/forms/thank-you`, {
+                //     couponType: params.couponType,
+                //   }),
+                //   search: `${searchParams}`,
+                // });
+              
+                // dispatchFormErrors({ type: 'SUBMITTED' });
+                
+                return () => {
+                  paymentMethod.cancel();
+                  result.cancel();
+                }
               }
             } else {
-              console.log('No se creó el Token', token.message);
-              showSnackbar();
-              setErrorMessage(token.message);
-              dispatchFormErrors({
-                type: 'SUBMITTED',
-              });
+              // showSnackbar();
+              setErrorMessage('Ocurrió un error inesperado, pruebe con otra tarjeta.');
+              // dispatchFormErrors({ type: 'SUBMITTED' });
             }
-          }
-        } else {
-          const timer = setTimeout(() => {
-            history.push({
-              pathname: generatePath(`/:couponType/forms/thank-you`, {
-                couponType: params.couponType,
-              }),
-              search: `${searchParams}`,
-            });
-          }, 1000);
-    
-          return () => {
-            clearTimeout(timer);
+          } else {
+            console.log('No se creó el Token', token.message);
+            setAttemps(attemps + 1);
+            setErrorMessage(token.message);
+            // showSnackbar();
+            // dispatchFormErrors({ type: 'SUBMITTED' });
           }
         }
+        // } else {
+        //   const timer = setTimeout(() => {
+        //     history.push({
+        //       pathname: generatePath(`/:couponType/forms/thank-you`, {
+        //         couponType: params.couponType,
+        //       }),
+        //       search: `${searchParams}`,
+        //     });
+        //   }, 1000);
+    
+        //   return () => {
+        //     clearTimeout(timer);
+        //   }
+        // }
       })();
     }
   }, [
@@ -199,7 +218,26 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     params.couponType,
     urlSearchParams,
     appData,
-    showSnackbar,
+    // showSnackbar,
+  ]);
+
+  useEffect(() => {
+    // if(submitted) {
+    //   goToThankYou();
+    // }
+  }, [
+    // submitted,
+    goToThankYou,
+  ]);
+  
+  useEffect(() => {
+    if(errorMessage) {
+      if(snackbarRef && snackbarRef.current) {
+        snackbarRef.current.showSnackbar();
+      }
+    }
+  }, [
+    errorMessage,
   ]);
 
   return useMemo(() => (
@@ -397,11 +435,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ), [
     formRef,
     payment,
+    submitted,
     submitting,
     snackbarRef,
     showFieldErrors,
     errorMessage,
     appData,
+    dispatchFormErrors,
     onSubmitHandler,
     onChangeHandler,
     onUpdateFieldHandler,

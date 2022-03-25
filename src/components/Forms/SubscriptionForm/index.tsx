@@ -19,7 +19,7 @@ import { pushToDataLayer } from '../../../utils/googleTagManager';
 import { pixelToRem } from 'meema.utils';
 import useQuery from '../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
-import { createContact } from '../../../utils/greenlabApi';
+import { createContact } from '../../../services/greenlab';
 import { AppContext } from '../../App/context';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
@@ -103,7 +103,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
-
+    
     if(!allowNext) {
       setShowFieldErrors(true);
       if(snackbarRef && snackbarRef.current) {
@@ -114,39 +114,45 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SUBMIT',
       });
 
-      if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
-        process.env.REACT_APP_ENVIRONMENT === 'production') {
-        const contact = await createContact({
-          email,
-          firstname: firstName,
-          lastname: lastName,
-          phone: `${areaCode}${phoneNumber}`,
+      // if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
+      //   process.env.REACT_APP_ENVIRONMENT === 'production') {
+      const contact = await createContact({
+        email,
+        firstname: firstName,
+        lastname: lastName,
+        phone: `${areaCode}${phoneNumber}`,
+        donationStatus: 'requested',
+      });
+
+      if(contact) {
+        pushToDataLayer({ 'event' : 'petitionSignup' });
+
+        history.push({
+          pathname: generatePath('/:couponType/forms/checkout', {
+            couponType: params.couponType,
+          }),
+          search: searchParams,
         });
+      // }
+        // } else {
+        //   console.log('Contact will not be synchronized')
 
-        if(contact) {
-          pushToDataLayer({ 'event' : 'petitionSignup' });
+        // TODO: Update data to Hubspot
 
-          history.push({
-            pathname: generatePath('/:couponType/forms/checkout', {
-              couponType: params.couponType,
-            }),
-            search: searchParams,
-          });
-        }
-      } else {
-        console.log('Contact will not be synchronized')
-        const timer = setTimeout(() => {
-          history.push({
-            pathname: generatePath('/:couponType/forms/checkout', {
-              couponType: params.couponType,
-            }),
-            search: searchParams,
-          });
-        }, 1000);
-  
-        return () => {
-          clearTimeout(timer);
-        }
+        // Simulate POST data.
+        // It'll be synchronized by the Checkout Form.
+        // const timer = setTimeout(() => {
+        //   history.push({
+        //     pathname: generatePath('/:couponType/forms/checkout', {
+        //       couponType: params.couponType,
+        //     }),
+        //     search: searchParams,
+        //   });
+        // }, 1000);
+
+        // return () => {
+        //   clearTimeout(timer);
+        // }
       }
     }
   }, [

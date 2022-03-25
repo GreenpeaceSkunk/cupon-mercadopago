@@ -69,6 +69,7 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
       };
     }
     case 'SUBMITTED': {
+      console.log('Sumbmitted');
       return {
         ...state,
         submitting: false,

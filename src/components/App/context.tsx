@@ -5,7 +5,7 @@ import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../theme/globalStyle';
 import Theme from '../../theme/Theme';
 import ErrorBoundary from '../ErrorBoundary';
-import { getCoupon } from "../../utils/greenlabApi";
+import { getCoupon } from "../../services/greenlab";
 import { initialState, reducer } from './reducer';
 import { initialize as initializeTagManager, pushToDataLayer } from '../../utils/googleTagManager';
 import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
@@ -58,6 +58,9 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
         ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
         : 'Greenpeace Argentina';
 
+      initializeHubspot(appData.settings.tracking.hubspot.id);
+      initializeMercadopago();
+      
       switch (process.env.REACT_APP_ENVIRONMENT) {
         case 'test':
         case 'production':
@@ -65,8 +68,6 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
           inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
           initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
           initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
-          initializeHubspot(appData.settings.tracking.hubspot.id);
-          initializeMercadopago();
           break;
       }
     }

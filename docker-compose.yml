@@ -12,10 +12,10 @@ services:
       - ./:/home/app/coupon/
       - /home/app/coupon/node_modules/
     expose:
-      - '3000'
+      - '3001'
     ports:
-      - '3000:3000'
+      - '3001:3001'
     environment:
-      - PORT=3000
+      - PORT=3001
     command: npm run client:start:development
     stdin_open: true

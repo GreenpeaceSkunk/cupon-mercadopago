@@ -129,7 +129,7 @@ export const Button = styled(StyledButton)`
   border-radius: ${(({theme}) => pixelToRem(theme.borderRadius))};
   font-size: ${pixelToRem(18)};
   font-family: ${({theme}) => theme.font.family.primary.bold};
-  min-height: ${pixelToRem(48)};
+  /* min-height: ${pixelToRem(48)}; */
   white-space: nowrap;
 
   &:hover {

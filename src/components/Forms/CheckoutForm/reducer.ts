@@ -6,6 +6,7 @@ export type ContextStateType = {
   errors: FieldErrorType;
   isEdited: boolean;
   allowNext: boolean;
+  attemps: number,
 } & SharedState;
 
 export type ContextActionType = 
@@ -14,6 +15,7 @@ export type ContextActionType =
 | { type: 'UPDATE_FORM_STATUS' }
 | { type: 'RESET' }
 | { type: 'SET_ERROR', error: string | null }
+| { type: 'SUBMITTED_WITH_ERRORS', error: string | null }
 | SharedActions;
 
 export const initialState: ContextStateType = {
@@ -23,6 +25,7 @@ export const initialState: ContextStateType = {
   submitting: false,
   isEdited: false,
   allowNext: false,
+  attemps: 0,
 }
 
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
@@ -66,15 +69,25 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
         submitting: true,
         submitted: false,
         isEdited: false,
+        error: null,
       };
     }
     case 'SUBMITTED': {
-      console.log('Sumbmitted');
       return {
         ...state,
         submitting: false,
         submitted: true,
         isEdited: false,
+      };
+    }
+    case 'SUBMITTED_WITH_ERRORS': {
+      return {
+        ...state,
+        error: action.error,
+        submitting: false,
+        submitted: true,
+        isEdited: false,
+        attemps: state.attemps + 1,
       };
     }
     default: {

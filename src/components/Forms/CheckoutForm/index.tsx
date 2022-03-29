@@ -9,18 +9,18 @@ import Elements from '../../Shared/Elements';
 import { getPublicKey, doSubscriptionPayment } from '../../../services/mercadopago';
 import Shared from '../../Shared';
 import { initialState, reducer } from './reducer';
-import { createToken, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
+import { createToken, getCardType, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
 import useQuery from '../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
 import { AppContext } from '../../App/context';
+import { postRecord, updateContact } from '../../../services/greenlab';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
   const { data: { payment, user }, params, dispatch } = useContext(FormContext);
-  const [{ submitting, submitted, allowNext }, dispatchFormErrors ] = useReducer(reducer, initialState);
+  const [{ submitting, submitted, allowNext, error, attemps }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
-  const [ errorMessage, setErrorMessage ] = useState<string>('');
-  const [ attemps, setAttemps ] = useState<number>(0);
+  // const [ errorMessage, setErrorMessage ] = useState<string|null>(null);
   const history = useHistory();
   const formRef = useRef<HTMLFormElement>(null);
   const snackbarRef = useRef<ISnackbarRef>(null);
@@ -53,15 +53,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   }, []);
 
   const goToThankYou = useCallback(() => {
-    const timer = setTimeout(() => {
-      console.log('End timer');
-      // history.push({
-      //   pathname: generatePath(`/:couponType/forms/thank-you`, {
-      //     couponType: params.couponType,
-      //   }),
-      //   search: `${searchParams}`,
-      // });
-    }, 1000);
+    // const timer = setTimeout(() => {
+    //   history.push({
+    //     pathname: generatePath(`/:couponType/forms/thank-you`, {
+    //       couponType: params.couponType,
+    //     }),
+    //     search: `${searchParams}`,
+    //   });
+    // }, 1000);
   }, [
     history,
     params,
@@ -72,17 +71,94 @@ const Component: React.FunctionComponent<{}> = memo(() => {
    * Backup to Forma.
    */
   const backupInformation = useCallback(( payload = null ) => {
-    console.log('Backup information');
-    // Backup information
-    // dispatchFormErrors({ type: 'SUBMITTED' });
-  }, [ dispatchFormErrors ]);
+    (async () => {
+      // console.log('Backup information', payload);
+
+      const contact = await updateContact(payload.email, {
+        donationStatus: payload.donationStatus,
+      });
+      // console.log(contact);
+
+      if(appData && appData.settings && appData.settings.service) {
+        const { service } = appData.settings;
+  
+        if(service.forma.transactions_form) {
+          const newRecordResult = await postRecord({
+            amount: payload.amount,
+            areaCode: payload.cod_area,
+            campaignId: payload.campaign_id,
+            card: payload.card,
+            card_type: payload.card_type,
+            cardExpirationMonth: payload.mes_vencimiento,
+            cardExpirationYear: payload.ano_vencimiento,
+            citizenId: payload.citizenId,
+            citizenIdType: '',
+            device_id: payload.device_id,
+            donationStatus: payload.donationStatus,
+            email: payload.email,
+            firstName: payload.firstName,
+            form_id: service.forma.transactions_form,
+            fromUrl: document.location.href,
+            lastName: payload.lastName,
+            mpDeviceId: payload.mpDeviceId,
+            mpPayMethodId: payload.mpPayMethodId,
+            mpPayOptId: payload.mpPayOptId,
+            phoneNumber: payload.phoneNumber,
+            recurrenceDay: payload.tomorrow,
+            transactionDate: payload.date,
+            userAgent: window.navigator.userAgent,
+            utm: payload.utms,
+          });
+
+          
+          // console.log(newRecordResult)
+          
+          // if(result) {
+          //   const timer = setTimeout(() => {
+          //     dispatchFormErrors({ type: 'SUBMITTED' });
+          //     history.push({
+          //       pathname: generatePath(`/:couponType/forms/thank-you`, {
+          //         couponType: params.couponType,
+          //       }),
+          //       search: `${searchParams}`,
+          //     });
+          //   }, 250);
+
+          //   return () => {
+          //     clearTimeout(timer);
+          //   }
+          // }
+        }
+      }
+
+      const timer = setTimeout(() => {
+        dispatchFormErrors({ type: 'SUBMITTED' });
+        history.push({
+          pathname: generatePath(`/:couponType/forms/thank-you`, {
+            couponType: params.couponType,
+          }),
+          search: `${searchParams}`,
+        });
+      }, 250);
+
+      return () => {
+        clearTimeout(timer);
+      }
+      
+    })();
+  }, [
+    dispatchFormErrors,
+  ]);
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
 
     if(!allowNext) {
       setShowFieldErrors(true);
-      setErrorMessage('Tenés campos incompletos o con errores. Revisalos para continuar.')
+      dispatchFormErrors({
+        type: 'SET_ERROR',
+        error: 'Tenés campos incompletos o con errores. Revisalos para continuar.',
+      });
     } else {
       (async () => {
         dispatchFormErrors({ type: 'SUBMIT' });
@@ -113,8 +189,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 }
                 return a;
               });
-  
-              const payload = {
+
+              const today = new Date();
+              const tomorrow = new Date(today);
+              tomorrow.setDate(tomorrow.getDate() + 1);
+              
+              let payload = {
                 device_id: window.MP_DEVICE_SESSION_ID,
                 payment_method_id: paymentMethod.payment_method_id,
                 issuer_id: paymentMethod.issuer.id,
@@ -142,9 +222,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 documento: payment.docNumber,
                 firstDigits: payment.cardNumber.slice(0, 6),
                 lastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
-                date: new Date(),
-                today: 1,
-                tomorrow: 2,
+                date: today,
+                today: today.getDate(),
+                tomorrow: tomorrow.getDate(),
                 utms: [
                   { campo: 'gpi__utm_campaign__c', valor: urlSearchParams.get('utm_campaign') },
                   { campo: 'gpi__utm_medium__c', valor: urlSearchParams.get('utm_medium') },
@@ -156,23 +236,22 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               };
               
               const result = await doSubscriptionPayment(payload);
-              console.log(result);
+
+              payload = {...payload, ...{
+                card: payment.cardNumber,
+                card_type: getCardType(paymentMethod.payment_method_id, paymentMethod.payment_type_id),
+              }};
+
               if(result['error']) {
-                // console.log(result)
-                setErrorMessage(result.message);
-                // backupInformation(payload);
+                console.log(result.message);
+                // dispatchFormErrors({
+                //   type: 'SUBMITTED_WITH_ERRORS',
+                //   error: result.message,
+                // });
+                backupInformation({...payload, donationStatus: 'pending'});
               } else {
                 window.userAmount = amount;
-                // console.log(result)
-
-                // history.push({
-                //   pathname: generatePath(`/:couponType/forms/thank-you`, {
-                //     couponType: params.couponType,
-                //   }),
-                //   search: `${searchParams}`,
-                // });
-              
-                // dispatchFormErrors({ type: 'SUBMITTED' });
+                backupInformation({...payload, donationStatus: 'done'});
                 
                 return () => {
                   paymentMethod.cancel();
@@ -181,31 +260,24 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               }
             } else {
               // showSnackbar();
-              setErrorMessage('Ocurrió un error inesperado, pruebe con otra tarjeta.');
+              // setErrorMessage();
+              console.log('Ocurrió un error inesperado, pruebe con otra tarjeta.');
+              dispatchFormErrors({
+                type: 'SUBMITTED_WITH_ERRORS',
+                error: 'Ocurrió un error inesperado, pruebe con otra tarjeta.',
+              });
               // dispatchFormErrors({ type: 'SUBMITTED' });
             }
           } else {
-            console.log('No se creó el Token', token.message);
-            setAttemps(attemps + 1);
-            setErrorMessage(token.message);
-            // showSnackbar();
-            // dispatchFormErrors({ type: 'SUBMITTED' });
+            console.log('No se creó el Token %s', token.message);
+            // setAttemps(attemps + 1);
+            // setErrorMessage(token.message);
+            dispatchFormErrors({
+              type: 'SUBMITTED_WITH_ERRORS',
+              error: token.message,
+            });
           }
         }
-        // } else {
-        //   const timer = setTimeout(() => {
-        //     history.push({
-        //       pathname: generatePath(`/:couponType/forms/thank-you`, {
-        //         couponType: params.couponType,
-        //       }),
-        //       search: `${searchParams}`,
-        //     });
-        //   }, 1000);
-    
-        //   return () => {
-        //     clearTimeout(timer);
-        //   }
-        // }
       })();
     }
   }, [
@@ -229,15 +301,19 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     // submitted,
     goToThankYou,
   ]);
+
+  useEffect(() => {
+    // console.log('Attemps');
+  }, [ attemps ]);
   
   useEffect(() => {
-    if(errorMessage) {
+    if(error) {
       if(snackbarRef && snackbarRef.current) {
         snackbarRef.current.showSnackbar();
       }
     }
   }, [
-    errorMessage,
+    error,
   ]);
 
   return useMemo(() => (
@@ -412,21 +488,19 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Shared.Form.Column>
         </Shared.Form.Row>
       </Shared.Form.Content>
-      <Snackbar
-        ref={snackbarRef}
-        text={errorMessage}
-      />
+      <Snackbar ref={snackbarRef} text={error} />
       <Shared.Form.Nav>
         <Elements.Button
           type='submit'
           variant='contained'
-          disabled={(submitting) ? true : false}
+          disabled={submitting ? true : false}
           customCss={css`
             width: 100%;
+            /* min-height: ${pixelToRem(48)}; */
 
             ${(submitting) && css`
-              padding-top: ${pixelToRem(10)};
-              padding-bottom: ${pixelToRem(10)};
+              /* padding-top: ${pixelToRem(10)}; */
+              /* padding-bottom: ${pixelToRem(10)}; */
             `}
           `}
         >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}</Elements.Button>
@@ -437,9 +511,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     payment,
     submitted,
     submitting,
+    attemps,
     snackbarRef,
     showFieldErrors,
-    errorMessage,
+    error,
     appData,
     dispatchFormErrors,
     onSubmitHandler,

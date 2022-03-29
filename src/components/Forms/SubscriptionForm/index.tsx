@@ -114,8 +114,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SUBMIT',
       });
 
-      // if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
-      //   process.env.REACT_APP_ENVIRONMENT === 'production') {
       const contact = await createContact({
         email,
         firstname: firstName,
@@ -133,26 +131,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           }),
           search: searchParams,
         });
-      // }
-        // } else {
-        //   console.log('Contact will not be synchronized')
-
-        // TODO: Update data to Hubspot
-
-        // Simulate POST data.
-        // It'll be synchronized by the Checkout Form.
-        // const timer = setTimeout(() => {
-        //   history.push({
-        //     pathname: generatePath('/:couponType/forms/checkout', {
-        //       couponType: params.couponType,
-        //     }),
-        //     search: searchParams,
-        //   });
-        // }, 1000);
-
-        // return () => {
-        //   clearTimeout(timer);
-        // }
       }
     }
   }, [
@@ -362,10 +340,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           customCss={css`
             width: 100%;
 
-            ${(submitting) && css`
+            /* ${(submitting) && css`
               padding-top: ${pixelToRem(10)};
               padding-bottom: ${pixelToRem(10)};
-            `}
+            `} */
           `}
         >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.subscription.button_text)}</Elements.Button>
       </Shared.Form.Nav>

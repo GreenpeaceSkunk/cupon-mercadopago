@@ -55,11 +55,11 @@ export const initialState: ContextStateType = {
       // amount: '699',
       newAmount: '',
       ...(autofill ? {
-        cardNumber: '4509953566233704', // Visa
+        // cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
-        // cardNumber: '371180303257522', // AMEX
-        securityCode: '123',
-        // securityCode: '1234',
+        cardNumber: '371180303257522', // AMEX
+        // securityCode: '123',
+        securityCode: '1234',
         cardholderName: 'CALL',
         cardExpirationMonth: '11',
         cardExpirationYear: '2025',

@@ -1,10 +1,11 @@
-FROM node:16 as base
+FROM node:14 as base
 
 WORKDIR /home/app/coupon
 
 ENV PATH /home/app/coupon/node_modules/.bin:$PATH
 
-COPY package*.json ./
+# COPY package*.json ./
+COPY package.json ./
 
 RUN npm install react-scripts -g
 RUN npm install

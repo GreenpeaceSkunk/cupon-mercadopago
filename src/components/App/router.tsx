@@ -1,13 +1,12 @@
-import React, { Suspense, lazy, memo, useMemo, /*useCallback,*/ useEffect } from 'react';
-import { generatePath, /*Route, Routes,*/ useNavigate, useLocation, /*useRouteMatch*/ } from 'react-router';
+import React, { Suspense, lazy, memo, useMemo, useEffect } from 'react';
+import { generatePath, useNavigate, useLocation } from 'react-router';
 import { Routes, Route } from "react-router-dom";
 import { Loader } from '../Shared';
 import { AppProvider } from './context';
 import useQuery from '../../hooks/useQuery';
-// import { FormProvider } from '../Forms/context';
 
 const Forms = React.lazy(() => import('../Forms'));
-const SubscriptionForm = React.lazy(() => import('../Forms/SubscriptionForm'));
+const RegistrationForm = React.lazy(() => import('../Forms/RegistrationForm'));
 const CheckoutForm = React.lazy(() => import('../Forms/CheckoutForm'));
 const ThankYou = React.lazy(() => import('../ThankYou'));
 
@@ -43,7 +42,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       <Routes>
         <Route path=":couponType" element={<Suspense fallback={<Loader/>}><App/></Suspense>}>
           <Route path='forms' element={<Suspense fallback={<Loader/>}><Forms/></Suspense>}>
-            <Route path='registration' element={<Suspense fallback={<Loader/>}><SubscriptionForm/></Suspense>} />
+            <Route path='registration' element={<Suspense fallback={<Loader/>}><RegistrationForm/></Suspense>} />
             <Route path='checkout' element={<Suspense fallback={<Loader/>}><CheckoutForm/></Suspense>} />
           </Route>
           <Route path='thankyou' element={<Suspense fallback={<Loader/>}><ThankYou/></Suspense>} />

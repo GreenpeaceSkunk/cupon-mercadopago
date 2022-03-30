@@ -173,9 +173,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     <Shared.Form.Main id='sign-form' onSubmit={onSubmitHandler}>
       <Shared.Form.Header>
         <Elements.HGroup>
-          <Shared.Form.Title>{appData && appData.content && appData.content.form.subscription.title}</Shared.Form.Title>
+          <Shared.Form.Title>{appData && appData.content && appData.content.form.registration.title}</Shared.Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>{appData && appData.content && appData.content.form.subscription.text}</Shared.General.Text>
+        <Shared.General.Text>{appData && appData.content && appData.content.form.registration.text}</Shared.General.Text>
       </Shared.Form.Header>
       <Shared.Form.Content>
         <Shared.Form.Row>
@@ -346,7 +346,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               padding-bottom: ${pixelToRem(10)};
             `} */
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.subscription.button_text)}</Elements.Button>
+        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.registration.button_text)}</Elements.Button>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
@@ -368,5 +368,5 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ]);
 });
 
-Component.displayName = 'SubscriptionForm';
+Component.displayName = 'RegistrationForm';
 export default Component;

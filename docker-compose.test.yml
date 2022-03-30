@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  app:
+    image: greenpeace_mercadopago_coupon:test
+    container_name: greenpeace_mercadopago_coupon_test
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    volumes:
+      - ./:/home/app/coupon/
+      - /home/app/coupon/node_modules/
+    expose:
+      - '3002'
+    ports:
+      - '3002:3002'
+    environment:
+      - PORT=3002

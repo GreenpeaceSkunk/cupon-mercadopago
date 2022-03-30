@@ -20,6 +20,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   useEffect(() => {
     let isValid = true;
     const paths = pathname.split('/').filter((v) => v !== '');
+    
     if(!paths.length) {
       isValid = false;
     } else {
@@ -27,8 +28,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         isValid = false;
       }
     }
-    if(!isValid) {
-    }
+
     navigate({
       pathname: generatePath(`:couponType/forms`, {
         couponType: 'regular',

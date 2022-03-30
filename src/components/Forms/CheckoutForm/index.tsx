@@ -46,6 +46,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
   /**
    * Backup to Forma.
+   * @param payload What is needed to be "backuped"
    */
   const backupInformation = useCallback(( payload = null ) => {
     (async () => {
@@ -66,42 +67,31 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             card: payload.card,
             card_type: payload.card_type,
             cardLastDigits: payload.lastDigits,
-            cardExpirationMonth: payload.mes_vencimiento,
-            cardExpirationYear: payload.ano_vencimiento,
-            citizenId: payload.citizenId,
+            cardExpMonth: payload.mes_vencimiento,
+            cardExpYear: payload.ano_vencimiento,
+            citizenId: payload.documento,
             citizenIdType: payload.tipodocumento,
-            device_id: payload.device_id,
+            mpDeviceId: payload.device_id,
             donationStatus: payload.donationStatus,
             email: payload.email,
-            firstName: payload.firstName,
+            firstName: payload.nombre,
             form_id: service.forma.transactions_form,
             fromUrl: document.location.href,
-            lastName: payload.lastName,
-            mpDeviceId: payload.mpDeviceId,
-            mpPayMethodId: payload.mpPayMethodId,
-            mpPayOptId: payload.mpPayOptId,
-            phoneNumber: payload.phoneNumber,
+            lastName: payload.apellido,
+            mpPayMethodId: payload.payment_method_id,
+            mpPayOptId: payload.payment_method_option_id,
+            phoneNumber: payload.telefono,
             recurrenceDay: payload.tomorrow,
             transactionDate: payload.date,
             userAgent: window.navigator.userAgent,
-            utm: payload.utms,
+            utm: {
+              utm_campaign: urlSearchParams.get('utm_campaign'),
+              utm_medium: urlSearchParams.get('utm_medium'),
+              utm_source: urlSearchParams.get('utm_source'),
+              utm_content: urlSearchParams.get('utm_content'),
+              utm_term: urlSearchParams.get('utm_term'),
+            },
           });
-          
-          // if(result) {
-          //   const timer = setTimeout(() => {
-          //     dispatchFormErrors({ type: 'SUBMITTED' });
-          //     navigate.push({
-          //       pathname: generatePath(`/:couponType/forms/thank-you`, {
-          //         couponType: params.couponType,
-          //       }),
-          //       search: `${searchParams}`,
-          //     });
-          //   }, 250);
-
-          //   return () => {
-          //     clearTimeout(timer);
-          //   }
-          // }
         }
       }
 
@@ -118,7 +108,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       return () => {
         clearTimeout(timer);
       }
-      
     })();
   }, [
     dispatchFormErrors,

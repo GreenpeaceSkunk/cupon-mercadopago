@@ -4,16 +4,21 @@ import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
 import { FormProvider } from './context';
 import Shared from '../Shared';
-import { Outlet } from 'react-router';
+import { generatePath, Outlet } from 'react-router';
 import { AppContext } from '../App/context';
 import { useNavigate } from "react-router-dom";
+import useQuery from '../../hooks/useQuery';
 
 const Component: FunctionComponent<{}> = memo(() => {
   const { isOpen, setIsOpen } = useContext(AppContext);
   const navigate = useNavigate();
+  const { searchParams } = useQuery();
 
   useEffect(() => {
-    navigate('registration');
+    navigate({
+      pathname: generatePath(`registration`, {}),
+      search: `${searchParams}`,
+    });
   }, []);
 
   return useMemo(() => (
@@ -75,6 +80,7 @@ const Component: FunctionComponent<{}> = memo(() => {
     </Elements.View>
   ), [
     isOpen,
+    searchParams,
     setIsOpen,
   ]);
 });

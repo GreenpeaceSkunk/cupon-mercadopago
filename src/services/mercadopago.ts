@@ -1,5 +1,5 @@
 import { AxiosResquestError } from 'greenpeace';
-import {ApiCall} from '../utils/apiCall';
+import { ApiCall } from '../utils/apiCall';
 
 const API_URL = 'https://api.mercadopago.com/v1';
 

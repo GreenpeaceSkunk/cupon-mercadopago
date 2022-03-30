@@ -5,11 +5,10 @@ import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import ErrorBoundary from '../ErrorBoundary';
 import { AppContext } from '../App/context';
-// import { data as jsonData } from '../../data/data.json';
 import ModalOpenForm from '../ModalOpenForm';
+import { Outlet } from 'react-router';
 
 const Header = lazy(() => import('../Header'));
-const Router = lazy(() => import('./router'));
 const Footer = lazy(() => import('../Footer'));
 
 const Heading3 = styled(Elements.H3)`
@@ -118,7 +117,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 `}
               >{appData && appData.content && appData.content.home.highlighted_text}</Elements.Span>
               <Elements.Button
-                variant='contained'
                 onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
                 customCss={css`
                   width: 100%;
@@ -145,7 +143,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             }
           `}
         >
-          <Router />
+          <Outlet />
         </Elements.Wrapper>
       </Elements.View>
       <ErrorBoundary fallback='Footer Error.'>

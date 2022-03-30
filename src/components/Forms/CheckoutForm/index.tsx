@@ -50,10 +50,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const backupInformation = useCallback(( payload = null ) => {
     (async () => {
       console.log('Backup information', payload);
-      const contact = await updateContact(payload.email, {
+
+      await updateContact(payload.email, {
         donationStatus: payload.donationStatus,
       });
-
+      
       if(appData && appData.settings && appData.settings.service) {
         const { service } = appData.settings;
   
@@ -64,10 +65,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             campaignId: payload.campaign_id,
             card: payload.card,
             card_type: payload.card_type,
+            cardLastDigits: payload.lastDigits,
             cardExpirationMonth: payload.mes_vencimiento,
             cardExpirationYear: payload.ano_vencimiento,
             citizenId: payload.citizenId,
-            citizenIdType: '',
+            citizenIdType: payload.tipodocumento,
             device_id: payload.device_id,
             donationStatus: payload.donationStatus,
             email: payload.email,
@@ -106,7 +108,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       const timer = setTimeout(() => {
         dispatchFormErrors({ type: 'SUBMITTED' });
         navigate({
-          pathname: generatePath(`/:couponType/thankyou`, {
+          pathname: generatePath(`/:couponType/forms/thankyou`, {
             couponType: params.couponType,
           }),
           search: `${searchParams}`,

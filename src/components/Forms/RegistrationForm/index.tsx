@@ -127,8 +127,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
         if(params) {
           navigate({
-            pathname: generatePath('/:couponType/forms/checkout', {
+            pathname: generatePath('/:couponType/forms/:formType', {
               couponType: params.couponType,
+              formType: 'checkout',
             }),
             search: searchParams,
           }, { replace: true });
@@ -143,8 +144,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     phoneNumber,
     params,
     allowNext,
-    searchParams,
     navigate,
+    searchParams,
   ]);
 
   useEffect(() => {

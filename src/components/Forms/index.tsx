@@ -14,9 +14,7 @@ const Component: FunctionComponent<{}> = memo(() => {
 
   useEffect(() => {
     navigate('registration');
-  }, [
-    navigate,
-  ]);
+  }, []);
 
   return useMemo(() => (
     <Elements.View

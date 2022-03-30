@@ -44,8 +44,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           <Route path='forms' element={<Suspense fallback={<Loader/>}><Forms/></Suspense>}>
             <Route path='registration' element={<Suspense fallback={<Loader/>}><RegistrationForm/></Suspense>} />
             <Route path='checkout' element={<Suspense fallback={<Loader/>}><CheckoutForm/></Suspense>} />
+            <Route path='thankyou' element={<Suspense fallback={<Loader/>}><ThankYou/></Suspense>} />
           </Route>
-          <Route path='thankyou' element={<Suspense fallback={<Loader/>}><ThankYou/></Suspense>} />
         </Route>
       </Routes>
     </AppProvider>

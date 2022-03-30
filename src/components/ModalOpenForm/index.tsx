@@ -2,7 +2,6 @@ import React, { FunctionComponent, memo, useContext, useEffect, useMemo, useStat
 import Elements from '../Shared/Elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
-import { FormProvider } from '../Forms/context';
 import Shared from '../Shared';
 import { AppContext } from '../App/context';
 
@@ -83,10 +82,3 @@ const Component: FunctionComponent<{}> = memo(() => {
 
 Component.displayName = 'ModalOpenForm';
 export default Component;
-// export default function ModalOpenForm() {
-//   return useMemo(() => (
-//     <FormProvider>
-//       <Component />
-//     </FormProvider>
-//   ), []);
-// };

@@ -1,8 +1,7 @@
-import React, { createContext, useEffect, useMemo, useReducer } from 'react';
+import React, { createContext, useMemo, useReducer } from 'react';
 import { ContextActionType, initialState, reducer } from './reducer';
 import { IData, ParamsType } from 'greenpeace';
-import { generatePath, useNavigate, useParams } from 'react-router-dom';
-import useQuery from '../../hooks/useQuery';
+import { useParams } from 'react-router-dom';
 
 export interface IContext {
   data: IData;
@@ -20,24 +19,7 @@ const { Provider, Consumer } = Context;
 
 const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const [{ data }, dispatch] = useReducer(reducer, initialState);
-  const navigate = useNavigate();
   const params = useParams<ParamsType>();
-  const { searchParams } = useQuery();
-  
-  // useEffect(() => {
-  //   if(params) {
-  //     console.log('subscribe')
-  //     navigate({
-  //       pathname: generatePath(`/:couponType/forms/subscribe`, {
-  //         couponType: params.couponType,
-  //       }),
-  //       search: `${searchParams}`,
-  //     }, { replace: true });
-  //   }
-  // }, [
-  //   searchParams,
-  //   params,
-  // ]);
 
   return useMemo(() => (
     <Provider

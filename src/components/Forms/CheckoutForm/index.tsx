@@ -4,7 +4,6 @@ import { FormContext } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import { validateCardHolderName, validateCitizenId, validateCreditCard, validateCvv, validateEmptyField, validateMonth, validateYear } from '../../../utils/validators';
 import { css } from 'styled-components';
-import { pixelToRem } from 'meema.utils';
 import Elements from '../../Shared/Elements';
 import { getPublicKey, doSubscriptionPayment } from '../../../services/mercadopago';
 import Shared from '../../Shared';
@@ -20,17 +19,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const { data: { payment, user }, params, dispatch } = useContext(FormContext);
   const [{ submitting, submitted, allowNext, error, attemps }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
-  // const [ errorMessage, setErrorMessage ] = useState<string|null>(null);
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
   const snackbarRef = useRef<ISnackbarRef>(null);
   const { searchParams, urlSearchParams } = useQuery();
-
-  // const showSnackbar = useCallback(() => {
-  //   if(snackbarRef && snackbarRef.current) {
-  //     snackbarRef.current.showSnackbar();
-  //   }
-  // }, []);
 
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
@@ -52,32 +44,15 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     });
   }, []);
 
-  const goToThankYou = useCallback(() => {
-    // const timer = setTimeout(() => {
-    //   navigate.push({
-    //     pathname: generatePath(`/:couponType/forms/thank-you`, {
-    //       couponType: params.couponType,
-    //     }),
-    //     search: `${searchParams}`,
-    //   });
-    // }, 1000);
-  }, [
-    // navigate,
-    // params,
-    // searchParams,
-  ]);
-
   /**
    * Backup to Forma.
    */
   const backupInformation = useCallback(( payload = null ) => {
     (async () => {
-      // console.log('Backup information', payload);
-
+      console.log('Backup information', payload);
       const contact = await updateContact(payload.email, {
         donationStatus: payload.donationStatus,
       });
-      // console.log(contact);
 
       if(appData && appData.settings && appData.settings.service) {
         const { service } = appData.settings;
@@ -109,9 +84,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             userAgent: window.navigator.userAgent,
             utm: payload.utms,
           });
-
-          
-          // console.log(newRecordResult)
           
           // if(result) {
           //   const timer = setTimeout(() => {
@@ -259,19 +231,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 }
               }
             } else {
-              // showSnackbar();
-              // setErrorMessage();
               console.log('Ocurrió un error inesperado, pruebe con otra tarjeta.');
               dispatchFormErrors({
                 type: 'SUBMITTED_WITH_ERRORS',
                 error: 'Ocurrió un error inesperado, pruebe con otra tarjeta.',
               });
-              // dispatchFormErrors({ type: 'SUBMITTED' });
             }
           } else {
             console.log('No se creó el Token %s', token.message);
-            // setAttemps(attemps + 1);
-            // setErrorMessage(token.message);
             dispatchFormErrors({
               type: 'SUBMITTED_WITH_ERRORS',
               error: token.message,
@@ -290,21 +257,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     params,
     urlSearchParams,
     appData,
-    // showSnackbar,
   ]);
-
-  useEffect(() => {
-    // if(submitted) {
-    //   goToThankYou();
-    // }
-  }, [
-    // submitted,
-    goToThankYou,
-  ]);
-
-  useEffect(() => {
-    // console.log('Attemps');
-  }, [ attemps ]);
   
   useEffect(() => {
     if(error) {
@@ -495,12 +448,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           disabled={submitting ? true : false}
           customCss={css`
             width: 100%;
-            /* min-height: ${pixelToRem(48)}; */
-
-            ${(submitting) && css`
-              /* padding-top: ${pixelToRem(10)}; */
-              /* padding-bottom: ${pixelToRem(10)}; */
-            `}
           `}
         >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}</Elements.Button>
       </Shared.Form.Nav>

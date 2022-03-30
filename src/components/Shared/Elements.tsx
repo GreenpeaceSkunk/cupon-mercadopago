@@ -1,5 +1,4 @@
 import Elements, { IElement } from '@bit/meema.ui-components.elements';
-// import { Button as StyledButton } from '@meema/styled-components.ui.button';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import Icons from '../../images/icons';

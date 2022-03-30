@@ -1,17 +1,14 @@
-import React, { useMemo, lazy, Suspense, memo, useRef, useContext, MouseEvent, useEffect } from 'react';
+import React, { useMemo, lazy, Suspense, memo, useRef, useContext, MouseEvent } from 'react';
 import Elements from '../Shared/Elements';
 import Shared from '../Shared';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import ErrorBoundary from '../ErrorBoundary';
 import { AppContext } from '../App/context';
-// import { data as jsonData } from '../../data/data.json';
 import ModalOpenForm from '../ModalOpenForm';
 import { Outlet } from 'react-router';
-import { FormProvider } from '../Forms/context';
 
 const Header = lazy(() => import('../Header'));
-const Router = lazy(() => import('./router'));
 const Footer = lazy(() => import('../Footer'));
 
 const Heading3 = styled(Elements.H3)`
@@ -146,7 +143,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             }
           `}
         >
-          {/* <Router /> */}
           <Outlet />
         </Elements.Wrapper>
       </Elements.View>

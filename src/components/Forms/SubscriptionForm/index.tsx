@@ -141,10 +141,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     email,
     areaCode,
     phoneNumber,
-    // history,
     params,
     allowNext,
     searchParams,
+    navigate,
   ]);
 
   useEffect(() => {

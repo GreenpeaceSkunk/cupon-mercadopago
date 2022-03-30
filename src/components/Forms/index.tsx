@@ -1,14 +1,20 @@
-import React, { FunctionComponent, memo, useContext, useMemo, MouseEvent } from 'react';
+import React, { FunctionComponent, memo, useContext, useMemo, MouseEvent, useEffect } from 'react';
 import Elements from '../Shared/Elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
 import { FormProvider } from './context';
 import Shared from '../Shared';
-import FormRouter from './router';
+import { Outlet } from 'react-router';
 import { AppContext } from '../App/context';
+import { useNavigate } from "react-router-dom";
 
 const Component: FunctionComponent<{}> = memo(() => {
   const { isOpen, setIsOpen } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate('registration');
+  }, []);
 
   return useMemo(() => (
     <Elements.View
@@ -64,7 +70,7 @@ const Component: FunctionComponent<{}> = memo(() => {
             }
           `}
         />
-        <FormRouter />
+        <Outlet />
       </Elements.Wrapper>
     </Elements.View>
   ), [
@@ -73,8 +79,8 @@ const Component: FunctionComponent<{}> = memo(() => {
   ]);
 });
 
-Component.displayName = 'CancellationForm';
-export default function CancellationForm() {
+Component.displayName = 'Forms';
+export default function Forms() {
   return useMemo(() => (
     <FormProvider>
       <Component />

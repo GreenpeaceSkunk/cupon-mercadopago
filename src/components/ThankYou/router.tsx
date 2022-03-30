@@ -1,18 +1,19 @@
 import React, { memo, useMemo, } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router';
+// import { Route, Switch, useRouteMatch } from 'react-router';
+import { Routes, Route } from "react-router-dom";
 import Index from '.';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
-  const { path } = useRouteMatch();
+  // const { path } = useRouteMatch();
 
   return useMemo(() => (
-    <Switch>
-      <Route path={path}>
+    <Routes>
+      <Route path='/'>
         <Index />
       </Route>
-    </Switch>
+    </Routes>
   ), [
-    path,
+    // path,
   ]);
 })
 

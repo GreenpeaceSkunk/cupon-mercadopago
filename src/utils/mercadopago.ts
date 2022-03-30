@@ -9,7 +9,7 @@ export const ERROR_CODES: {[key: string]: string} = {
   '325': 'El mes es inválido.',
   '326': 'El año es inválido.',
   'default': 'Revisa los datos.',
-}
+};
 
 export const initialize = () => {
   (async () => {
@@ -43,6 +43,7 @@ export const setPublishableKey = (publicKey: string) => {
 export const createToken = async (form: HTMLFormElement):Promise<{ isValid: boolean; message: string; }> => {
   return new Promise((resolve, reject) => {
     const result = async (status: any, response: any) => {
+      console.log(response);
       if (status === 200 || status === 201) {
         if(form) {
           let card = document.createElement('input');
@@ -76,3 +77,27 @@ export const getInstallments = async (params: any): Promise<any> => {
     });
   });
 }
+
+/**
+ * 
+ * @param paymentMethodId amex, mastercard, amex
+ * @param payment_type_id Could be credit_card or debit_card
+ * @returns 
+ */
+export const getCardType = (paymentMethodId = '', payment_type_id = ''): number => {
+  switch(paymentMethodId) {
+    case 'visa':
+      if(payment_type_id === 'debit_card') {
+        return 4;
+      }
+      return 2;
+    case 'mastercard':
+      return 3;
+    case 'amex':
+      return 5;
+    default:
+      return 0;
+  }
+
+  // return cardTypes[paymentMethodId] ? cardTypes[paymentMethodId] : '';
+} 

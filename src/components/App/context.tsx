@@ -1,11 +1,11 @@
 import React, { createContext, useEffect, useMemo, useReducer, useState } from "react";
-import { RouteComponentProps, useLocation, useHistory, withRouter } from "react-router-dom";
+import { /*RouteComponentProps,*/ useLocation, useNavigate } from "react-router-dom";
 import useQuery from "../../hooks/useQuery";
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../theme/globalStyle';
 import Theme from '../../theme/Theme';
 import ErrorBoundary from '../ErrorBoundary';
-import { getCoupon } from "../../utils/greenlabApi";
+import { getCoupon } from "../../services/greenlab";
 import { initialState, reducer } from './reducer';
 import { initialize as initializeTagManager, pushToDataLayer } from '../../utils/googleTagManager';
 import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
@@ -29,13 +29,13 @@ const Context = createContext({} as IContext);
 Context.displayName = 'AppContext';
 const { Provider, Consumer } = Context;
 
-const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = ({ children }) => {
+const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const [{ appData }, dispatch ] = useReducer(reducer, initialState);
   const [ isOpen, setIsOpen ] = useState<boolean>(false);
   const { searchParams, urlSearchParams } = useQuery();
-  const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [ appName, setAppName ] = useState<string | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     if(appName !== null) {
@@ -58,6 +58,9 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
         ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
         : 'Greenpeace Argentina';
 
+      initializeHubspot(appData.settings.tracking.hubspot.id);
+      initializeMercadopago();
+      
       switch (process.env.REACT_APP_ENVIRONMENT) {
         case 'test':
         case 'production':
@@ -65,8 +68,6 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
           inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
           initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
           initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
-          initializeHubspot(appData.settings.tracking.hubspot.id);
-          initializeMercadopago();
           break;
       }
     }
@@ -78,21 +79,25 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
       trackEvent('PageView');
       pushToDataLayer('pageview');
     }
-  }, [ location.pathname ]);
+  }, [
+    // location.pathname,
+  ]);
 
   
-  useEffect(() => {
-    if(urlSearchParams) {
-      history.replace({
-        pathname: location.pathname,
-        search: searchParams,
-      });
-    }
-  }, [
-    history,
-    location.pathname,
-    searchParams,
-  ]);
+  // useEffect(() => {
+  //   if(urlSearchParams) {
+  //     console.log('Entra?', location.pathname)
+  //     navigate({
+  //       pathname: location.pathname,
+  //       // pathname: '/', // TODO: CHECK
+  //       search: searchParams,
+  //     });
+  //   }
+  // }, [
+  //   navigate,
+  //   // location.pathname,
+  //   searchParams,
+  // ]);
 
   useEffect(() => {
     setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'general')
@@ -116,15 +121,17 @@ const ContextProvider: React.FunctionComponent<IProps & RouteComponentProps> = (
     appData,
     urlSearchParams,
     isOpen,
+    // location,
     children,
   ]);
 };
 
 
-const WrappedProvider = withRouter(ContextProvider);
+// const WrappedProvider = withRouter(ContextProvider);
+// const WrappedProvider = withRouter(ContextProvider);
 
 export {
-  WrappedProvider as AppProvider,
+  ContextProvider as AppProvider,
   Consumer as AppConsumer,
   Context as AppContext,
 }

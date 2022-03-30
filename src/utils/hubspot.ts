@@ -7,3 +7,4 @@ export const initialize = async (id: number) => {
     document.body.appendChild(script);
   })();
 }
+

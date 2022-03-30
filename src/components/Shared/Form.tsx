@@ -85,7 +85,7 @@ const Nav: React.FunctionComponent<{
         justify-self: flex-end;
         width: 100%;
         height: 100%;
-        padding: ${pixelToRem(20)} ${pixelToRem(60)};
+        /* padding: ${pixelToRem(20)} ${pixelToRem(60)}; */
         
         > * {
           margin-bottom: ${pixelToRem(20)};
@@ -222,7 +222,7 @@ const RadioButton: React.FunctionComponent<{
 };
 
 const Group: React.FunctionComponent<{
-  children?: React.ReactNode | HTMLAllCollection;
+  children?: React.ReactNode | HTMLAllCollection;
   fieldName: string;
   labelText?: string;
   labelBottomText?: string;
@@ -258,7 +258,7 @@ const Group: React.FunctionComponent<{
 
       if(validator) {
         setIsValid(validator.isValid);
-        setErrorMessage(validator.errorMessage ?? '');
+        setErrorMessage(validator.errorMessage ? validator.errorMessage : '');
         
         if(onUpdateHandler && fieldName) {
           onUpdateHandler(fieldName, validator.isValid, value);

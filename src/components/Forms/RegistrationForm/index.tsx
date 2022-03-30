@@ -1,5 +1,5 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { generatePath, useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { FormContext } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import {
@@ -19,7 +19,7 @@ import { pushToDataLayer } from '../../../utils/googleTagManager';
 import { pixelToRem } from 'meema.utils';
 import useQuery from '../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
-import { createContact } from '../../../utils/greenlabApi';
+import { createContact } from '../../../services/greenlab';
 import { AppContext } from '../../App/context';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
@@ -44,7 +44,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   } = useContext(FormContext);
   const [{ submitting, allowNext }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { searchParams } = useQuery();
   const snackbarRef = useRef<ISnackbarRef>(null);
   
@@ -103,7 +103,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
-
+    
     if(!allowNext) {
       setShowFieldErrors(true);
       if(snackbarRef && snackbarRef.current) {
@@ -114,38 +114,25 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SUBMIT',
       });
 
-      if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
-        process.env.REACT_APP_ENVIRONMENT === 'production') {
-        const contact = await createContact({
-          email,
-          firstname: firstName,
-          lastname: lastName,
-          phone: `${areaCode}${phoneNumber}`,
-        });
+      const contact = await createContact({
+        email,
+        firstname: firstName,
+        lastname: lastName,
+        phone: `${areaCode}${phoneNumber}`,
+        donationStatus: 'requested',
+      });
 
-        if(contact) {
-          pushToDataLayer({ 'event' : 'petitionSignup' });
+      if(contact) {
+        pushToDataLayer({ 'event' : 'petitionSignup' });
 
-          history.push({
-            pathname: generatePath('/:couponType/forms/checkout', {
+        if(params) {
+          navigate({
+            pathname: generatePath('/:couponType/forms/:formType', {
               couponType: params.couponType,
+              formType: 'checkout',
             }),
             search: searchParams,
-          });
-        }
-      } else {
-        console.log('Contact will not be synchronized')
-        const timer = setTimeout(() => {
-          history.push({
-            pathname: generatePath('/:couponType/forms/checkout', {
-              couponType: params.couponType,
-            }),
-            search: searchParams,
-          });
-        }, 1000);
-  
-        return () => {
-          clearTimeout(timer);
+          }, { replace: true });
         }
       }
     }
@@ -155,9 +142,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     email,
     areaCode,
     phoneNumber,
-    history,
-    params.couponType,
+    params,
     allowNext,
+    navigate,
     searchParams,
   ]);
 
@@ -187,9 +174,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     <Shared.Form.Main id='sign-form' onSubmit={onSubmitHandler}>
       <Shared.Form.Header>
         <Elements.HGroup>
-          <Shared.Form.Title>{appData && appData.content && appData.content.form.subscription.title}</Shared.Form.Title>
+          <Shared.Form.Title>{appData && appData.content && appData.content.form.registration.title}</Shared.Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>{appData && appData.content && appData.content.form.subscription.text}</Shared.General.Text>
+        <Shared.General.Text>{appData && appData.content && appData.content.form.registration.text}</Shared.General.Text>
       </Shared.Form.Header>
       <Shared.Form.Content>
         <Shared.Form.Row>
@@ -351,17 +338,16 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       <Shared.Form.Nav>
         <Elements.Button
           type='submit'
-          variant='contained'
           disabled={(submitting) ? true : false}
           customCss={css`
             width: 100%;
 
-            ${(submitting) && css`
+            /* ${(submitting) && css`
               padding-top: ${pixelToRem(10)};
               padding-bottom: ${pixelToRem(10)};
-            `}
+            `} */
           `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.subscription.button_text)}</Elements.Button>
+        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.registration.button_text)}</Elements.Button>
       </Shared.Form.Nav>
     </Shared.Form.Main>
   ), [
@@ -383,5 +369,5 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ]);
 });
 
-Component.displayName = 'SubscriptionForm';
+Component.displayName = 'RegistrationForm';
 export default Component;

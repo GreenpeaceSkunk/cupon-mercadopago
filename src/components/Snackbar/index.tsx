@@ -8,13 +8,13 @@ export interface IRef {
   showSnackbar: () => void;
 }
 interface IProps {
-  text?: string;
+  text: string | null;
   milliseconds?: number;
 }
 
 const Component: React.ForwardRefRenderFunction<IRef, IProps> = ({
-  text = '',
-  milliseconds = 2500,
+  text = null,
+  milliseconds = 5000,
 }, innerRef: React.ForwardedRef<IRef>) => {
   const [ animate, setAnimate ] = useState<boolean>(false);
 

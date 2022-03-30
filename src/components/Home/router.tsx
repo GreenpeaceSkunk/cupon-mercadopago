@@ -1,23 +1,33 @@
-import React, { Suspense, lazy, memo, useMemo, } from 'react';
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router';
+import React, { Suspense, lazy, memo, useMemo, useEffect } from 'react';
+import { useNavigate, generatePath } from 'react-router';
+import { Routes, Route, Navigate } from "react-router-dom";
 import { Loader } from '../Shared';
 
-const Forms = lazy(() => import('../Forms'));
+// const Forms = lazy(() => import('../Forms'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
-  const { path } = useRouteMatch();
+  // const { path } = useRouteMatch();
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   navigate({
+  //     pathname: generatePath(`/forms`, {}),
+  //     // search: `${searchParams}`,
+  //   });
+  // }, []);
 
   return useMemo(() => (
-    <Switch>
-      <Route path={`${path}/forms`}>
-        <Suspense fallback={<Loader />}>
+    <Routes>
+      <Route path={`/`}>
+        {/* <Suspense fallback={<Loader />}>
           <Forms />
-        </Suspense>
+        </Suspense> */}
+        <Route index element={<span>Forms</span>} />
+        {/* <Navigate to={`/forms`} />  */}
       </Route>
-      <Redirect from={path} to={`${path}/forms`} /> 
-    </Switch>
+    </Routes>
   ), [
-    path,
+    // path,
   ]);
 })
 

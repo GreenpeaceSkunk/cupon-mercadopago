@@ -1,4 +1,4 @@
-import React, { useMemo, lazy, Suspense, memo, useRef, useContext, MouseEvent } from 'react';
+import React, { useMemo, lazy, Suspense, memo, useRef, useContext, MouseEvent, useEffect } from 'react';
 import Elements from '../Shared/Elements';
 import Shared from '../Shared';
 import styled, { css } from 'styled-components';
@@ -7,6 +7,8 @@ import ErrorBoundary from '../ErrorBoundary';
 import { AppContext } from '../App/context';
 // import { data as jsonData } from '../../data/data.json';
 import ModalOpenForm from '../ModalOpenForm';
+import { Outlet } from 'react-router';
+import { FormProvider } from '../Forms/context';
 
 const Header = lazy(() => import('../Header'));
 const Router = lazy(() => import('./router'));
@@ -118,7 +120,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 `}
               >{appData && appData.content && appData.content.home.highlighted_text}</Elements.Span>
               <Elements.Button
-                variant='contained'
                 onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
                 customCss={css`
                   width: 100%;
@@ -145,7 +146,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             }
           `}
         >
-          <Router />
+          {/* <Router /> */}
+          <Outlet />
         </Elements.Wrapper>
       </Elements.View>
       <ErrorBoundary fallback='Footer Error.'>

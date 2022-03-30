@@ -4,7 +4,7 @@ export const createContact = async (data: any) => {
   try {
     const response = await ApiCall({
       headers: {
-        'X-Greenlab-App': window.sessionStorage.getItem('greenlab_app'),
+        'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app')}`,
       },
       baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/hubspot/contact`,
       method: 'POST',
@@ -20,7 +20,7 @@ export const updateContact = async (email: string, data: any) => {
   try {
     const response = await ApiCall({
       headers: {
-        'X-Greenlab-App': window.sessionStorage.getItem('greenlab_app'),
+        'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app')}`,
       },
       baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/hubspot/contact/email/${email}`,
       method: 'POST',
@@ -36,7 +36,7 @@ export const getCoupon = async (appName = '') => {
   try {
     const response = await ApiCall({
       headers: {
-        'X-Greenlab-App': window.sessionStorage.getItem('greenlab_app'),
+        'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app')}`,
       },
       baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/application/coupon/${appName}?env=${process.env.REACT_APP_ENVIRONMENT}`,
       method: 'GET',
@@ -51,7 +51,7 @@ export const postRecord = async (data: any) => {
   try {
     const response = await ApiCall({
       headers: {
-        'X-Greenlab-App': window.sessionStorage.getItem('greenlab_app'),
+        'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app')}`,
       },
       baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/forma/form/${data.form_id}/record`,
       method: 'POST',

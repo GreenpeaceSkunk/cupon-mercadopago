@@ -1,5 +1,5 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { generatePath, useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { FormContext } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import {
@@ -44,7 +44,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   } = useContext(FormContext);
   const [{ submitting, allowNext }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { searchParams } = useQuery();
   const snackbarRef = useRef<ISnackbarRef>(null);
   
@@ -125,12 +125,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       if(contact) {
         pushToDataLayer({ 'event' : 'petitionSignup' });
 
-        history.push({
-          pathname: generatePath('/:couponType/forms/checkout', {
-            couponType: params.couponType,
-          }),
-          search: searchParams,
-        });
+        if(params) {
+          navigate({
+            pathname: generatePath('/:couponType/forms/checkout', {
+              couponType: params.couponType,
+            }),
+            search: searchParams,
+          }, { replace: true });
+        }
       }
     }
   }, [
@@ -139,8 +141,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     email,
     areaCode,
     phoneNumber,
-    history,
-    params.couponType,
+    // history,
+    params,
     allowNext,
     searchParams,
   ]);
@@ -335,7 +337,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       <Shared.Form.Nav>
         <Elements.Button
           type='submit'
-          variant='contained'
           disabled={(submitting) ? true : false}
           customCss={css`
             width: 100%;

@@ -61,9 +61,37 @@ REACT_APP_GREENPEACE_FACEBOOK="https://www.facebook.com/GreenpeaceArg/"
 REACT_APP_GREENPEACE_TWITTER="https://twitter.com/GreenpeaceArg"
 REACT_APP_GREENPEACE_INSTAGRAM="https://www.instagram.com/greenpeacearg/"
 
+
+```
+## Base de datos para backup de transacciones
+```
+amount
+areaCode
+campaignId
+card
+card_type
+cardLastDigits
+cardExpMonth
+cardExpYear     
+citizenId
+citizenIdType
+mpDeviceId 
+donationStatus
+email
+firstName
+lastName
+fromUrl
+mpPayMethodId
+mpPayOptId   
+phoneNumber
+recurrenceDay
+transactionDate
+userAgent
+utm
+
 ```
 
-CHANGELOG
+## CHANGELOG
 - 2.28.0 
   - Se modificó el script de Hotjar
 - 2.28.1 

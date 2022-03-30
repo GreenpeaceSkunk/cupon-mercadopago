@@ -65,7 +65,6 @@ const Component: FunctionComponent<{}> = memo(() => {
       >{appData.content.modal_form.title}</Elements.H3>}
       {appData && appData.content && <Elements.P>{appData.content.modal_form.text}</Elements.P>}
       <Elements.Button
-        variant='contained'
         onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
         customCss={css`
           width: 100%;
@@ -83,10 +82,11 @@ const Component: FunctionComponent<{}> = memo(() => {
 });
 
 Component.displayName = 'ModalOpenForm';
-export default function ModalOpenForm() {
-  return useMemo(() => (
-    <FormProvider>
-      <Component />
-    </FormProvider>
-  ), []);
-};
+export default Component;
+// export default function ModalOpenForm() {
+//   return useMemo(() => (
+//     <FormProvider>
+//       <Component />
+//     </FormProvider>
+//   ), []);
+// };

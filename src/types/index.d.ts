@@ -36,7 +36,7 @@ declare global {
 }
 
 export type ParamsType = {
-  couponType: string;
+  couponType?: string;
 };
 
 export interface CustomHTMLScriptElement extends HTMLScriptElement {

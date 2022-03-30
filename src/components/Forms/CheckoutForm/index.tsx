@@ -1,5 +1,5 @@
 import React, { FormEvent, memo, useCallback, useContext, useState, useRef, useReducer, useMemo, useEffect } from 'react';
-import { generatePath, useHistory } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { FormContext } from '../context';
 import { OnChangeEvent } from 'greenpeace';
 import { validateCardHolderName, validateCitizenId, validateCreditCard, validateCvv, validateEmptyField, validateMonth, validateYear } from '../../../utils/validators';
@@ -21,7 +21,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const [{ submitting, submitted, allowNext, error, attemps }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
   // const [ errorMessage, setErrorMessage ] = useState<string|null>(null);
-  const history = useHistory();
+  const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
   const snackbarRef = useRef<ISnackbarRef>(null);
   const { searchParams, urlSearchParams } = useQuery();
@@ -54,7 +54,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
   const goToThankYou = useCallback(() => {
     // const timer = setTimeout(() => {
-    //   history.push({
+    //   navigate.push({
     //     pathname: generatePath(`/:couponType/forms/thank-you`, {
     //       couponType: params.couponType,
     //     }),
@@ -62,9 +62,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     //   });
     // }, 1000);
   }, [
-    history,
-    params,
-    searchParams,
+    // navigate,
+    // params,
+    // searchParams,
   ]);
 
   /**
@@ -116,7 +116,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           // if(result) {
           //   const timer = setTimeout(() => {
           //     dispatchFormErrors({ type: 'SUBMITTED' });
-          //     history.push({
+          //     navigate.push({
           //       pathname: generatePath(`/:couponType/forms/thank-you`, {
           //         couponType: params.couponType,
           //       }),
@@ -133,12 +133,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
       const timer = setTimeout(() => {
         dispatchFormErrors({ type: 'SUBMITTED' });
-        history.push({
-          pathname: generatePath(`/:couponType/forms/thank-you`, {
+        navigate({
+          pathname: generatePath(`/:couponType/thankyou`, {
             couponType: params.couponType,
           }),
           search: `${searchParams}`,
-        });
+        }, { replace: true });
       }, 250);
 
       return () => {
@@ -286,8 +286,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     formRef,
     payment,
     user,
-    history,
-    params.couponType,
+    navigate,
+    params,
     urlSearchParams,
     appData,
     // showSnackbar,
@@ -492,7 +492,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       <Shared.Form.Nav>
         <Elements.Button
           type='submit'
-          variant='contained'
           disabled={submitting ? true : false}
           customCss={css`
             width: 100%;

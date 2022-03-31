@@ -32,7 +32,7 @@ const MainHeader: FunctionComponent<{
             0deg,
             rgba(0, 0, 0, .75) 0%,
             rgba(0, 0, 0, 0) 100%),
-            url(${process.env.REACT_APP_GREENLAB_API_IMAGES}${appData && appData.content && appData.content.header.picture});
+            url(${process.env.REACT_APP_GREENLAB_API_IMAGES}/${appData && appData.content && appData.content.header.picture});
         `}
   
         @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {

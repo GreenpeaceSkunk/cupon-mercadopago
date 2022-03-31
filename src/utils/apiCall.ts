@@ -18,11 +18,20 @@ const ApiCall = async <A>(config: AxiosRequestConfig) => {
     return response.data as A;
   } catch(error: any) {
     const { response } = error as AxiosError;
-    let errorMessage = response?.data.error.description || (response?.data.errorMessage || 'Error inesperado.');
+    let errorMessage, errorCode;
+    if(response?.data && response?.data) {
+      console.log(response?.data?.code)
+      errorCode = response?.data?.code;
+      errorMessage = response?.data?.message;
+    } else {
+      errorMessage = 'Error inesperado';
+    }
+    // let errorMessage = response?.data.error.description || (response?.data.errorMessage || 'Error inesperado.');
     return {
       error: true,
       status: response?.status,
       message: errorMessage,
+      errorCode,
     } as AxiosResquestError;
   }
 }

@@ -74,6 +74,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             mpDeviceId: payload.device_id,
             donationStatus: payload.donationStatus,
             email: payload.email,
+            errorCode: payload.errorCode || '',
+            errorMessage: payload.errorMessage || '',
             firstName: payload.nombre,
             form_id: service.forma.transactions_form,
             fromUrl: document.location.href,
@@ -126,7 +128,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       (async () => {
         dispatchFormErrors({ type: 'SUBMIT' });
   
-        // if(process.env.REACT_APP_ENVIRONMENT === 'production' || process.env.REACT_APP_ENVIRONMENT === 'test') {
         if(formRef.current) {
           setPublishableKey(await getPublicKey());
           const token = await createToken(formRef.current);
@@ -206,12 +207,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               }};
 
               if(result['error']) {
-                console.log(result.message);
-                // dispatchFormErrors({
-                //   type: 'SUBMITTED_WITH_ERRORS',
-                //   error: result.message,
-                // });
-                backupInformation({...payload, donationStatus: 'pending'});
+                backupInformation({...payload, donationStatus: 'pending', errorCode: result.errorCode, errorMessage: result.message });
               } else {
                 window.userAmount = amount;
                 backupInformation({...payload, donationStatus: 'done'});
@@ -357,8 +353,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.cardExpirationYear}
                 onChange={onChangeHandler}
               >
-                <option></option>
-                {(Array.from(Array(20).keys()).map((value) => value + 2021)).map((value: number, key: number) => (
+                {(Array.from(Array(20).keys()).map((value) => value + (new Date().getFullYear()))).map((value: number, key: number) => (
                   <option key={key} value={value}>{value}</option>
                 ))}
               </Elements.Select>

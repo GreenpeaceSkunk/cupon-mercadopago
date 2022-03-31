@@ -53,6 +53,7 @@ export type StylesType = {
   
 export type AxiosResquestError = {
   error: boolean,
+  errorCode?: number,
   status: number,
   message: string,
 };

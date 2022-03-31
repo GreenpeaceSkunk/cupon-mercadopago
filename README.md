@@ -64,6 +64,13 @@ REACT_APP_GREENPEACE_INSTAGRAM="https://www.instagram.com/greenpeacearg/"
 
 ```
 ## Base de datos para backup de transacciones
+
+### Name
+coupon-transactions
+
+### Description
+Información sobre transcacciones aprobadas ó rechazadas para el entorno de producción 
+
 ```
 amount
 areaCode
@@ -75,12 +82,14 @@ cardExpMonth
 cardExpYear     
 citizenId
 citizenIdType
-mpDeviceId 
 donationStatus
 email
+errorCode
+errorMensage
 firstName
 lastName
 fromUrl
+mpDeviceId 
 mpPayMethodId
 mpPayOptId   
 phoneNumber
@@ -88,6 +97,7 @@ recurrenceDay
 transactionDate
 userAgent
 utm
+
 
 ```
 

@@ -60,7 +60,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         const { service } = appData.settings;
   
         if(service.forma.transactions_form) {
-          const newRecordResult = await postRecord({
+          await postRecord({
             amount: payload.amount,
             areaCode: payload.cod_area,
             campaignId: payload.campaign_id,
@@ -85,14 +85,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             phoneNumber: payload.telefono,
             recurrenceDay: payload.tomorrow,
             transactionDate: payload.date,
-            userAgent: window.navigator.userAgent,
-            utm: {
-              utm_campaign: urlSearchParams.get('utm_campaign'),
-              utm_medium: urlSearchParams.get('utm_medium'),
-              utm_source: urlSearchParams.get('utm_source'),
-              utm_content: urlSearchParams.get('utm_content'),
-              utm_term: urlSearchParams.get('utm_term'),
-            },
+            userAgent: window.navigator.userAgent.replaceAll(/;/ig, ''),
+            utm: `utm_campaign=${ urlSearchParams.get('utm_campaign')}&utm_medium=${ urlSearchParams.get('utm_medium')}&utm_source=${ urlSearchParams.get('utm_source')}&utm_content=${ urlSearchParams.get('utm_content')}&utm_term=${ urlSearchParams.get('utm_term')}`,
           });
         }
       }
@@ -204,10 +198,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               payload = {...payload, ...{
                 card: payment.cardNumber,
                 card_type: getCardType(paymentMethod.payment_method_id, paymentMethod.payment_type_id),
+                payment_method_id: paymentMethod.issuer.name,
               }};
               
               if(result['error']) {
-                backupInformation({...payload, donationStatus: 'pending', errorCode: result.errorCode, errorMessage: result.message.replaceAll(/,/ig, ';') });
+                backupInformation({...payload, donationStatus: 'pending', errorCode: result.errorCode, errorMessage: result.message.replaceAll(/,/ig, '') });
               } else {
                 window.userAmount = amount;
                 backupInformation({...payload, donationStatus: 'done'});

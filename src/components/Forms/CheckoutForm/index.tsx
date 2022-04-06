@@ -205,9 +205,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 card: payment.cardNumber,
                 card_type: getCardType(paymentMethod.payment_method_id, paymentMethod.payment_type_id),
               }};
-
+              
               if(result['error']) {
-                backupInformation({...payload, donationStatus: 'pending', errorCode: result.errorCode, errorMessage: result.message });
+                backupInformation({...payload, donationStatus: 'pending', errorCode: result.errorCode, errorMessage: result.message.replaceAll(/,/ig, ';') });
               } else {
                 window.userAmount = amount;
                 backupInformation({...payload, donationStatus: 'done'});

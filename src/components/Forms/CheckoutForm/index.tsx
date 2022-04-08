@@ -85,7 +85,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             phoneNumber: payload.telefono,
             recurrenceDay: payload.tomorrow,
             transactionDate: payload.date,
-            userAgent: window.navigator.userAgent.replaceAll(/;/ig, ''),
+            userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
             utm: `utm_campaign=${ urlSearchParams.get('utm_campaign')}&utm_medium=${ urlSearchParams.get('utm_medium')}&utm_source=${ urlSearchParams.get('utm_source')}&utm_content=${ urlSearchParams.get('utm_content')}&utm_term=${ urlSearchParams.get('utm_term')}`,
           });
         }
@@ -202,7 +202,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               }};
               
               if(result['error']) {
-                backupInformation({...payload, donationStatus: 'pending', errorCode: result.errorCode, errorMessage: result.message.replaceAll(/,/ig, '') });
+                backupInformation({...payload, donationStatus: 'pending', errorCode: result.errorCode, errorMessage: result.message.replace(/,/g, '').replace(/;/g, '') });
               } else {
                 window.userAmount = amount;
                 backupInformation({...payload, donationStatus: 'done'});

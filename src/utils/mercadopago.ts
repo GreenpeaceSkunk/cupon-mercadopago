@@ -84,7 +84,7 @@ export const getInstallments = async (params: any): Promise<any> => {
  * @param payment_type_id Could be credit_card or debit_card
  * @returns 
  */
-export const getCardType = (paymentMethodId = '', payment_type_id = ''): number => {
+export const getCardType = (paymentMethodId = ''): number => {
   switch(paymentMethodId) {
     case 'visa':
       return 2;
@@ -94,6 +94,7 @@ export const getCardType = (paymentMethodId = '', payment_type_id = ''): number 
       return 4;
     case 'amex':
       return 5;
+    case 'cabal':
     case 'debcabal':
       return 6;
     case 'cmr':

@@ -44,6 +44,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             text-align: center;
           `}
         >{appData && appData.content && appData.content.thankyou.title}</Elements.H1>
+        <Elements.P
+          customCss={css`
+            text-align: center;
+          `}
+        >Estaremos procesando tu donación y ante cualquier novedad nos comunicaremos con vos.</Elements.P>
       </Elements.Wrapper>
       <Elements.Wrapper
         customCss={css`

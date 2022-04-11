@@ -197,7 +197,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
               payload = {...payload, ...{
                 card: payment.cardNumber,
-                card_type: getCardType(paymentMethod.payment_method_id, paymentMethod.payment_type_id),
+                card_type: getCardType(paymentMethod.payment_method_id),
                 payment_method_id: paymentMethod.issuer.name,
               }};
               

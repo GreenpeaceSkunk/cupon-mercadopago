@@ -14,27 +14,19 @@ const App = lazy(() => import('.'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const { searchParams } = useQuery();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    let isValid = true;
     const paths = pathname.split('/').filter((v) => v !== '');
-    
-    if(!paths.length) {
-      isValid = false;
-    } else {
-      if(paths[0] !== 'regular' && paths[0] !== 'oneoff') {
-        isValid = false;
-      }
-    }
-
+      
     navigate({
       pathname: generatePath(`:couponType/forms`, {
-        couponType: 'regular',
+        couponType: (paths[0] !== 'regular' && paths[0] !== 'oneoff' || !paths.length) ? 'regular' : paths[0],
       }),
       search: `${searchParams}`,
     });
+
   }, []);
   
   return useMemo(() => (

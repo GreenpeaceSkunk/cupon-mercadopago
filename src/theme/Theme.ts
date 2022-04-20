@@ -5,7 +5,6 @@ export const colorPrimaryLight = '#73BE1E';
 export const colorPrimaryNormal = '#66cc00';
 export const colorPrimaryDark = '#005C42';
 
-// export const colorSecondaryLight = '#BDBDBD';
 export const colorSecondaryNormal = '#C4C4C4';
 export const colorSecondaryDark = '#2A2929';
 

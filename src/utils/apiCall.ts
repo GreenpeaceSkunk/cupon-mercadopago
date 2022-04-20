@@ -19,6 +19,7 @@ const ApiCall = async <A>(config: AxiosRequestConfig) => {
   } catch(error: any) {
     const { response } = error as AxiosError;
     let errorMessage, errorCode;
+    
     if(response?.data && response?.data) {
       console.log(response?.data?.code)
       errorCode = response?.data?.code;
@@ -26,7 +27,7 @@ const ApiCall = async <A>(config: AxiosRequestConfig) => {
     } else {
       errorMessage = 'Error inesperado';
     }
-    // let errorMessage = response?.data.error.description || (response?.data.errorMessage || 'Error inesperado.');
+
     return {
       error: true,
       status: response?.status,

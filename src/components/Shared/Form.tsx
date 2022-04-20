@@ -6,22 +6,6 @@ import { ValidationType } from '../../utils/validators';
 import Icons from '../../images/icons';
 import Elements from '../Shared/Elements';
 
-// const sharedStyles = css`
-//   margin: 0;
-//   padding: ${pixelToRem(8)};
-//   width: 100%;
-//   height: ${pixelToRem(46)};
-//   font-size: ${pixelToRem(16)};
-//   border: 1px solid ${({theme}) => theme.color.secondary.normal};
-//   border-radius: ${pixelToRem(5)};
-//   outline: none;
-//   appearance: none;  
-
-//   &:focus {
-//     border-color: ${({theme}) => theme.color.primary.normal};
-//   }
-// `;
-
 /**
  * Defines margin right and left. Also resets margins at first and last child.
  * @param marginRight Margin Right
@@ -85,7 +69,6 @@ const Nav: React.FunctionComponent<{
         justify-self: flex-end;
         width: 100%;
         height: 100%;
-        /* padding: ${pixelToRem(20)} ${pixelToRem(60)}; */
         
         > * {
           margin-bottom: ${pixelToRem(20)};
@@ -346,14 +329,6 @@ const Label = styled(Elements.Label)`
   position: relative;
   width: 100%;
 `;
-
-// const Input = styled(Elements.Input)`
-//   background-color: transparent;
-
-//   ${sharedStyles};
-// `;
-
-
 
 const Row = styled(Elements.Wrapper)`
   display: grid;

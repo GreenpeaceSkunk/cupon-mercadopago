@@ -69,19 +69,6 @@ const Component: FunctionComponent<{
         <Elements.Img src={Icons.FacebookLogo} alt='Facebook' width='auto' height='auto' />
       </FacebookShareButton>
 
-      {/* <EmailShareButton
-        onClick={(evt: MouseEvent<HTMLButtonElement>) => {}}
-        openShareDialogOnClick={true}
-        url={`${process.env.REACT_APP_SHARE_URL}`}
-        subject={`${process.env.REACT_APP_SHARE_EMAIL_SUBJECT}`}
-        body={`${process.env.REACT_APP_SHARE_EMAIL_BODY}`}
-        separator=" "
-        windowHeight={SHARE_MODAL_HEIGHT}
-        windowWidth={SHARE_MODAL_WIDTH}
-      >
-        <Img src={EmailLogo} alt='Email' width='auto' height='auto' />
-      </EmailShareButton> */}
-
       <TwitterShareButton
         title={`${process.env.REACT_APP_SHARE_TWITTER_TITLE}`}
         url={`${process.env.REACT_APP_SHARE_URL}`}

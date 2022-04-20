@@ -173,15 +173,3 @@ const _ = {
 };
 
 export default _;
-
-/* ${({ variant }) => (variant === 'text') && css`
-  background-color: transparent;
-  color: ${({theme}) => theme.color.primary.normal};
-  text-decoration: underline;
-  padding: 0;
-
-  &:hover {
-    background-color: transparent;
-    box-shadow: none !important;
-  }
-`} */

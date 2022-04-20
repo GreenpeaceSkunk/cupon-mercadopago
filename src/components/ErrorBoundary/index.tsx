@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Wrapper } from '@bit/meema.ui-components.elements';
 import Elements from '../Shared/Elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';

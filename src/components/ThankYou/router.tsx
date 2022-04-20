@@ -1,10 +1,8 @@
 import React, { memo, useMemo, } from 'react';
-// import { Route, Switch, useRouteMatch } from 'react-router';
 import { Routes, Route } from "react-router-dom";
 import Index from '.';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
-  // const { path } = useRouteMatch();
 
   return useMemo(() => (
     <Routes>
@@ -12,9 +10,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         <Index />
       </Route>
     </Routes>
-  ), [
-    // path,
-  ]);
+  ), []);
 })
 
 Component.displayName = 'ThankYouRouter';

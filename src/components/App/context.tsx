@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useMemo, useReducer, useState } from "react";
-import { /*RouteComponentProps,*/ useLocation, useNavigate } from "react-router-dom";
 import useQuery from "../../hooks/useQuery";
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../theme/globalStyle';
@@ -32,10 +31,8 @@ const { Provider, Consumer } = Context;
 const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const [{ appData }, dispatch ] = useReducer(reducer, initialState);
   const [ isOpen, setIsOpen ] = useState<boolean>(false);
-  const { searchParams, urlSearchParams } = useQuery();
-  const navigate = useNavigate();
+  const { urlSearchParams } = useQuery();
   const [ appName, setAppName ] = useState<string | null>(null);
-  const location = useLocation();
 
   useEffect(() => {
     if(appName !== null) {
@@ -79,25 +76,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
       trackEvent('PageView');
       pushToDataLayer('pageview');
     }
-  }, [
-    // location.pathname,
-  ]);
-
-  
-  // useEffect(() => {
-  //   if(urlSearchParams) {
-  //     console.log('Entra?', location.pathname)
-  //     navigate({
-  //       pathname: location.pathname,
-  //       // pathname: '/', // TODO: CHECK
-  //       search: searchParams,
-  //     });
-  //   }
-  // }, [
-  //   navigate,
-  //   // location.pathname,
-  //   searchParams,
-  // ]);
+  }, []);
 
   useEffect(() => {
     setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'general')
@@ -121,14 +100,9 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
     appData,
     urlSearchParams,
     isOpen,
-    // location,
     children,
   ]);
 };
-
-
-// const WrappedProvider = withRouter(ContextProvider);
-// const WrappedProvider = withRouter(ContextProvider);
 
 export {
   ContextProvider as AppProvider,

@@ -3,17 +3,6 @@ import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import Icons from '../../images/icons';
 
-// const Title = styled(Elements.H1)`
-//   margin-bottom: ${pixelToRem(10)};
-//   font-size: ${pixelToRem(32)};
-//   font-family: ${({theme}) => theme.font.family.primary.bold};
-//   color: ${({theme}) => theme.color.primary.normal};
-//   text-align: center;
-//   width: 100%;
-
-//   ${({customCss}) => (customCss) && customCss};
-// `;
-
 const Subtitle = styled(Elements.H2)`
   margin-bottom: ${pixelToRem(10)};
   font-size: ${pixelToRem(24)};
@@ -113,9 +102,7 @@ const ButtonClose = styled(Elements.Button)`
 
 const defaults = {
   Text,
-  // Title,
   Subtitle,
-  // Button,
   ButtonClose,
   ButtonLink,
   Link,

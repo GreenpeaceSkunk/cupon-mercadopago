@@ -9,7 +9,7 @@ import {
   fontPrimaryRegular,
   fontPrimaryBold,
   fontSecondaryRegular,
-} from './Theme';
+} from './v1/Theme';
 
 export const GlobalStyle = createGlobalStyle<DefaultTheme>`
   @font-face {

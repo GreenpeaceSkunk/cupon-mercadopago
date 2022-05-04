@@ -1,5 +1,4 @@
 export interface ITheme {
-  borderRadius: number;
   color: {
     primary: {
       light?: string;

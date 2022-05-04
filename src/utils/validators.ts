@@ -48,7 +48,7 @@ export const validateAmount = (monto = '', otherAmount = ''): boolean => {
 }
 
 export const validateFirstName = (value = '', minLength = 2): ValidationType => {
-  if(checkMinLength(value, 2)) {
+  if(checkMinLength(value, minLength)) {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['SK001'],
@@ -143,8 +143,9 @@ export const validateCitizenId = (value: string, minLength = 8): ValidationType 
 }
 
 export const validateCreditCard = (value: string): ValidationType => {
+  const isValid = (/^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/.test(value));  
   return {
-    isValid: validateField(value) ? (/^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/.test(value)) : false,
+    isValid: validateField(value) ? isValid : false,
     errorMessage: 'Revisa el número de tarjeta', 
   };
 }
@@ -192,12 +193,13 @@ export const validateBirthDate = (value = ''): ValidationType => {
 export const validateEmptyField = (value: string): ValidationType => {
   return {
     isValid: (value !== '') ? true : false,
-    errorMessage: 'El campo no puede estar vacío', 
+    // isValid: (value === '') && false,
+    errorMessage: 'El campo no puede estar vacío',
   };
 }
 
 export const validateMonth = (value: string): ValidationType => {
-  if(parseInt(value) <= 0 || parseInt(value) >= 13) {
+  if(!validateEmptyField(value).isValid || parseInt(value) <= 0 || parseInt(value) >= 13) {    
     return {
       isValid: false,
       errorMessage: 'El mes es inválido.'

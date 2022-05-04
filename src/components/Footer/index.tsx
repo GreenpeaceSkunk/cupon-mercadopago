@@ -53,8 +53,9 @@ const Component: React.FunctionComponent<{}> = () => {
           align-items: center;
         `}
       >
-        <SocialMediaNav />
-        {appData && appData.settings && appData.settings.tracking && appData.settings.tracking.hotjar &&
+        <SocialMediaNav text={appData && appData.content && appData.content.thankyou.social_media_text}/>
+        
+        {/* {appData && appData.settings && appData.settings.tracking && appData.settings.tracking.hotjar &&
           <Wrapper
             customCss={css`
               margin-top: ${pixelToRem(20)};
@@ -67,7 +68,7 @@ const Component: React.FunctionComponent<{}> = () => {
               />
             </a>
           </Wrapper>
-        }
+        } */}
 
       </Wrapper>
       <Wrapper

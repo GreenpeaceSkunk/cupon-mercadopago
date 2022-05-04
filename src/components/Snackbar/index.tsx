@@ -38,23 +38,31 @@ const Component: React.ForwardRefRenderFunction<IRef, IProps> = ({
     <Elements.Wrapper
       className='snackbar'
       customCss={css`
-        position: relative;
+        position: absolute;
         display: flex;
         align-items: center;
         padding: ${pixelToRem(12)};
         border-radius: ${pixelToRem(5)};
         background-color: ${({theme}) => theme.color.error.normal};
-        color: white;
         opacity: 0;
+        z-index: 9999;
         animation-duration: ${milliseconds}ms;
         animation-direction: alternate;
         animation-fill-mode: forwards;
         animation-iteration-count: 1;
         pointer-events: none;
+        bottom: 0;
+        width: 100%;
 
         ${(animate) && css`
           animation-name: show-snackbar;
         `};
+
+        @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+          position: relative;
+          margin-bottom: ${pixelToRem(12)};
+          z-index: 1;
+        }
 
         &:before {
           display: inline-flex;
@@ -66,36 +74,33 @@ const Component: React.ForwardRefRenderFunction<IRef, IProps> = ({
           background-repeat: no-repeat;
           transform-origin: center;
           background-image: url(${Icons.WarningIcon});
+          margin-right: ${pixelToRem(12)};
           content: "";
-
-          @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-            margin-right: ${pixelToRem(12)};
+        }
+        
+        @keyframes show-snackbar {
+          1% {
+            opacity: 0;
           }
 
-          @keyframes show-snackbar {
-            0% {
-              display: flex;
-            }
-            
-            1% {
-              opacity: 0;
-            }
+          15% {
+            opacity: 1;
+          }
 
-            15% {
-              opacity: 1;
-            }
+          85% {
+            opacity: 1;
+          }
 
-            85% {
-              opacity: 1;
-            }
-
-            100% {
-              opacity: 0;
-            }
+          100% {
+            opacity: 0;
           }
         }
       `}
-    ><Elements.Span>{text}</Elements.Span></Elements.Wrapper>
+    >
+      <Elements.Span
+        customCss={css`
+          color: white;
+        `}>{text}</Elements.Span></Elements.Wrapper>
   ), [
     text,
     animate,

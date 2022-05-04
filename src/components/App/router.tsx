@@ -4,11 +4,13 @@ import { Routes, Route } from "react-router-dom";
 import { Loader } from '../Shared';
 import { AppProvider } from './context';
 import useQuery from '../../hooks/useQuery';
+import { getDesignVersion } from '../../utils';
 
-const Forms = React.lazy(() => import('../Forms'));
-const RegistrationForm = React.lazy(() => import('../Forms/RegistrationForm'));
-const CheckoutForm = React.lazy(() => import('../Forms/CheckoutForm'));
-const ThankYou = React.lazy(() => import('../ThankYou'));
+// const Forms = React.lazy(() => import('../Forms'));
+const Forms = lazy(() => import(`../v${getDesignVersion()}/Forms`));
+const RegistrationForm = lazy(() => import(`../v${getDesignVersion()}/Forms/RegistrationForm`));
+const CheckoutForm = lazy(() => import(`../v${getDesignVersion()}/Forms/CheckoutForm`));
+const ThankYou = lazy(() => import(`../v${getDesignVersion()}/ThankYou`));
 
 const App = lazy(() => import('.'));
 

@@ -12,6 +12,7 @@ const sharedInputStyles = css<IElement>`
   box-sizing: border-box;
   line-height: 100%;
   width: 100%;
+  min-height: ${pixelToRem(48)};
   margin: 0;
   border: ${pixelToRem(1)} solid black;
   font-size: ${pixelToRem(16)};
@@ -63,8 +64,17 @@ export const H2 = styled(Elements.H2)`
 export const H3 = styled(Elements.H3)`
   margin-bottom: ${pixelToRem(10)};
   color: ${({theme}) => theme.text.color.primary.normal};
-  font-size: ${pixelToRem(28)};
+  font-size: ${pixelToRem(20)};
   font-family: ${({theme}) => theme.font.family.primary.bold};
+  
+  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+    font-size: ${pixelToRem(22)};
+  }
+
+  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
+    font-size: ${pixelToRem(24)};
+  }
+
   ${customStyles};
 `;
 export const Header = styled(Elements.Header)``;
@@ -111,7 +121,14 @@ export const WrapperHtml = styled(Elements.Wrapper)`
   font-family: ${({theme}) => theme.font.family.primary.regular};
   
   p {
-    margin-bottom: ${pixelToRem(14)};
+    margin-top: ${pixelToRem(12)};
+    margin-bottom: ${pixelToRem(12)};
+    font-size: ${pixelToRem(16)};
+    line-height: 1.2;
+    
+    @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+      font-size: ${pixelToRem(18)};
+    }
   }
 
   strong {
@@ -122,10 +139,11 @@ export const WrapperHtml = styled(Elements.Wrapper)`
 `;
 
 export const Button = styled(Elements.Button)`
-  padding: ${pixelToRem(13)} 0;
+  padding: 0 ${pixelToRem(20)};
+  min-height: ${pixelToRem(48)};
   color: white;
   background-color: ${({theme}) => theme.color.primary.normal};
-  border-radius: ${(({theme}) => pixelToRem(theme.borderRadius))};
+  border-radius: ${pixelToRem(5)};
   font-size: ${pixelToRem(18)};
   font-family: ${({theme}) => theme.font.family.primary.bold};
   white-space: nowrap;
@@ -143,7 +161,7 @@ export const Button = styled(Elements.Button)`
     }
   }
   
-  ${({customCss}) => (customCss) && customCss};
+  ${customStyles};
 `;
 
 const _ = {

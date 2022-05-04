@@ -26,8 +26,6 @@ export const initialState: ContextStateType = {
 }
 
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
-  console.log(action.type);
-  
   switch (action.type) {
     case 'UPDATE_FIELD_ERRORS': {
       let tmpErrors = (state.errors) ? {...state.errors} : {};

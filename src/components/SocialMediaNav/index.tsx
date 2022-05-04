@@ -6,8 +6,11 @@ import Icons from '../../images/icons';
 
 const SocialButton = styled(Elements.A)<{ icon: string }>`
   display: inline-block;
-  width: ${pixelToRem(30)};
-  height: ${pixelToRem(30)};
+  width: ${pixelToRem(38)};
+  height: ${pixelToRem(38)};
+  /* background: black; */
+  border-radius: 50%;
+
   ${({icon}) => icon && css`
     background-image: url(${icon});
     background-position: center;
@@ -18,13 +21,13 @@ const SocialButton = styled(Elements.A)<{ icon: string }>`
 const Component: FunctionComponent<{
   children?: React.ReactNode | HTMLAllCollection;
   customCss?: CustomCSSType;
-  theme?: 'light' | 'color';
+  theme?: 'light' | 'dark' | 'color';
   text?: string;
   textWeight?: 'normal' | 'bold';
 }> = memo(({
   customCss,
   theme = 'light',
-  text = '¡Seamos muchos más los que ayudamos al planeta!',
+  text = '',
   textWeight = 'normal',
 }) => useMemo(() => (
   <Elements.Wrapper
@@ -38,9 +41,9 @@ const Component: FunctionComponent<{
   >
     <Elements.Span
       customCss={css`
-        font-size: ${pixelToRem(18)};
+        font-size: ${pixelToRem(14)};
         margin-bottom: ${pixelToRem(18)};
-        color: ${(theme === 'color') ? 'black' : 'white'};
+        color: ${({theme}) => theme.text.color.secondary.normal};
         text-align: center;
         font-family: ${({theme}) => (textWeight === 'bold') ? theme.font.family.primary.bold : theme.font.family.primary.normal };
       `}
@@ -50,7 +53,7 @@ const Component: FunctionComponent<{
       customCss={css`
         > * {
           &:not(:last-child) {
-            margin-right: ${pixelToRem(20)};
+            margin-right: ${pixelToRem(16)};
           }
         }
       `}

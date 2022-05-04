@@ -26,19 +26,23 @@ export const initialState: ContextStateType = {
 }
 
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
+  console.log(action.type);
+  
   switch (action.type) {
-    case 'UPDATE_FIELD_ERRORS':
+    case 'UPDATE_FIELD_ERRORS': {
       let tmpErrors = (state.errors) ? {...state.errors} : {};
       if(action.payload.isValid) {
         delete tmpErrors[`${action.payload.fieldName}`];
       } else {
         tmpErrors[`${action.payload.fieldName}`] = false;
       }
+      
       return {
         ...state,
         errors: tmpErrors,
         allowNext: Object.values(tmpErrors).length ? false : true,
       }
+    }
     case 'RESET_FIELD_ERRORS': {
       return {
         ...state,
@@ -65,7 +69,7 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
         ...state,
         submitting: true,
         submitted: false,
-        isEdited: false,
+        error: null,
       };
     }
     case 'SUBMITTED': {
@@ -74,6 +78,14 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
         submitting: false,
         submitted: true,
         isEdited: false,
+      };
+    }
+    case 'SET_ERROR': {
+      return {
+        ...state,
+        submitting: false,
+        submitted: false,
+        error: action.error,
       };
     }
     default: {

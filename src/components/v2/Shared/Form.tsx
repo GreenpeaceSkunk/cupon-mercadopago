@@ -6,20 +6,6 @@ import { ValidationType } from '../../../utils/validators';
 import Icons from '../../../images/icons';
 import Elements from '../../Shared/Elements';
 
-/**
- * Defines margin right and left. Also resets margins at first and last child.
- * @param marginRight Margin Right
- * @param marginLeft Margin Right
- * @returns 
- */
- const innerMargin = (marginRight: number, marginLeft: number) => css`
- margin-right: ${pixelToRem(marginRight)};
- 
- &:last-child {
-   margin-right: 0;
- }
-`;
-
 const Main = styled(Elements.Form)`
   position: relative;
   display: flex;

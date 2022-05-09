@@ -5,7 +5,7 @@ import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import ErrorBoundary from '../../ErrorBoundary';
 import { AppContext } from '../../App/context';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 
 const Header = lazy(() => import('../Header'));
 const Footer = lazy(() => import('../../Footer'));
@@ -14,6 +14,7 @@ const ModalOpenForm = lazy(() => import('../ModalOpenForm'));
 const Component: React.FunctionComponent<{}> = memo(() => {
   const viewRef = useRef<HTMLElement>(null);
   const { appData, setIsOpen } = useContext(AppContext);
+  const location = useLocation();
 
   const scrollToForm = useCallback(() => {
     if(viewRef && viewRef.current) {
@@ -36,7 +37,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             <Header />
           </Suspense>
         </ErrorBoundary>
-
         <Elements.Wrapper
           customCss={css`
             padding: ${pixelToRem(36)} ${pixelToRem(24)};
@@ -56,7 +56,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         >
           <Outlet />
         </Elements.Wrapper>
-
         <ErrorBoundary fallback='Footer Error.'>
           <Suspense fallback={<Shared.Loader />}>
             <Elements.Wrapper>  
@@ -67,15 +66,18 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       </Elements.View>
       <ErrorBoundary fallback='Modal open form Error.'>
         <Suspense fallback={<Shared.Loader />}>
+        {(!location.pathname.includes('/checkout')) ? (
           <Elements.Wrapper>  
             <ModalOpenForm onClickSubmit={() => scrollToForm()}/>
           </Elements.Wrapper>
+        ) : null}
         </Suspense>
       </ErrorBoundary>
     </> 
   ), [
     viewRef,
     appData,
+    location,
     setIsOpen,
   ]);
 });

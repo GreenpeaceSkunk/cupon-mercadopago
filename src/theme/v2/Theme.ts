@@ -118,7 +118,7 @@ const DefaultTheme: ITheme = {
     },
     desktop: {
       backgroundColor: '#FFFFFF',
-      height: 538,
+      height: 400,
     },
   },
   footer: {

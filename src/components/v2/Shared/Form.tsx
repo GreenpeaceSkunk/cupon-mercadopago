@@ -159,68 +159,6 @@ const SelectableButton: React.FunctionComponent<{
     >
       {text}
     </Elements.Button>
-    {/* <Elements.Label
-      customCss={css`
-        display: inline-flex;
-        align-items: center;
-        width: fit-content;
-        cursor: pointer;
-        margin-bottom: ${pixelToRem(10)};
-        user-select: none;
-        text-align: left;
-        font-family: ${({theme}) => theme.font.family.primary.regular};
-        font-size: ${pixelToRem(15)};
-        
-        ${(customCss) && customCss};
-      `}
-    >
-      <Elements.Input
-        type='radio'
-        name={name}
-        value={value}
-        checked={(checkedValue === value)}
-        data-text={text}
-        onChange={onChangeHandler}
-        customCss={css`
-          position: absolute;
-          width: ${pixelToRem(20)};
-          opacity: 0;
-          cursor: pointer;
-          z-index: 1;
-        `}
-      />
-      <Elements.Wrapper
-        customCss={css`
-          flex: 0 0 ${pixelToRem(20)};
-          width: ${pixelToRem(20)};
-          height: ${pixelToRem(20)};
-          border-radius: ${pixelToRem(2)};
-          background-color: white;
-          border: solid ${pixelToRem(1)} ${({theme}) => theme.color.secondary.normal};
-          margin-right: ${pixelToRem(10)};
-
-          ${(checkedValue === value) && css`
-            border-color: ${({theme}) => theme.color.primary.normal};
-            background-color: ${({theme}) => theme.color.primary.normal};
-            border-width: ${pixelToRem(4)};
-
-            &:after {
-              flex: 0 0 auto;
-              width: ${pixelToRem(12)};
-              height: ${pixelToRem(12)};
-              background-size: ${pixelToRem(12)} ${pixelToRem(12)};
-              background-position: center center;
-              background-repeat: no-repeat;
-              transform-origin: center;
-              background-image: url(${Icons.TickIcon});
-              position: absolute;
-              content: "";
-            }
-          `}
-        `}
-      />
-      {text}
-    </Elements.Label> */}
     </>
   ), [
     name,

@@ -126,6 +126,7 @@ const SelectableButton: React.FunctionComponent<{
         border-width: ${pixelToRem(1)} !important;
         width: fit-content;
         font-size: ${pixelToRem(14)};
+        margin-bottom: ${pixelToRem(10)};
 
         &:hover {
           background: white;
@@ -243,6 +244,25 @@ const RadioButton: React.FunctionComponent<{
     onChangeHandler,
   ]);
 };
+
+const Button = styled(Elements.Button)`
+  width: 100%;
+  background-color: ${({theme}) => theme.color.primary.normal};
+
+  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+    width: fit-content;
+    padding: 0 ${pixelToRem(42)};
+  }
+
+  &:disabled {
+    background-color: ${({theme}) => theme.color.secondary.normal};
+    opacity: 1;
+
+    &:hover {
+      background-color: ${({theme}) => theme.color.secondary.normal};
+    }
+  }
+`;
 
 const Row = styled(Elements.Wrapper)`
   display: flex;
@@ -375,8 +395,15 @@ const Group: React.FunctionComponent<{
           content: "${(!isValid && showErrorMessage && errorMessage) ? errorMessage : ""}";
         }
   
-        input[type="text"], input[type="email"], textarea, select {
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
           width: 100%;
+          font-size: ${pixelToRem(16)};
+          line-height: ${pixelToRem(18)};
+          padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
+          color: $
   
           ${(value === '') && css`
             border-color: ${({theme}) => theme.color.secondary.normal};
@@ -396,6 +423,7 @@ const Group: React.FunctionComponent<{
           customCss={css`
             text-align: left;
             font-family: ${({theme}) => theme.font.family.primary.regular};
+            font-size: ${pixelToRem(14)};
             margin-bottom: ${pixelToRem(6)};
 
             ${isRequired && css`
@@ -474,6 +502,7 @@ const defaults = {
   Label,
   Main,
   Nav,
+  Button,
   SelectableButton,
   RadioButton,
   TextArea,

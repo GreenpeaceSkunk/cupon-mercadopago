@@ -251,17 +251,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           align-items: flex-end;
         `}
       >
-        <Elements.Button
+        <Form.Button
           type='submit'
           disabled={submitting && true}
-          customCss={css`
-            width: 100%;
-
-            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-              width: fit-content;
-            }
-          `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.registration.button_text)}</Elements.Button>
+        >
+          {(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.registration.button_text)}
+        </Form.Button>
       </Form.Nav>
     </Form.Main>
   ), [

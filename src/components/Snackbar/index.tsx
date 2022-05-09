@@ -100,6 +100,8 @@ const Component: React.ForwardRefRenderFunction<IRef, IProps> = ({
       <Elements.Span
         customCss={css`
           color: white;
+          font-weight: 600;
+          font-size: ${pixelToRem(16)};
         `}>{text}</Elements.Span></Elements.Wrapper>
   ), [
     text,

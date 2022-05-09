@@ -66,6 +66,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               margin-top: ${pixelToRem(40)};
             `}
             theme='color'
+            showBackground={true}
           />
         </Suspense>
       </Elements.Wrapper>

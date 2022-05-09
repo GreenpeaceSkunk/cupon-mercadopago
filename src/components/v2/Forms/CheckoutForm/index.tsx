@@ -22,6 +22,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
+  const contentFormRef = useRef<HTMLDivElement>(null);
   const snackbarRef = useRef<ISnackbarRef>(null);
   const { searchParams, urlSearchParams } = useQuery();
 
@@ -275,8 +276,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       });
     }
     
-    if(formRef && formRef.current) {
-      formRef.current.scrollIntoView({behavior: "smooth"})  
+    if(contentFormRef && contentFormRef.current) {
+      contentFormRef.current.scrollIntoView({behavior: "smooth"})
     }
   }, []);
 
@@ -300,7 +301,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           dangerouslySetInnerHTML={{__html: appData && appData.content && appData.content.form.checkout.text }}
         />
       </Form.Header>
-      <Form.Content>
+      <Form.Content
+         id='content-form'
+         ref={contentFormRef}
+      >
         <Shared.Elements.Span
           customCss={css`
             font-family: ${({theme}) => theme.font.family.primary.bold};
@@ -451,6 +455,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.cardExpirationYear}
                 onChange={onChangeHandler}
               >
+                <option></option>
                 {(Array.from(Array(20).keys()).map((value) => value + (new Date().getFullYear()))).map((value: number, key: number) => (
                   <option key={key} value={value}>{value}</option>
                 ))}
@@ -482,7 +487,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             <Form.Group
               fieldName='docNumber'
               value={payment.docNumber}
-              labelText='Número de documento'
+              labelText='Número'
               showErrorMessage={showFieldErrors}
               validateFn={validateCitizenId}
               onUpdateHandler={onUpdateFieldHandler}
@@ -529,21 +534,17 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           align-items: flex-end;
         `}
       >
-        <Shared.Elements.Button
+        <Form.Button
           type='submit'
-          disabled={submitting ? true : false}
-          customCss={css`
-            width: 100%;
-
-            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-              width: fit-content;
-            }
-          `}
-        >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}</Shared.Elements.Button>
+          disabled={submitting && true}
+        >
+          {(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}
+        </Form.Button>
       </Form.Nav>
     </Form.Main>
   ), [
     formRef,
+    contentFormRef,
     payment,
     submitted,
     submitting,

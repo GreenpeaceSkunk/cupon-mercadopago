@@ -55,7 +55,10 @@ export const postRecord = async (data: any) => {
       },
       baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/forma/form/${data.form_id}/record`,
       method: 'POST',
-      data,
+      data: {
+        ...data,
+        origin: document.location.href,
+      },
     });
     return response;
   } catch(error: any) {

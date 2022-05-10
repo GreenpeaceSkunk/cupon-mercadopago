@@ -90,6 +90,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           lastname: lastName,
           phone: `${areaCode}${phoneNumber}`,
           donationStatus: 'requested',
+          origin: document.location.href,
         });
   
         if(contact) {

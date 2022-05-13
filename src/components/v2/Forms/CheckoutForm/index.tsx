@@ -131,7 +131,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       
       dispatchFormErrors({
         type: 'SET_ERROR',
-        error: 'Tenés campos incompletos o con errores. Revisalos para continuar.',
+        error: 'Tenés campos incompletos o con errores, revisalos para continuar.',
       });
     } else {
       (async () => {
@@ -234,7 +234,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           } else {
             dispatchFormErrors({
               type: 'SET_ERROR',
-              error: `No se creó el token con valor ${token.message}`,
+              error: `No se creó el token de la tarjeta`, //  ${token.message}
             });
           }
         }

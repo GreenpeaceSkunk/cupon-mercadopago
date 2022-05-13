@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { NavLink as ReactNavLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { OnChangeEvent, OnClickEvent } from 'greenpeace';
@@ -30,8 +31,20 @@ const Content = styled(Elements.Wrapper)`
   width: 100%;
 `;
 
+const ContentTitle = styled(Elements.H3)`
+  color: ${({theme}) => theme.color.primary.normal};
+  font-weight: 400;
+  font-size: ${pixelToRem(18)};
+`;
+
+const ContentText = styled(Elements.P)`
+  font-weight: 700;
+  font-size: ${pixelToRem(18)};
+
+`;
+
 const Header = styled(Elements.Header)`
-  margin-bottom: ${pixelToRem(14)};
+  margin-bottom: ${pixelToRem(40)};
 `;
 
 const Nav: React.FunctionComponent<{
@@ -122,15 +135,16 @@ const SelectableButton: React.FunctionComponent<{
       customCss={css`
         background: white;
         color: ${({theme}) => theme.text.color.primary.normal};
-        border-color: ${({theme}) => theme.color.secondary.normal};
+        border-color: ${({theme}) => theme.color.secondary.extraLight};
         border-width: ${pixelToRem(1)} !important;
         width: fit-content;
         font-size: ${pixelToRem(14)};
         margin-bottom: ${pixelToRem(10)};
-
+        
         &:hover {
           background: white;
           border-color: ${({theme}) => theme.color.primary.normal};
+          color: ${({theme}) => theme.text.color.primary.dark};
         }
 
         &:not(last-child) {
@@ -397,21 +411,32 @@ const Group: React.FunctionComponent<{
   
         input[type="text"],
         input[type="email"],
+        input[type="password"],
+        input[type="number"],
         textarea,
         select {
           width: 100%;
           font-size: ${pixelToRem(16)};
           line-height: ${pixelToRem(18)};
           padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
-          color: $
-  
-          ${(value === '') && css`
+          color: ${({theme}) => theme.color.secondary.dark};
+          border-color: ${({theme}) => theme.color.secondary.extraLight};
+
+          /* ${(value === '') && css`
             border-color: ${({theme}) => theme.color.secondary.normal};
-          `}
+          `} */
           
           ${(showErrorMessage && !isValid) && css`
             border-color: ${({theme}) => theme.color.error.normal};
           `}
+
+          &::placeholder {
+            color: ${({theme}) => theme.color.secondary.extraLight};
+          }
+        
+          &:focus {
+            border-color: ${({theme}) => theme.color.primary.normal};
+          }
         }
 
         ${(customCss) && customCss};
@@ -493,8 +518,18 @@ const ErrorMessage = styled(Elements.Wrapper)`
   }
 `;
 
+export const NavLink = styled(ReactNavLink)<{ customCss?: CustomCSSType; }>`
+  font-size: ${pixelToRem(16)};
+  color: ${({theme}) => theme.text.color.primary.normal};
+  font-family: ${({theme}) => theme.font.family.primary.regular};
+
+  ${({customCss}) => customCss && customCss};
+`;
+
 const defaults = {
   Content,
+  ContentTitle,
+  ContentText,
   Row,
   Column,
   Group,

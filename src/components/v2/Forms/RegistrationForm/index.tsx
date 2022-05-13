@@ -140,6 +140,20 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         />
       </Form.Header>
       <Form.Content>
+        <Elements.Wrapper>
+          <Elements.P
+            customCss={css`
+              font-weight: 700;
+              font-size: ${pixelToRem(18)};
+            `}
+          >Completá tus datos y empezá a  contribuir con el planeta</Elements.P>
+          <Elements.H3
+            customCss={css`
+              color: ${({theme}) => theme.color.primary.normal};
+              font-size: ${pixelToRem(18)} !important;
+            `}
+          >Datos personales</Elements.H3>
+        </Elements.Wrapper>
         <Form.Row>
           <Form.Column>
             <Form.Group

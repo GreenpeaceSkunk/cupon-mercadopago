@@ -3,7 +3,7 @@ import Elements from '../../Shared/Elements';
 import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
 import Shared from '../../Shared';
-import Form from '../Shared/Form';
+import Form, { NavLink } from '../Shared/Form';
 import { carouselItemStyles } from '../../../styles/mixins';
 import { AppContext } from '../../App/context';
 import ThankYouPicture from '../../../images/thank-you.png';
@@ -32,27 +32,45 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         `}
       >
         <Shared.Elements.HGroup>
-          <Form.Title customCss={css`text-align: center;`}>{appData && appData.content && appData.content.thankyou.title}</Form.Title>
+          <Elements.H1
+            customCss={css`
+              text-align: center;
+              font-size: ${pixelToRem(20)};
+
+              @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
+                font-size: ${pixelToRem(36)};
+              }
+            `}>{appData && appData.content && appData.content.thankyou.title}</Elements.H1>
         </Shared.Elements.HGroup>
 
         <Elements.Img src={ThankYouPicture} alt="Gracias!"></Elements.Img>
         
-        <Elements.P
+        <Elements.Wrapper
           customCss={css`
-            text-align: center;
-            background: white;
-            padding: ${pixelToRem(16)};
-            margin-top: ${pixelToRem(16)};
-            border-radius: ${pixelToRem(8)};
+
+            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
+              width: 50%;
+            }
           `}
-        >{appData && appData.content && appData.content.thankyou.text}</Elements.P>
-      </Elements.Wrapper>
-      <Elements.H3
-        customCss={css`
-          text-align: center;
-          color: ${({theme}) => theme.text.color.primary.normal};
-        `}
-        >{appData && appData.content && appData.content.thankyou.text}</Elements.H3>
+        >
+          <Elements.P
+            customCss={css`
+              text-align: center;
+              background: white;
+              padding: ${pixelToRem(16)};
+              margin-top: ${pixelToRem(16)};
+              margin-bottom: ${pixelToRem(36)};
+              border-radius: ${pixelToRem(8)};
+            `}
+          >{appData && appData.content && appData.content.thankyou.text}</Elements.P>
+          <Elements.H3
+            customCss={css`
+              text-align: center;
+              color: ${({theme}) => theme.text.color.primary.normal};
+            `}
+            >{appData && appData.content && appData.content.thankyou.social_media_text}</Elements.H3>
+        </Elements.Wrapper>
+        </Elements.Wrapper>
       <Elements.Wrapper
         customCss={css`
           display: flex;
@@ -79,8 +97,18 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           display: flex;
           width: 100%;
           height: 100%;
+          margin-top: ${pixelToRem(90)};
         `}
-      />
+      >
+        <NavLink
+          to={process.env.PUBLIC_URL}
+          customCss={css`
+            color: ${({theme}) => theme.text.color.secondary.normal};
+            text-decoration: underline;
+            font-weight: 700;
+          `}
+        >VOLVER AL INICIO</NavLink>
+      </Elements.Nav>
     </Elements.View>
   ), [
     appData,

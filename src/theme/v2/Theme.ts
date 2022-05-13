@@ -28,9 +28,11 @@ const DefaultTheme: ITheme = {
       dark: '#005C42',
     },
     secondary: {
+      extraLight: '#BDBDBD',
       light: '#F3F6F9',
-      normal: '#C4C4C4',
-      dark: '#2A2929',
+      normal: '#4F4F4F',
+      dark: '#333333',
+      extraDark: '#2A2929',
     },
     tertiary: {
       light: '',
@@ -58,9 +60,11 @@ const DefaultTheme: ITheme = {
   text: {
     color: {
       primary: {
+        extraLight: '#BDBDBD',
         light: '#F3F6F9',
         normal: '#4F4F4F',
-        dark: '#2A2929',
+        dark: '#333333',
+        extraDark: '#2A2929',
       },
       secondary: {
         light: '#73BE1E',

@@ -6,6 +6,7 @@ import Icons from '../../images/icons';
 
 export interface IRef {
   showSnackbar: () => void;
+  hideSnackbar: () => void;
 }
 interface IProps {
   text: string | null;
@@ -30,6 +31,9 @@ const Component: React.ForwardRefRenderFunction<IRef, IProps> = ({
         return () => {
           clearTimeout(timer);
         }
+      },
+      hideSnackbar: () => {
+        setAnimate(false);
       }
     }
   });

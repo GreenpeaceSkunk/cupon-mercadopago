@@ -133,10 +133,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SET_ERROR',
         error: 'Tenés campos incompletos o con errores. Revisalos para continuar.',
       });
-
-      if(snackbarRef && snackbarRef.current) {
-        snackbarRef.current.showSnackbar();
-      }
     } else {
       (async () => {
         if(formRef.current) {
@@ -230,17 +226,15 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 }
               }
             } else {
-              console.log('Ocurrió un error inesperado, pruebe con otra tarjeta.');
               dispatchFormErrors({
-                type: 'SUBMITTED_WITH_ERRORS',
+                type: 'SET_ERROR',
                 error: 'Ocurrió un error inesperado, pruebe con otra tarjeta.',
               });
             }
           } else {
-            console.log('No se creó el Token %s', token.message);
             dispatchFormErrors({
-              type: 'SUBMITTED_WITH_ERRORS',
-              error: token.message,
+              type: 'SET_ERROR',
+              error: `No se creó el token con valor ${token.message}`,
             });
           }
         }
@@ -262,6 +256,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     if(error) {
       if(snackbarRef && snackbarRef.current) {
         snackbarRef.current.showSnackbar();
+      }
+    } else {
+      if(snackbarRef && snackbarRef.current) {
+        snackbarRef.current.hideSnackbar();
       }
     }
   }, [

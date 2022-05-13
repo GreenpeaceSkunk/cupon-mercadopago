@@ -1,4 +1,4 @@
-import React, { FormEvent, memo, useCallback, useContext, useMemo, useReducer, useRef, useState } from 'react';
+import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { generatePath, useNavigate } from 'react-router-dom';
 import { FormContext } from '../../../Forms/context';
 import { OnChangeEvent } from 'greenpeace';
@@ -42,7 +42,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const snackbarRef = useRef<ISnackbarRef>(null);
   
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
-    console.log('onChangeHandler', evt.currentTarget.name);
     evt.preventDefault();
     
     dispatch({
@@ -118,6 +117,20 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     searchParams,
     navigate,
   ]);
+
+  useEffect(() => {
+    if(error) {
+      if(snackbarRef && snackbarRef.current) {
+        snackbarRef.current.showSnackbar();
+      }
+    } else {
+      if(snackbarRef && snackbarRef.current) {
+        snackbarRef.current.hideSnackbar();
+      }
+    }
+  }, [
+    error,
+  ]);
   
   return useMemo(() => (
     <Form.Main id='sign-form' onSubmit={onSubmitHandler}>
@@ -141,18 +154,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       </Form.Header>
       <Form.Content>
         <Elements.Wrapper>
-          <Elements.P
-            customCss={css`
-              font-weight: 700;
-              font-size: ${pixelToRem(18)};
-            `}
-          >Completá tus datos y empezá a  contribuir con el planeta</Elements.P>
-          <Elements.H3
-            customCss={css`
-              color: ${({theme}) => theme.color.primary.normal};
-              font-size: ${pixelToRem(18)} !important;
-            `}
-          >Datos personales</Elements.H3>
+          <Form.ContentText>Completá tus datos y empezá a  contribuir con el planeta</Form.ContentText>
+          <Form.ContentTitle>Datos personales</Form.ContentTitle>
         </Elements.Wrapper>
         <Form.Row>
           <Form.Column>
@@ -258,7 +261,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       </Form.Content>
       <Snackbar
         ref={snackbarRef}
-        text='Tenés campos incompletos o con errores. Revisalos para continuar.'
+        text='Tenés campos incompletos o con errores, revisalos para continuar.'
       />
       <Form.Nav
         customCss={css`

@@ -45,16 +45,18 @@ const Component: FunctionComponent<{
       ${(customCss) && customCss};
     `}
   >
-    <Elements.Span
-      customCss={css`
-        font-size: ${pixelToRem(14)};
-        margin-bottom: ${pixelToRem(18)};
-        color: ${({theme}) => theme.text.color.secondary.normal};
-        text-align: center;
-        font-family: ${({theme}) => (textWeight === 'bold') ? theme.font.family.primary.bold : theme.font.family.primary.normal };
-      `}
-      dangerouslySetInnerHTML={{__html: text}}
-    />
+    {(text) && (
+      <Elements.Span
+        customCss={css`
+          font-size: ${pixelToRem(14)};
+          margin-bottom: ${pixelToRem(18)};
+          color: ${({theme}) => theme.text.color.secondary.normal};
+          text-align: center;
+          font-family: ${({theme}) => (textWeight === 'bold') ? theme.font.family.primary.bold : theme.font.family.primary.normal };
+        `}
+        dangerouslySetInnerHTML={{__html: text}}
+      />
+    )}
     <Elements.Nav
       customCss={css`
         > * {

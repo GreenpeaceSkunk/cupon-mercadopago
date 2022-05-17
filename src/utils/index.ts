@@ -46,5 +46,5 @@ export const getDesignVersion = () => {
   // return (window.sessionStorage.greenlab_app_design_version !== "undefined")
   //   ? window.sessionStorage.greenlab_app_design_version
   //   : 2;
-  return 1;
+  return 2;
 };

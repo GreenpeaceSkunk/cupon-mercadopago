@@ -360,7 +360,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               >
                 <Shared.Elements.Input
                   name='newAmount'
-                  type='text'
+                  type='number'
                   disabled={!(payment.amount === 'otherAmount')} 
                   value={payment.newAmount}
                   placeholder='Ej. $350'
@@ -390,7 +390,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 maxLength={16}
                 value={payment.cardNumber}
                 onChange={onChangeHandler}
-                />
+              />
             </Form.Group>
           </Form.Column>
           <Form.Column>
@@ -432,9 +432,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.cardExpirationMonth}
                 onChange={onChangeHandler}
               >
-                <option></option>
+                <Form.SelectOption value=""></Form.SelectOption>
                 {(['01','02','03','04','05','06','07','08','09','10','11','12']).map((value: string, key: number) => (
-                  <option key={key} value={value}>{value}</option>
+                  <Form.SelectOption key={key} value={value}>{value}</Form.SelectOption>
                 ))}
               </Shared.Elements.Select>
             </Form.Group>
@@ -446,18 +446,18 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateYear}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Elements.Select
+              <Form.Select
                 id='cardExpirationYear'
                 name='cardExpirationYear'
                 data-checkout='cardExpirationYear'
                 value={payment.cardExpirationYear}
                 onChange={onChangeHandler}
               >
-                <option></option>
+                <option value=""></option>
                 {(Array.from(Array(20).keys()).map((value) => value + (new Date().getFullYear()))).map((value: number, key: number) => (
                   <option key={key} value={value}>{value}</option>
                 ))}
-              </Shared.Elements.Select>
+              </Form.Select>
             </Form.Group>
           </Form.Column>
           <Form.Column>
@@ -469,18 +469,18 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Elements.Select
+              <Form.Select
                 id='docType'
                 name='docType'
                 data-checkout='docType'
                 value={payment.docType}
                 onChange={onChangeHandler}
               >
-                <option></option>
+                <option value=""></option>
                 {(['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro']).map((value: string, key: number) => (
                   <option key={key} value={value}>{value}</option>
                 ))}
-              </Shared.Elements.Select>
+              </Form.Select>
             </Form.Group>
             <Form.Group
               fieldName='docNumber'

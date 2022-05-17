@@ -250,7 +250,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             >
               <Elements.Input
                 name='phoneNumber'
-                type='text'
+                type='number'
                 placeholder='Ej. 41239876'
                 value={phoneNumber}
                 onChange={onChangeHandler}

@@ -5,7 +5,12 @@ import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { OnChangeEvent, OnClickEvent } from 'greenpeace';
 import { ValidationType } from '../../../utils/validators';
 import Icons from '../../../images/icons';
-import Elements from '../../Shared/Elements';
+import Elements from './Elements';
+// import Elements, { IElement } from '@bit/meema.ui-components.elements';
+
+// const customStyles = css<IElement>`
+//   ${({ customCss }) => customCss && customCss};
+// `;
 
 const Main = styled(Elements.Form)`
   position: relative;
@@ -40,7 +45,6 @@ const ContentTitle = styled(Elements.H3)`
 const ContentText = styled(Elements.P)`
   font-weight: 700;
   font-size: ${pixelToRem(18)};
-
 `;
 
 const Header = styled(Elements.Header)`
@@ -310,6 +314,7 @@ const Column: React.FunctionComponent<{
       customCss={css`
       display: flex;
       width: 100%;
+      height: 100%;
     
       @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
         flex-direction: row;
@@ -413,22 +418,15 @@ const Group: React.FunctionComponent<{
         input[type="email"],
         input[type="password"],
         input[type="number"],
-        textarea,
-        select {
+        textarea {
           width: 100%;
+          height: 100%;
           font-size: ${pixelToRem(16)};
           line-height: ${pixelToRem(18)};
           padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
           color: ${({theme}) => theme.color.secondary.dark};
           border-color: ${({theme}) => theme.color.secondary.extraLight};
-
-          /* ${(value === '') && css`
-            border-color: ${({theme}) => theme.color.secondary.normal};
-          `} */
-          
-          ${(showErrorMessage && !isValid) && css`
-            border-color: ${({theme}) => theme.color.error.normal};
-          `}
+          font-family: ${({theme}) => theme.font.family.primary.medium};
 
           &::placeholder {
             color: ${({theme}) => theme.color.secondary.extraLight};
@@ -437,6 +435,25 @@ const Group: React.FunctionComponent<{
           &:focus {
             border-color: ${({theme}) => theme.color.primary.normal};
           }
+        }
+
+        input {
+          font-weight: 600;
+        }
+
+        textarea {
+          font-weight: 400;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea,
+        select {
+          ${(showErrorMessage && !isValid) && css`
+            border-color: ${({theme}) => theme.color.error.normal};
+          `}
         }
 
         ${(customCss) && customCss};
@@ -485,11 +502,45 @@ const Group: React.FunctionComponent<{
   ]);
 };
 
+const Select = styled(Elements.Select)`
+  width: 100%;
+  height: 100%;
+  font-size: ${pixelToRem(16)};
+  line-height: ${pixelToRem(18)};
+  padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
+  color: ${({theme}) => theme.color.secondary.dark};
+  border-color: ${({theme}) => theme.color.secondary.extraLight};
+  font-family: ${({theme}) => theme.font.family.primary.medium};
+  font-weight: 600;
+
+  &::placeholder {
+    color: ${({theme}) => theme.color.secondary.extraLight};
+  }
+
+  &:focus {
+    border-color: ${({theme}) => theme.color.primary.normal};
+  }
+
+  ${({customCss}) => customCss && customCss};
+`;
+  // option {
+  //   font-weight: 400;
+  //   color: ${({theme}) => theme.color.secondary.normal};
+  //   font-family: ${({theme}) => theme.font.family.primary.medium};
+  //   padding: ${pixelToRem(30)} ${pixelToRem(10)};
+  // }
+
+  // color: orange;
+  // font-family: ${({theme}) => theme.font.family.primary.regular};
+const SelectOption = styled(Elements.Option)`
+  padding: ${pixelToRem(30)} ${pixelToRem(10)};
+`;
+// font-family: ${({theme}) => theme.font.family.primary.regular} !important;
+
 const Label = styled(Elements.Label)`
   position: relative;
   width: 100%;
 `;
-
 
 const ErrorMessage = styled(Elements.Wrapper)`
   display: flex;
@@ -542,6 +593,8 @@ const defaults = {
   RadioButton,
   TextArea,
   Title,
+  Select,
+  SelectOption,
   ErrorMessage,
 };
 

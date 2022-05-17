@@ -1,5 +1,6 @@
 import { ITheme } from "greenpeace/theme";
 import { pixelToRem } from 'meema.utils';
+import { fontPrimaryBold, fontPrimaryBook, fontPrimaryLight, fontPrimaryMedium, fontPrimaryRegular, fontSecondaryBold, fontSecondaryBook, fontSecondaryLight, fontSecondaryMedium, fontSecondaryRegular } from "../constants";
 
 export const colorPrimaryLight = '#73BE1E';
 export const colorPrimaryNormal = '#66cc00';
@@ -15,20 +16,6 @@ export const headingColorSecondaryNormal = colorPrimaryDark;
 
 export const textColorPrimaryNormal = '#4F4F4F';
 export const textColorSecondaryNormal = colorPrimaryDark;
-
-
-export const fontPrimaryThin = 'Font-Primary-Thin';
-export const fontPrimaryLight = 'Font-Primary-Light';
-export const fontPrimaryBook = 'Font-Primary-Book';
-export const fontPrimaryRegular = 'Font-Primary-Regular';
-export const fontPrimaryMedium = 'Font-Primary-Medium';
-export const fontPrimaryBold = 'Font-Primary-Bold';
-
-export const fontSecondaryLight = 'Font-Secondary-Light';
-export const fontSecondaryBook = 'Font-Secondary-Book';
-export const fontSecondaryRegular = 'Font-Secondary-Regular';
-export const fontSecondaryMedium = 'Font-Secondary-Medium';
-export const fontSecondaryBold = 'Font-Secondary-Bold';
 
 const DefaultTheme: ITheme = {
   color: {

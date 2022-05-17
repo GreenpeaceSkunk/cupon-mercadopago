@@ -1,6 +1,6 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { generatePath, useNavigate } from 'react-router-dom';
-import { FormContext } from '../context';
+import { FormContext } from '../../../Forms/context';
 import { OnChangeEvent } from 'greenpeace';
 import {
   validateEmail,
@@ -9,18 +9,18 @@ import {
   validateAreaCode,
   validateEmptyField,
   validateFirstName,
-} from '../../../utils/validators';
+} from '../../../../utils/validators';
 import { css } from 'styled-components';
-import Shared from '../../Shared';
-import Elements from '../../Shared/Elements';
-import { addOrRemoveSlashToDate } from '../../../utils';
-import { initialState, reducer } from './reducer';
-import { pushToDataLayer } from '../../../utils/googleTagManager';
-import { pixelToRem } from 'meema.utils';
-import useQuery from '../../../hooks/useQuery';
-import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
-import { createContact } from '../../../services/greenlab';
-import { AppContext } from '../../App/context';
+import Shared from '../../../Shared';
+import Elements from '../../../Shared/Elements';
+import { addOrRemoveSlashToDate } from '../../../../utils';
+import { initialState, reducer } from '../../../Forms/RegistrationForm/reducer';
+import { pushToDataLayer } from '../../../../utils/googleTagManager';
+// import { pixelToRem } from 'meema.utils';
+import useQuery from '../../../../hooks/useQuery';
+import Snackbar, { IRef as ISnackbarRef } from '../../../Snackbar';
+import { createContact } from '../../../../services/greenlab';
+import { AppContext } from '../../../App/context';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
@@ -341,11 +341,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           disabled={(submitting) ? true : false}
           customCss={css`
             width: 100%;
-
-            /* ${(submitting) && css`
-              padding-top: ${pixelToRem(10)};
-              padding-bottom: ${pixelToRem(10)};
-            `} */
           `}
         >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.registration.button_text)}</Elements.Button>
       </Shared.Form.Nav>

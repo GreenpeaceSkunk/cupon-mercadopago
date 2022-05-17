@@ -1,63 +1,55 @@
+type ColorType = {
+  extraLight?: string;
+  light?: string;
+  normal?: string;
+  dark?: string;
+  extraDark?: string;
+};
+
+type FontFamilyType = {
+  black?: string;
+  blackItalic?: string;
+  bold?: string;
+  boldItalic?: string;
+  book?: string;
+  extraBold?: string;
+  extraBoldItalic?: string;
+  extraLight?: string;
+  extraLightItalic?: string;
+  extraBold?: string;
+  extraBoldItalic?: string;
+  italic?: string;
+  light?: string;
+  lightItalic?: string;
+  normal?: string;
+  medium?: string;
+  mediumItalic?: string;
+  regular?: string;
+  semiBold?: string;
+  semiBoldItalic?: string;
+  thin?: string;
+  thinItalic?: string;
+};
+
 export interface ITheme {
-  borderRadius: number;
   color: {
-    primary: {
-      light?: string;
-      normal?: string;
-      dark?: string;
-    };
-    secondary: {
-      light?: string;
-      normal?: string;
-      dark?: string;
-    };
-    tertiary: {
-      light?: string;
-      normal?: string;
-      dark?: string;
-    };
-    success: {
-      light?: string;
-      normal?: string;
-      dark?: string;
-    };
-    warning: {
-      light?: string;
-      normal?: string;
-      dark?: string;
-    };
-    error: {
-      light?: string;
-      normal?: string;
-      dark?: string;
-    };
+    primary: ColorType;
+    secondary: ColorType;
+    tertiary: ColorType;
+    success: ColorType;
+    warning: ColorType;
+    error: ColorType;
   };
   heading: {
     color: {
-      primary: {
-        light?: string;
-        normal?: string;
-        dark?: string;
-      };
-      secondary: {
-        light?: string;
-        normal?: string;
-        dark?: string;
-      };
+      primary: ColorType;
+      secondary: ColorType;
     }
   };
   text: {
     color: {
-      primary: {
-        light?: string;
-        normal?: string;
-        dark?: string;
-      };
-      secondary: {
-        light?: string;
-        normal?: string;
-        dark?: string;
-      };
+      primary: ColorType;
+      secondary: ColorType;
     }
   };
   font: {
@@ -70,22 +62,8 @@ export interface ITheme {
       button?: string;
     };
     family: {
-      primary: {
-        light?: string;
-        thin?: string;
-        book?: string;
-        medium?: string;
-        regular?: string;
-        bold?: string;
-      };
-      secondary: {
-        light?: string;
-        thin?: string;
-        book?: string;
-        medium?: string;
-        regular?: string;
-        bold?: string;
-      };
+      primary: FontFamilyType;
+      secondary: FontFamilyType;
       _default: {
         h1?: string;
         h2?: string;

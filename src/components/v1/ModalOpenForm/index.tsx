@@ -1,9 +1,9 @@
 import React, { FunctionComponent, memo, useContext, useEffect, useMemo, useState, MouseEvent, useCallback } from 'react';
-import Elements from '../Shared/Elements';
+import Elements from '../../Shared/Elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
-import Shared from '../Shared';
-import { AppContext } from '../App/context';
+import Shared from '../../Shared';
+import { AppContext } from '../../App/context';
 
 const Component: FunctionComponent<{}> = memo(() => {
   const { appData, isOpen, setIsOpen } = useContext(AppContext);

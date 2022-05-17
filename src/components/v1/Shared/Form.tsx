@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { pixelToRem, CustomCSSType } from 'meema.utils';
-import { OnChangeEvent } from '../../types';
-import { ValidationType } from '../../utils/validators';
-import Icons from '../../images/icons';
-import Elements from '../Shared/Elements';
+import { OnChangeEvent } from 'greenpeace';
+import { ValidationType } from '../../../utils/validators';
+import Icons from '../../../images/icons';
+import Elements from '../../Shared/Elements';
 
 /**
  * Defines margin right and left. Also resets margins at first and last child.
@@ -28,7 +28,7 @@ const Main = styled(Elements.Form)`
   flex-shrink: 0;
   flex-basis: 100%;
   width: 100%;
-  padding: ${pixelToRem(50)} ${pixelToRem(40)} ${pixelToRem(160)};;
+  padding: ${pixelToRem(50)} ${pixelToRem(40)} ${pixelToRem(160)};
   height: 100vh;
   overflow-y: scroll;
 

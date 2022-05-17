@@ -1,7 +1,7 @@
 import Elements, { IElement } from '@bit/meema.ui-components.elements';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
-import Icons from '../../images/icons';
+import Icons from '../../../images/icons';
 
 const customStyles = css<IElement>`
   ${({ customCss }) => customCss && customCss};

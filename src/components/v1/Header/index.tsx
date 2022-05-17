@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useContext, useMemo } from 'react';
-import Elements from '../Shared/Elements';
+import Elements from '../../Shared/Elements';
 import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { css } from 'styled-components';
-import { Logo } from '../Shared';
-import { AppContext } from '../App/context';
+import { Logo } from '../../Shared';
+import { AppContext } from '../../App/context';
 
 const MainHeader: FunctionComponent<{
   customCss?: CustomCSSType;

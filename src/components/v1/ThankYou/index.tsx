@@ -1,12 +1,12 @@
 import React, { Suspense, memo, useMemo, lazy, useContext } from 'react';
-import Elements from '../Shared/Elements';
+import Elements from '../../Shared/Elements';
 import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
-import Shared from '../Shared';
-import { carouselItemStyles } from '../../styles/mixins';
-import { AppContext } from '../App/context';
+import Shared from '../../Shared';
+import { carouselItemStyles } from '../../../styles/mixins';
+import { AppContext } from '../../App/context';
 
-const SocialMediaNav = lazy(() => import('../SocialMediaNav'));
+const SocialMediaNav = lazy(() => import('../../SocialMediaNav'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);

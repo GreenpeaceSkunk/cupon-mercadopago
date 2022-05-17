@@ -6,12 +6,17 @@ const ERROR_CODES = {
   'SK003': 'Asegurate que el apellido sea correcto.',
   'SK004': 'El apellido solo puede contener letras.',
   'SK005': 'Ingresá el DNI sin puntos ni espacios.',
-  'SK010': 'El DNI solo puede contener números.',
   'SK006': 'Asegurate de que el e-mail sea correcto.',
   'SK007': 'Asegurate de que el código de área sea correcto.',
-  'SK011': 'El código de área solo puede contener números.',
   'SK008': 'Asegurate de que el celular sea correcto.',
   'SK009': 'El celular solo puede contener números.',
+  'SK010': 'El DNI solo puede contener números.',
+  'SK011': 'El código de área solo puede contener números.',
+  'SK012': 'Campo incompleto.',
+  'SK013': 'Asegurate de que el campo no esté vacío',
+  'SK014': 'Revisa el número de tarjeta',
+  'SK015': 'Revisa el código de seguridad',
+  'SK016': 'Error en el Email',
   'MP316': 'Ingresa un nombre válido.',
 }
 
@@ -26,7 +31,7 @@ export const validateNotEmptyField = (value: string): ValidationType => {
   if(checkMinLength(value, 2)) {
     return {
       isValid: false,
-      errorMessage: 'Asegurate de que el campo no esté vacío',
+      errorMessage: ERROR_CODES['SK013'],
     };
   }
 
@@ -43,12 +48,24 @@ export const validateField = (value: string): ValidationType => {
   };
 };
 
+export const validateEmptyField = (value: string): ValidationType => {
+  return {
+    isValid: (value !== '') ? true : false,
+    errorMessage: ERROR_CODES['SK012'],
+  };
+}
+
 export const validateAmount = (monto = '', otherAmount = ''): boolean => {
   return !(monto === '' || (monto === 'otherAmount' && otherAmount === '')) ;
 }
 
 export const validateFirstName = (value = '', minLength = 2): ValidationType => {
-  if(checkMinLength(value, 2)) {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if(checkMinLength(value, minLength)) {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['SK001'],
@@ -67,7 +84,12 @@ export const validateFirstName = (value = '', minLength = 2): ValidationType => 
 }
 
 export const validateLastName = (value = '', minLength = 2): ValidationType => {
-  if(checkMinLength(value, minLength)) {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if(checkMinLength(value, minLength)) {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['SK003'],
@@ -86,7 +108,12 @@ export const validateLastName = (value = '', minLength = 2): ValidationType => {
 }
 
 export const validateAreaCode = (value = '', minLength = 2): ValidationType => {
-  if(checkMinLength(value, minLength)) {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if(checkMinLength(value, minLength)) {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['SK007'],
@@ -105,7 +132,12 @@ export const validateAreaCode = (value = '', minLength = 2): ValidationType => {
 }
 
 export const validatePhoneNumber = (value = '', minLength = 8): ValidationType => {
-  if(checkMinLength(value, minLength)) {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if(checkMinLength(value, minLength)) {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['SK008'],
@@ -124,7 +156,12 @@ export const validatePhoneNumber = (value = '', minLength = 8): ValidationType =
 }
 
 export const validateCitizenId = (value: string, minLength = 8): ValidationType => {
-  if(checkMinLength(value, minLength)) {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if(checkMinLength(value, minLength)) {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['SK005'],
@@ -143,21 +180,50 @@ export const validateCitizenId = (value: string, minLength = 8): ValidationType 
 }
 
 export const validateCreditCard = (value: string): ValidationType => {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if (!(/^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/.test(value))) {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK014'], 
+    };
+  }
+
   return {
-    isValid: validateField(value) ? (/^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/.test(value)) : false,
-    errorMessage: 'Revisa el número de tarjeta', 
+    isValid: true,
+    errorMessage: '',
   };
 }
 
 export const validateCvv = (value: string): ValidationType => {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if (!(/^[0-9]{3,4}$/.test(value))) {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK015'], 
+    };
+  }
+
   return {
-    isValid: validateField(value) ? (/^[0-9]{3,4}$/.test(value)) : false,
-    errorMessage: 'Revisa el código de seguridad', 
+    isValid: true,
+    errorMessage: '',
   };
 }
 
 export const validateCardHolderName = (value = '', minLength = 2): ValidationType => {
-  if(checkMinLength(value, 2)) {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if(checkMinLength(value, minLength)) {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['MP316'],
@@ -176,9 +242,21 @@ export const validateCardHolderName = (value = '', minLength = 2): ValidationTyp
 }
 
 export const validateEmail = (value: string): ValidationType => {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if (!(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value))) {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK016'], 
+    };
+  }
+
   return {
-    isValid: validateField(value) ? /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) : false,
-    errorMessage: 'Error en el Email', 
+    isValid: true,
+    errorMessage: '',
   };
 }
 
@@ -189,15 +267,13 @@ export const validateBirthDate = (value = ''): ValidationType => {
   };
 }
 
-export const validateEmptyField = (value: string): ValidationType => {
-  return {
-    isValid: (value !== '') ? true : false,
-    errorMessage: 'El campo no puede estar vacío', 
-  };
-}
-
 export const validateMonth = (value: string): ValidationType => {
-  if(parseInt(value) <= 0 || parseInt(value) >= 13) {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if (!validateEmptyField(value).isValid || parseInt(value) <= 0 || parseInt(value) >= 13) {    
     return {
       isValid: false,
       errorMessage: 'El mes es inválido.'
@@ -210,7 +286,12 @@ export const validateMonth = (value: string): ValidationType => {
 }
 
 export const validateYear = (value: string): ValidationType => {
-  if(parseInt(value) < new Date().getFullYear()) {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  } else if (parseInt(value) < new Date().getFullYear()) {
     return {
       isValid: false,
       errorMessage: 'El año es inválido.'

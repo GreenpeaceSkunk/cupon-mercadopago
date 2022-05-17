@@ -1,21 +1,15 @@
 import React, { useMemo, lazy, Suspense, memo, useRef, useContext, MouseEvent } from 'react';
-import Elements from '../Shared/Elements';
-import Shared from '../Shared';
+import Elements from '../../Shared/Elements';
+import Shared from '../../Shared';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
-import ErrorBoundary from '../ErrorBoundary';
-import { AppContext } from '../App/context';
+import ErrorBoundary from '../../ErrorBoundary';
+import { AppContext } from '../../App/context';
 import ModalOpenForm from '../ModalOpenForm';
 import { Outlet } from 'react-router';
 
 const Header = lazy(() => import('../Header'));
-const Footer = lazy(() => import('../Footer'));
-
-const Heading3 = styled(Elements.H3)`
-  color: ${({theme}) => theme.color.secondary.dark};
-
-  ${({customCss}) => (customCss) && customCss};
-`;
+const Footer = lazy(() => import('../../Footer'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const viewRef = useRef<HTMLElement>(null);
@@ -86,8 +80,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 }
               `}
             >
-              <Heading3
+              <Elements.H1
                 customCss={css`
+                  color: ${({theme}) => theme.color.secondary.dark};
                   font-size: ${pixelToRem(20)};
                   font-family: ${({theme}) => theme.font.family.primary.bold};
                   line-height: 1.2;
@@ -96,7 +91,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData && appData.content && appData.content.home.title}</Heading3>
+              >{appData && appData.content && appData.content.home.title}</Elements.H1>
               <Elements.WrapperHtml
                 customCss={css`
                   color: ${({theme}) => theme.color.secondary.dark};

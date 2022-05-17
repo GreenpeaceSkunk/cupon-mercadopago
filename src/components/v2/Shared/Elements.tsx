@@ -1,7 +1,7 @@
 import Elements, { IElement } from '@bit/meema.ui-components.elements';
 import styled, { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
-import Icons from '../../images/icons';
+import Icons from '../../../images/icons';
 
 const customStyles = css<IElement>`
   ${({ customCss }) => customCss && customCss};
@@ -100,10 +100,35 @@ export const P = styled(Elements.P)`
   margin-bottom: ${pixelToRem(14)};
   ${customStyles};
 `;
+// ${sharedInputStyles};
 export const Select = styled(Elements.Select)`
-  ${sharedInputStyles};
   background: url(${Icons.SelectArrowIcon}) no-repeat right ${pixelToRem(14)} top 50% white;
   cursor: pointer;
+  width: 100%;
+  height: 100%;
+  font-size: ${pixelToRem(16)};
+  line-height: ${pixelToRem(18)};
+  padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
+  color: ${({theme}) => theme.color.secondary.dark};
+  border-color: ${({theme}) => theme.color.secondary.extraLight};
+  font-family: ${({theme}) => theme.font.family.primary.medium};
+  font-weight: 600;
+
+  box-sizing: border-box;
+  margin: 0;
+  border: ${pixelToRem(1)} solid black;
+  border-radius: ${pixelToRem(10)};
+  outline: none;
+  appearance: none;
+
+  &::placeholder {
+    color: ${({theme}) => theme.color.secondary.extraLight};
+  }
+
+  &:focus {
+    border-color: ${({theme}) => theme.color.primary.normal};
+  }
+
   ${customStyles};
 `;
 export const Span = styled(Elements.Span)`

@@ -1,18 +1,19 @@
 import React, { FormEvent, memo, useCallback, useContext, useState, useRef, useReducer, useMemo, useEffect } from 'react';
 import { generatePath, useNavigate } from 'react-router-dom';
-import { FormContext } from '../context';
+import { FormContext } from '../../../Forms/context';
 import { OnChangeEvent } from 'greenpeace';
-import { validateCardHolderName, validateCitizenId, validateCreditCard, validateCvv, validateEmptyField, validateMonth, validateYear } from '../../../utils/validators';
+import { validateCardHolderName, validateCitizenId, validateCreditCard, validateCvv, validateEmptyField, validateMonth, validateYear } from '../../../../utils/validators';
 import { css } from 'styled-components';
-import Elements from '../../Shared/Elements';
-import { getPublicKey, doSubscriptionPayment } from '../../../services/mercadopago';
-import Shared from '../../Shared';
-import { initialState, reducer } from './reducer';
-import { createToken, getCardType, getInstallments, setPublishableKey } from '../../../utils/mercadopago';
-import useQuery from '../../../hooks/useQuery';
-import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
-import { AppContext } from '../../App/context';
-import { postRecord, updateContact } from '../../../services/greenlab';
+import Elements from '../../../Shared/Elements';
+import { getPublicKey, doSubscriptionPayment } from '../../../../services/mercadopago';
+import Shared from '../../../Shared';
+import Form from '../../Shared/Form';
+import { initialState, reducer } from '../../../Forms/CheckoutForm/reducer';
+import { createToken, getCardType, getInstallments, setPublishableKey } from '../../../../utils/mercadopago';
+import useQuery from '../../../../hooks/useQuery';
+import Snackbar, { IRef as ISnackbarRef } from '../../../Snackbar';
+import { AppContext } from '../../../App/context';
+import { postRecord, updateContact } from '../../../../services/greenlab';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
@@ -111,13 +112,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
-
+    
     if(!allowNext) {
       setShowFieldErrors(true);
-      dispatchFormErrors({
-        type: 'SET_ERROR',
-        error: 'Tenés campos incompletos o con errores. Revisalos para continuar.',
-      });
+      // dispatchFormErrors({
+      //   type: 'SET_ERROR',
+      //   error: 'Tenés campos incompletos o con errores. Revisalos para continuar.',
+      // });
     } else {
       (async () => {
         dispatchFormErrors({ type: 'SUBMIT' });
@@ -252,21 +253,21 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ]);
 
   return useMemo(() => (
-    <Shared.Form.Main
+    <Form.Main
       id='transaction-form'
       ref={formRef}
       onSubmit={onSubmitHandler}
     >
-      <Shared.Form.Header>
+      <Form.Header>
         <Elements.HGroup>
-          <Shared.Form.Title>{appData && appData.content && appData.content.form.checkout.title}</Shared.Form.Title>
+          <Form.Title>{appData && appData.content && appData.content.form.checkout.title}</Form.Title>
         </Elements.HGroup>
         <Shared.General.Text>{appData && appData.content && appData.content.form.checkout.text}</Shared.General.Text>
-      </Shared.Form.Header>
-      <Shared.Form.Content>
-        <Shared.Form.Row>
-          <Shared.Form.Column bottomText='Escribe solo números. No agregues guiones.'>
-            <Shared.Form.Group
+      </Form.Header>
+      <Form.Content>
+        <Form.Row>
+          <Form.Column bottomText='Escribe solo números. No agregues guiones.'>
+            <Form.Group
               fieldName='cardNumber'
               value={payment.cardNumber}
               labelText='Número de la tarjeta'
@@ -284,12 +285,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.cardNumber}
                 onChange={onChangeHandler}
                 />
-            </Shared.Form.Group>
-          </Shared.Form.Column>
-        </Shared.Form.Row>
-        <Shared.Form.Row>
-          <Shared.Form.Column>
-            <Shared.Form.Group
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
               fieldName='securityCode'
               value={payment.securityCode}
               labelText='Código de seguridad'
@@ -307,12 +308,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.securityCode}
                 onChange={onChangeHandler}
               />
-            </Shared.Form.Group>
-          </Shared.Form.Column>
-        </Shared.Form.Row>
-        <Shared.Form.Row>
-          <Shared.Form.Column>
-            <Shared.Form.Group
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
               fieldName='cardExpirationMonth'
               value={payment.cardExpirationMonth}
               labelText='Mes de expiración'
@@ -332,8 +333,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   <option key={key} value={value}>{value}</option>
                 ))}
               </Elements.Select>
-            </Shared.Form.Group>
-            <Shared.Form.Group
+            </Form.Group>
+            <Form.Group
               fieldName='cardExpirationYear'
               value={payment.cardExpirationYear}
               labelText='Año de expiración'
@@ -352,12 +353,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   <option key={key} value={value}>{value}</option>
                 ))}
               </Elements.Select>
-            </Shared.Form.Group>
-          </Shared.Form.Column>
-        </Shared.Form.Row>
-        <Shared.Form.Row>
-          <Shared.Form.Column>
-            <Shared.Form.Group
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
               fieldName='docType'
               value={payment.docType}
               labelText='Tipo de documento'
@@ -377,8 +378,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   <option key={key} value={value}>{value}</option>
                 ))}
               </Elements.Select>
-            </Shared.Form.Group>
-            <Shared.Form.Group
+            </Form.Group>
+            <Form.Group
               fieldName='docNumber'
               value={payment.docNumber}
               labelText='Número de documento'
@@ -396,12 +397,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.docNumber}
                 onChange={onChangeHandler}
               />
-            </Shared.Form.Group>
-          </Shared.Form.Column>
-        </Shared.Form.Row>
-        <Shared.Form.Row>
-          <Shared.Form.Column>
-            <Shared.Form.Group
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
               value={payment.cardholderName}
               fieldName='cardholderName'
               labelText='Titular de la tarjeta'
@@ -418,12 +419,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.cardholderName}
                 onChange={onChangeHandler}
               />
-            </Shared.Form.Group>
-          </Shared.Form.Column>
-        </Shared.Form.Row>
-      </Shared.Form.Content>
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+      </Form.Content>
       <Snackbar ref={snackbarRef} text={error} />
-      <Shared.Form.Nav>
+      <Form.Nav>
         <Elements.Button
           type='submit'
           disabled={submitting ? true : false}
@@ -431,8 +432,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             width: 100%;
           `}
         >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}</Elements.Button>
-      </Shared.Form.Nav>
-    </Shared.Form.Main>
+      </Form.Nav>
+    </Form.Main>
   ), [
     formRef,
     payment,

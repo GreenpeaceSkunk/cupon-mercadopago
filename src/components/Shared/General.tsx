@@ -12,8 +12,12 @@ const Subtitle = styled(Elements.H2)`
 `;
 
 const Text = styled(Elements.P)<{ highlighted?: boolean; textAlign?: string; }>`
-  font-size: ${pixelToRem(18)};
+  font-size: ${pixelToRem(16)};
   margin-bottom: ${pixelToRem(10)};
+  
+  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+    font-size: ${pixelToRem(24)};
+  }
   
   ${({highlighted}) => (highlighted) && css`
     font-family: ${({theme}) => theme.font.family.primary.bold};
@@ -51,7 +55,7 @@ const ButtonLink = styled(Elements.A)<{ format?: 'contained' | 'outlined' | 'tex
   padding: ${pixelToRem(5)} ${pixelToRem(30)};
   color: white;
   background-color: ${({theme}) => theme.color.primary.normal};
-  border-radius: ${(({theme}) => pixelToRem(theme.borderRadius))};
+  border-radius: ${pixelToRem(5)};
   font-family: ${({theme}) => theme.font.family.primary.bold};
   font-size: ${pixelToRem(18)};
   white-space: nowrap;

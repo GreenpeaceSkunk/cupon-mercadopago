@@ -37,7 +37,8 @@
     "client:start:production": "npm run client:env:production && node -r dotenv/config ./node_modules/.bin/react-scripts start dotenv_config_path=$PWD/.env",
     "client:build:development": "npm run client:env:development && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version",
     "client:build:test": "npm run client:env:test && npm run client:htaccess:test && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version && mv .htaccess ./build",
-    "client:build:production": "npm run client:env:production && npm run client:htaccess:production && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version && mv .htaccess ./build",
+    "client:build:production": "npm run client:env:production && react-scripts --expose-gc --max-old-space-size=8192 build",
+    "client:build:production:htaccess": "npm run client:env:production && npm run client:htaccess:production && react-scripts --expose-gc --max-old-space-size=8192 build && npm run build:version && mv .htaccess ./build",
     "client:env:development": "npm run client:remove:env && cp .env.development.sample .env",
     "client:env:test": "npm run client:remove:env && cp .env.test.sample .env",
     "client:env:production": "npm run client:remove:env && cp .env.production.sample .env",
@@ -49,7 +50,7 @@
     "build:version:id": "VERSION_BUILD=$(git describe --long) && sed -i -- 's/%VERSION_BUILD%/'$VERSION_BUILD'/g' ./build/index.html",
     "build:version:date": "VERSION_BUILD_DATE=$(date +%Y-%m-%d)-$(date +%T) && sed -i -- 's/%VERSION_BUILD_DATE%/'$VERSION_BUILD_DATE'/g' ./build/index.html",
     "build:author": "BUILD_AUTHOR=$(git config --global user.email) && sed -i -- 's/%BUILD_AUTHOR%/'$BUILD_AUTHOR'/g' ./build/index.html",
-    "stylelint": "npx stylelint '**/*.tsx'",
+    "stylelint:check": "npx stylelint '**/*.tsx'",
     "types": "ln -s $(pwd)/src/types $(pwd)/node_modules/@types/greenpeace"
   },
   "eslintConfig": {

@@ -12,7 +12,8 @@ import {
 } from '../../../../utils/validators';
 import { css } from 'styled-components';
 import Shared from '../../../Shared';
-import Elements from '../../../Shared/Elements';
+import Elements from '../../Shared/Elements';
+import Form from '../../Shared/Form';
 import { addOrRemoveSlashToDate } from '../../../../utils';
 import { initialState, reducer } from '../../../Forms/RegistrationForm/reducer';
 import { pushToDataLayer } from '../../../../utils/googleTagManager';
@@ -171,17 +172,17 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ]);
   
   return useMemo(() => (
-    <Shared.Form.Main id='sign-form' onSubmit={onSubmitHandler}>
-      <Shared.Form.Header>
+    <Form.Main id='sign-form' onSubmit={onSubmitHandler}>
+      <Form.Header>
         <Elements.HGroup>
-          <Shared.Form.Title>{appData && appData.content && appData.content.form.registration.title}</Shared.Form.Title>
+          <Form.Title>{appData && appData.content && appData.content.form.registration.title}</Form.Title>
         </Elements.HGroup>
         <Shared.General.Text>{appData && appData.content && appData.content.form.registration.text}</Shared.General.Text>
-      </Shared.Form.Header>
-      <Shared.Form.Content>
-        <Shared.Form.Row>
-          <Shared.Form.Column>
-            <Shared.Form.Group
+      </Form.Header>
+      <Form.Content>
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
               value={amount}
               fieldName='amount'
               labelText={`${params.couponType === 'oneoff' ? 'Autorizo el pago por única vez de:' : 'Autorizo el débito automático mensual de:'}`}
@@ -190,7 +191,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               onUpdateHandler={onUpdateFieldHandler}
               >
                 {appData && appData.content && appData.content.amounts.values.map((value: number) => (
-                  <Shared.Form.RadioButton
+                  <Form.RadioButton
                     key={`${value}`}
                     text={`$${value}`}
                     name='amount'
@@ -199,7 +200,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     onChangeHandler={onChangeHandler}
                   />
                 ))}
-                <Shared.Form.RadioButton
+                <Form.RadioButton
                   key='otherAmount'
                   text='Otras donaciones'
                   name='amount'
@@ -207,11 +208,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   checkedValue={amount}
                   onChangeHandler={onChangeHandler}
                 />
-            </Shared.Form.Group>
-            </Shared.Form.Column>
+            </Form.Group>
+            </Form.Column>
             {(amount === 'otherAmount') ? (
-              <Shared.Form.Column>
-                <Shared.Form.Group
+              <Form.Column>
+                <Form.Group
                   fieldName='newAmount'
                   value={newAmount}
                   labelText='Ingrese el monto'
@@ -228,13 +229,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     maxLength={8}
                     onChange={onChangeHandler}
                   />
-                </Shared.Form.Group>
-              </Shared.Form.Column>
+                </Form.Group>
+              </Form.Column>
             ) : null}
-        </Shared.Form.Row>
-        <Shared.Form.Row>
-          <Shared.Form.Column>
-            <Shared.Form.Group
+        </Form.Row>
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
               value={email}
               fieldName='email'
               labelText='Correo electrónico'
@@ -249,12 +250,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={email}
                 onChange={onChangeHandler}
               />
-            </Shared.Form.Group>
-          </Shared.Form.Column>
-        </Shared.Form.Row>
-        <Shared.Form.Row>
-          <Shared.Form.Column>
-            <Shared.Form.Group
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
               fieldName='firstName'
               value={firstName}
               labelText='Nombre'
@@ -269,8 +270,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={firstName}
                 onChange={onChangeHandler}
               />
-            </Shared.Form.Group>
-            <Shared.Form.Group
+            </Form.Group>
+            <Form.Group
               fieldName='lastName'
               value={lastName}
               labelText='Apellido'
@@ -285,14 +286,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={lastName}
                 onChange={onChangeHandler}
               />
-            </Shared.Form.Group>
-          </Shared.Form.Column>
-        </Shared.Form.Row>
-        <Shared.Form.Row>
-          <Shared.Form.Column
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+        <Form.Row>
+          <Form.Column
             bottomText='Escribe solo números y no agregues guiones.'
           >
-            <Shared.Form.Group
+            <Form.Group
               fieldName='areaCode'
               value={areaCode}
               labelText='Cód. área'
@@ -311,8 +312,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 maxLength={4}
                 onChange={onChangeHandler}
               />
-            </Shared.Form.Group>
-            <Shared.Form.Group
+            </Form.Group>
+            <Form.Group
               fieldName='phoneNumber'
               value={phoneNumber}
               labelText='Número telefónico'
@@ -327,15 +328,15 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={phoneNumber}
                 onChange={onChangeHandler}
               />
-            </Shared.Form.Group>
-          </Shared.Form.Column>
-        </Shared.Form.Row>
-      </Shared.Form.Content>
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+      </Form.Content>
       <Snackbar
         ref={snackbarRef}
         text='Tenés campos incompletos o con errores. Revisalos para continuar.'
       />
-      <Shared.Form.Nav>
+      <Form.Nav>
         <Elements.Button
           type='submit'
           disabled={(submitting) ? true : false}
@@ -343,8 +344,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             width: 100%;
           `}
         >{(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.registration.button_text)}</Elements.Button>
-      </Shared.Form.Nav>
-    </Shared.Form.Main>
+      </Form.Nav>
+    </Form.Main>
   ), [
     firstName,
     lastName,

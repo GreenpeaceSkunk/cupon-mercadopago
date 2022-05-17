@@ -66,9 +66,9 @@ export const Loader:React.FunctionComponent<{ mode?: 'light' | 'default' }> = ({
 const defaults = {
   Loader,
   Logo,
-  Form: (window.localStorage.greenlab_app_design_version === "2") ? FormV2 : FormV1,
+  // Form: (window.localStorage.greenlab_app_design_version === "2") ? FormV2 : FormV1,
   General,
-  Elements,
+  // Elements,
 };
 
 export default defaults;

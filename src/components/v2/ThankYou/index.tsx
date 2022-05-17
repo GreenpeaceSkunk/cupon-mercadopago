@@ -1,10 +1,10 @@
 import React, { Suspense, memo, useMemo, lazy, useContext } from 'react';
-import Elements from '../../Shared/Elements';
+// import Elements from '../../Shared/Elements';
 import { css } from 'styled-components';
 import { pixelToRem } from 'meema.utils';
-import Shared from '../../Shared';
-import Form, { NavLink } from '../Shared/Form';
-import { carouselItemStyles } from '../../../styles/mixins';
+import Elements from '../Shared/Elements';
+import { NavLink } from '../Shared/Form';
+import { Loader } from '../../Shared';
 import { AppContext } from '../../App/context';
 import ThankYouPicture from '../../../images/thank-you.png';
 
@@ -31,7 +31,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           }
         `}
       >
-        <Shared.Elements.HGroup>
+        <Elements.HGroup>
           <Elements.H1
             customCss={css`
               text-align: center;
@@ -41,7 +41,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 font-size: ${pixelToRem(36)};
               }
             `}>{appData && appData.content && appData.content.thankyou.title}</Elements.H1>
-        </Shared.Elements.HGroup>
+        </Elements.HGroup>
 
         <Elements.Img src={ThankYouPicture} alt="Gracias!"></Elements.Img>
         
@@ -78,7 +78,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           justify-self: flex-start;
         `}
       >
-        <Suspense fallback={<Shared.Loader />}>
+        <Suspense fallback={<Loader />}>
           <SocialMediaNav
             customCss={css`
               margin-top: ${pixelToRem(40)};

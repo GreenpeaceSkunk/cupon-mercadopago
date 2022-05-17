@@ -7,42 +7,42 @@ const customStyles = css<IElement>`
   ${({ customCss }) => customCss && customCss};
 `;
 
-const sharedInputStyles = css<IElement>`
-  font-family: sans-serif;
-  box-sizing: border-box;
-  line-height: 100%;
-  width: 100%;
-  min-height: ${pixelToRem(48)};
-  margin: 0;
-  border: ${pixelToRem(1)} solid black;
-  font-size: ${pixelToRem(16)};
-  padding: ${pixelToRem(13)} ${pixelToRem(20)};
-  border-radius: ${pixelToRem(10)};
-  outline: none;
-  appearance: none;
+// const sharedInputStyles = css<IElement>`
+//   font-family: sans-serif;
+//   box-sizing: border-box;
+//   line-height: 100%;
+//   width: 100%;
+//   min-height: ${pixelToRem(48)};
+//   margin: 0;
+//   border: ${pixelToRem(1)} solid black;
+//   font-size: ${pixelToRem(16)};
+//   padding: ${pixelToRem(13)} ${pixelToRem(20)};
+//   border-radius: ${pixelToRem(10)};
+//   outline: none;
+//   appearance: none;
 
-  &:focus {
-    border-color: ${({ theme }) => theme.color.primary.normal};
-  }
+//   &:focus {
+//     border-color: ${({ theme }) => theme.color.primary.normal};
+//   }
 
-  ${({theme}) => (theme) && css`
-    ${(theme.font) && css`
-      ${(theme.font.family) && css`
-        font-family: ${theme.font.family.primary};
-      `};
-    `};
+//   ${({theme}) => (theme) && css`
+//     ${(theme.font) && css`
+//       ${(theme.font.family) && css`
+//         font-family: ${theme.font.family.primary};
+//       `};
+//     `};
     
-    ${(theme.color) && css`
-      border-color: ${theme.color.secondary.normal};
+//     ${(theme.color) && css`
+//       border-color: ${theme.color.secondary.normal};
     
-      &:focus {
-        border-color: ${theme.color.primary.normal};
-      }
-    `};
-  `};
+//       &:focus {
+//         border-color: ${theme.color.primary.normal};
+//       }
+//     `};
+//   `};
 
-  ${({ customCss }) => customCss && customCss};
-`;
+//   ${({ customCss }) => customCss && customCss};
+// `;
 
 export const A = styled(Elements.A)``;
 export const Footer = styled(Elements.Footer)``;
@@ -78,22 +78,29 @@ export const H3 = styled(Elements.H3)`
   ${customStyles};
 `;
 export const Header = styled(Elements.Header)``;
+
 export const HGroup = styled(Elements.HGroup)``;
+
 export const Img = styled(Elements.Img)``;
+/* ${sharedInputStyles}; */
 export const Input = styled(Elements.Input)`
-  ${sharedInputStyles};
   ${customStyles};
 `;
+
 export const Label = styled(Elements.Label)``;
+
 export const Nav = styled(Elements.Nav)``;
+
 export const Option = styled(Elements.Option)`
   background-color: white;
   ${customStyles};
 `;
+
 export const OptGroup = styled(Elements.OptGroup)`
   background-color: white;
   ${customStyles};
 `;
+
 export const P = styled(Elements.P)`
   color: ${({theme}) => theme.text.color.primary.normal};
   font-family: ${({theme}) => theme.font.family.primary.regular};

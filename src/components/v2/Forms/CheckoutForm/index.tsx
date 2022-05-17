@@ -5,7 +5,8 @@ import { OnChangeEvent, OnClickEvent } from 'greenpeace';
 import { validateCardHolderName, validateCitizenId, validateCreditCard, validateCvv, validateEmptyField, validateMonth, validateNewAmount, validateYear } from '../../../../utils/validators';
 import { css } from 'styled-components';
 import { getPublicKey, doSubscriptionPayment } from '../../../../services/mercadopago';
-import Shared from '../../../Shared';
+import { Loader } from '../../../Shared';
+import Elements from '../../Shared/Elements';
 import Form from '../../Shared/Form';
 import { initialState, reducer } from '../../../Forms/CheckoutForm/reducer';
 import { createToken, getCardType, getInstallments, setPublishableKey } from '../../../../utils/mercadopago';
@@ -282,10 +283,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   return useMemo(() => (
     <Form.Main id='transaction-form' ref={formRef} onSubmit={onSubmitHandler}>
       <Form.Header>
-        <Shared.Elements.HGroup>
+        <Elements.HGroup>
           <Form.Title>{appData && appData.content && appData.content.form.checkout.title}</Form.Title>
-        </Shared.Elements.HGroup>
-        <Shared.Elements.WrapperHtml
+        </Elements.HGroup>
+        <Elements.WrapperHtml
           customCss={css`
             font-size: ${pixelToRem(16)};
             font-weight: 400;
@@ -303,20 +304,20 @@ const Component: React.FunctionComponent<{}> = memo(() => {
          id='content-form'
          ref={contentFormRef}
       >
-        <Shared.Elements.Span
+        <Elements.Span
           customCss={css`
             font-family: ${({theme}) => theme.font.family.primary.bold};
             font-size: ${pixelToRem(18)};
             margin-bottom: ${pixelToRem(18)};
           `}
-        >Completá tus datos y empezá a  contribuir con el planeta</Shared.Elements.Span>
-        <Shared.Elements.Span
+        >Completá tus datos y empezá a  contribuir con el planeta</Elements.Span>
+        <Elements.Span
           customCss={css`
             color: ${({theme}) => theme.text.color.secondary.normal};
             font-size: ${pixelToRem(18)};
             margin-bottom: ${pixelToRem(10)};
           `}
-        >Datos de contribución</Shared.Elements.Span>
+        >Datos de contribución</Elements.Span>
         <Form.Row>
           <Form.Column>
             <Form.Group
@@ -327,7 +328,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Elements.Wrapper>
+              <Elements.Wrapper>
                 {appData && appData.content && appData.content.amounts.values.map((value: number) => (
                   <Form.SelectableButton
                     key={`${value}`}
@@ -345,7 +346,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   checkedValue={payment.amount}
                   onClickHandler={onClickHandler}
                 />
-              </Shared.Elements.Wrapper>
+              </Elements.Wrapper>
             </Form.Group>
           </Form.Column>
           <Form.Column>
@@ -358,7 +359,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 validateFn={validateNewAmount}
                 onUpdateHandler={onUpdateFieldHandler}
               >
-                <Shared.Elements.Input
+                <Elements.Input
                   name='newAmount'
                   type='number'
                   disabled={!(payment.amount === 'otherAmount')} 
@@ -381,7 +382,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateCreditCard}
               onUpdateHandler={onUpdateFieldHandler}
               >
-              <Shared.Elements.Input
+              <Elements.Input
                 type='text'
                 id='cardNumber'
                 name='cardNumber'
@@ -402,7 +403,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateCvv}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Elements.Input
+              <Elements.Input
                 type='password'
                 id='securityCode'
                 name='securityCode'
@@ -425,7 +426,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateMonth}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Elements.Select
+              <Elements.Select
                 id='cardExpirationMonth'
                 name='cardExpirationMonth'
                 data-checkout='cardExpirationMonth'
@@ -436,7 +437,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 {(['01','02','03','04','05','06','07','08','09','10','11','12']).map((value: string, key: number) => (
                   <Form.SelectOption key={key} value={value}>{value}</Form.SelectOption>
                 ))}
-              </Shared.Elements.Select>
+              </Elements.Select>
             </Form.Group>
             <Form.Group
               fieldName='cardExpirationYear'
@@ -490,7 +491,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateCitizenId}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Shared.Elements.Input
+              <Elements.Input
                 type='text'
                 id='docNumber'
                 name='docNumber'
@@ -513,7 +514,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               onUpdateHandler={onUpdateFieldHandler}
               showErrorMessage={showFieldErrors}
             >
-              <Shared.Elements.Input
+              <Elements.Input
                 type='text'
                 id='cardholderName'
                 name='cardholderName'
@@ -536,7 +537,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           type='submit'
           disabled={submitting && true}
         >
-          {(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}
+          {(submitting) ? <Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}
         </Form.Button>
       </Form.Nav>
     </Form.Main>

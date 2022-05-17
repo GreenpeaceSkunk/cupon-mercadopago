@@ -5,12 +5,9 @@ import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { OnChangeEvent, OnClickEvent } from 'greenpeace';
 import { ValidationType } from '../../../utils/validators';
 import Icons from '../../../images/icons';
-import Elements from './Elements';
-// import Elements, { IElement } from '@bit/meema.ui-components.elements';
-
-// const customStyles = css<IElement>`
-//   ${({ customCss }) => customCss && customCss};
-// `;
+// import Elements from './Elements';
+import Elements, { IElement } from '@bit/meema.ui-components.elements';
+import Styles from './Styles';
 
 const Main = styled(Elements.Form)`
   position: relative;
@@ -314,7 +311,7 @@ const Column: React.FunctionComponent<{
       customCss={css`
       display: flex;
       width: 100%;
-      height: 100%;
+      /* height: 100%; */
     
       @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
         flex-direction: row;
@@ -419,22 +416,6 @@ const Group: React.FunctionComponent<{
         input[type="password"],
         input[type="number"],
         textarea {
-          width: 100%;
-          height: 100%;
-          font-size: ${pixelToRem(16)};
-          line-height: ${pixelToRem(18)};
-          padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
-          color: ${({theme}) => theme.color.secondary.dark};
-          border-color: ${({theme}) => theme.color.secondary.extraLight};
-          font-family: ${({theme}) => theme.font.family.primary.medium};
-
-          &::placeholder {
-            color: ${({theme}) => theme.color.secondary.extraLight};
-          }
-        
-          &:focus {
-            border-color: ${({theme}) => theme.color.primary.normal};
-          }
         }
 
         input {
@@ -504,9 +485,7 @@ const Group: React.FunctionComponent<{
 
 const Select = styled(Elements.Select)`
   width: 100%;
-  height: 100%;
   font-size: ${pixelToRem(16)};
-  line-height: ${pixelToRem(18)};
   padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
   color: ${({theme}) => theme.color.secondary.dark};
   border-color: ${({theme}) => theme.color.secondary.extraLight};

@@ -1,17 +1,12 @@
 import { createGlobalStyle, DefaultTheme } from "styled-components";
+import { fontPrimaryBold, fontPrimaryLight, fontPrimaryMedium, fontPrimaryRegular, fontSecondaryRegular } from "./constants";
 
 import NunitoLightFont from '../fonts/Nunito/Nunito-Light.ttf';
 import NunitoRegularFont from '../fonts/Nunito/Nunito-Regular.ttf';
 import NunitoBoldFont from '../fonts/Nunito/Nunito-Bold.ttf';
+import NunitoMediumFont from '../fonts/Nunito/Nunito-Medium.ttf';
 
-import {
-  fontPrimaryLight,
-  fontPrimaryRegular,
-  fontPrimaryBold,
-  fontSecondaryRegular,
-} from './v1/Theme';
-
-export const GlobalStyle = createGlobalStyle<DefaultTheme>`
+export const GlobalStyle = createGlobalStyle<DefaultTheme>`  
   @font-face {
     font-family: ${fontPrimaryLight};
     src: url(${NunitoLightFont});
@@ -20,6 +15,11 @@ export const GlobalStyle = createGlobalStyle<DefaultTheme>`
   @font-face {
     font-family: ${fontPrimaryRegular};
     src: url(${NunitoRegularFont});
+  }
+
+  @font-face {
+    font-family: ${fontPrimaryMedium};
+    src: url(${NunitoMediumFont});
   }
   
   
@@ -31,7 +31,7 @@ export const GlobalStyle = createGlobalStyle<DefaultTheme>`
   body {
     padding: 0;
     margin: 0;
-    font-family: ${fontSecondaryRegular};
+    font-family: ${fontPrimaryRegular};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

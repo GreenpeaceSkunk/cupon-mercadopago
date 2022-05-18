@@ -436,9 +436,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.cardExpirationMonth}
                 onChange={onChangeHandler}
               >
-                <Form.SelectOption value=""></Form.SelectOption>
+                <option value=""></option>
                 {['01','02','03','04','05','06','07','08','09','10','11','12'].map((value: string, key: number) => (
-                  <Form.SelectOption key={key} value={value}>{value}</Form.SelectOption>
+                  <option key={key} value={value}>{value}</option>
                 ))}
               </Form.Select>
             </Form.Group>

@@ -53,22 +53,27 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             }
           `}
         >
-          <Elements.P
-            customCss={css`
-              text-align: center;
-              background: white;
-              padding: ${pixelToRem(16)};
-              margin-top: ${pixelToRem(16)};
-              margin-bottom: ${pixelToRem(36)};
-              border-radius: ${pixelToRem(8)};
-            `}
-          >{appData && appData.content && appData.content.thankyou.text}</Elements.P>
+          {appData && appData.content && appData.content.thankyou.text && (
+            <Elements.P
+              customCss={css`
+                text-align: center;
+                background: white;
+                padding: ${pixelToRem(16)};
+                margin-top: ${pixelToRem(16)};
+                margin-bottom: ${pixelToRem(36)};
+                border-radius: ${pixelToRem(8)};
+              `}
+            >{appData.content.thankyou.text}</Elements.P>
+          )}
+
+        {appData && appData.content && appData.content.thankyou.social_media_text && (
           <Elements.H3
             customCss={css`
               text-align: center;
               color: ${({theme}) => theme.text.color.primary.normal};
             `}
-            >{appData && appData.content && appData.content.thankyou.social_media_text}</Elements.H3>
+          >{appData.content.thankyou.social_media_text}</Elements.H3>
+        )} 
         </Elements.Wrapper>
         </Elements.Wrapper>
       <Elements.Wrapper
@@ -89,26 +94,45 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         </Suspense>
       </Elements.Wrapper>
       
-      <Elements.Nav
-        customCss={css`
-          display: flex;
-          justify-content: center;
-          align-items: flex-end;
-          display: flex;
-          width: 100%;
-          height: 100%;
-          margin-top: ${pixelToRem(90)};
-        `}
-      >
-        <NavLink
-          to={process.env.PUBLIC_URL}
+      {appData && appData.content && appData.content.thankyou.button_cta && (
+        <Elements.Nav
           customCss={css`
-            color: ${({theme}) => theme.text.color.secondary.normal};
-            text-decoration: underline;
-            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            display: flex;
+            width: 100%;
+            height: 100%;
+            margin-top: ${pixelToRem(90)};
           `}
-        >VOLVER AL INICIO</NavLink>
-      </Elements.Nav>
+        >
+          {appData.content.thankyou.button_cta.is_external ? (
+            <Elements.A
+              href={
+                appData.content.thankyou.button_cta.link && appData.content.thankyou.button_cta.link !== '/'
+                ? `${appData.content.thankyou.button_cta.link}`
+                : `https://greenpeace.org.ar/argentina`}
+                target='_blank'
+                customCss={css`
+                  color: ${({theme}) => theme.text.color.secondary.normal};
+                  text-decoration: underline;
+                  font-weight: 700;
+                `}
+              >
+              {appData.content.thankyou.button_cta.text}
+            </Elements.A>
+          ) : (
+            <NavLink
+              to={process.env.PUBLIC_URL}
+              customCss={css`
+                color: ${({theme}) => theme.text.color.secondary.normal};
+                text-decoration: underline;
+                font-weight: 700;
+              `}
+            >{appData.content.thankyou.button_cta.text}</NavLink>
+          )}
+        </Elements.Nav>
+      )}
     </Elements.View>
   ), [
     appData,

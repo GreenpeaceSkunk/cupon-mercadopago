@@ -50,5 +50,4 @@ export const GlobalStyle = createGlobalStyle<DefaultTheme>`
   ul {
     list-style-type: none;
   }
-
 `;

@@ -1,52 +1,14 @@
-import Elements, { IElement } from '@bit/meema.ui-components.elements';
-import styled, { css } from 'styled-components';
+import Elements from '@bit/meema.ui-components.elements';
+import styled from 'styled-components';
 import { pixelToRem } from 'meema.utils';
-import Icons from '../../../images/icons';
-
-const customStyles = css<IElement>`
-  ${({ customCss }) => customCss && customCss};
-`;
-
-// const sharedInputStyles = css<IElement>`
-//   font-family: sans-serif;
-//   box-sizing: border-box;
-//   line-height: 100%;
-//   width: 100%;
-//   min-height: ${pixelToRem(48)};
-//   margin: 0;
-//   border: ${pixelToRem(1)} solid black;
-//   font-size: ${pixelToRem(16)};
-//   padding: ${pixelToRem(13)} ${pixelToRem(20)};
-//   border-radius: ${pixelToRem(10)};
-//   outline: none;
-//   appearance: none;
-
-//   &:focus {
-//     border-color: ${({ theme }) => theme.color.primary.normal};
-//   }
-
-//   ${({theme}) => (theme) && css`
-//     ${(theme.font) && css`
-//       ${(theme.font.family) && css`
-//         font-family: ${theme.font.family.primary};
-//       `};
-//     `};
-    
-//     ${(theme.color) && css`
-//       border-color: ${theme.color.secondary.normal};
-    
-//       &:focus {
-//         border-color: ${theme.color.primary.normal};
-//       }
-//     `};
-//   `};
-
-//   ${({ customCss }) => customCss && customCss};
-// `;
+import { customStyles } from './Styles';
 
 export const A = styled(Elements.A)``;
+
 export const Footer = styled(Elements.Footer)``;
+
 export const Form = styled(Elements.Form)``;
+
 export const H1 = styled(Elements.H1)`
   margin-bottom: ${pixelToRem(10)};
   color: ${({theme}) => theme.text.color.primary.normal};
@@ -54,6 +16,7 @@ export const H1 = styled(Elements.H1)`
   font-family: ${({theme}) => theme.font.family.primary.bold};
   ${customStyles};
 `;
+
 export const H2 = styled(Elements.H2)`
   margin-bottom: ${pixelToRem(10)};
   color: ${({theme}) => theme.text.color.secondary.normal};
@@ -61,6 +24,7 @@ export const H2 = styled(Elements.H2)`
   font-family: ${({theme}) => theme.font.family.primary.bold};
   ${customStyles};
 `;
+
 export const H3 = styled(Elements.H3)`
   margin-bottom: ${pixelToRem(10)};
   color: ${({theme}) => theme.text.color.primary.normal};
@@ -82,10 +46,6 @@ export const Header = styled(Elements.Header)``;
 export const HGroup = styled(Elements.HGroup)``;
 
 export const Img = styled(Elements.Img)``;
-/* ${sharedInputStyles}; */
-export const Input = styled(Elements.Input)`
-  ${customStyles};
-`;
 
 export const Label = styled(Elements.Label)``;
 
@@ -107,47 +67,22 @@ export const P = styled(Elements.P)`
   margin-bottom: ${pixelToRem(14)};
   ${customStyles};
 `;
-// ${sharedInputStyles};
-export const Select = styled(Elements.Select)`
-  background: url(${Icons.SelectArrowIcon}) no-repeat right ${pixelToRem(14)} top 50% white;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-  font-size: ${pixelToRem(16)};
-  line-height: ${pixelToRem(18)};
-  padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
-  color: ${({theme}) => theme.color.secondary.dark};
-  border-color: ${({theme}) => theme.color.secondary.extraLight};
-  font-family: ${({theme}) => theme.font.family.primary.medium};
-  font-weight: 600;
 
-  box-sizing: border-box;
-  margin: 0;
-  border: ${pixelToRem(1)} solid black;
-  border-radius: ${pixelToRem(10)};
-  outline: none;
-  appearance: none;
-
-  &::placeholder {
-    color: ${({theme}) => theme.color.secondary.extraLight};
-  }
-
-  &:focus {
-    border-color: ${({theme}) => theme.color.primary.normal};
-  }
-
-  ${customStyles};
-`;
 export const Span = styled(Elements.Span)`
   font-family: ${({theme}) => theme.font.family.primary.regular};
   ${customStyles};
 `;
+
 export const Strong = styled.strong`
   font-family: ${({theme}) => theme.font.family.primary.bold};
-`; // Import from @meema.Elements
+`;
+
 export const TextArea = styled(Elements.TextArea)``;
+
 export const View = styled(Elements.View)``;
+
 export const Wrapper = styled(Elements.Wrapper)``;
+
 export const WrapperHtml = styled(Elements.Wrapper)`
   color: ${({theme}) => theme.text.color.primary.normal};
   font-family: ${({theme}) => theme.font.family.primary.regular};
@@ -185,11 +120,11 @@ export const Button = styled(Elements.Button)`
   }
   
   &:disabled {
-    background-color: ${({theme}) => theme.color.secondary.normal};
+    background-color: ${({theme}) => theme.color.secondary.extraLight};
     opacity: 1;
   
     &:hover {
-      background-color: ${({theme}) => theme.color.secondary.normal};
+      background-color: ${({theme}) => theme.color.secondary.extraLight};
     }
   }
   
@@ -207,13 +142,11 @@ const _ = {
   Header,
   HGroup,
   Img,
-  Input,
   Label,
   Nav,
   Option,
   OptGroup,
   P,
-  Select,
   Span,
   Strong,
   TextArea,

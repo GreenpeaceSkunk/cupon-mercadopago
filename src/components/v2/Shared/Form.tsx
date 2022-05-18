@@ -5,9 +5,8 @@ import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { OnChangeEvent, OnClickEvent } from 'greenpeace';
 import { ValidationType } from '../../../utils/validators';
 import Icons from '../../../images/icons';
-// import Elements from './Elements';
 import Elements, { IElement } from '@bit/meema.ui-components.elements';
-import Styles from './Styles';
+import Styles, { customStyles, inputStyles } from './Styles';
 
 const Main = styled(Elements.Form)`
   position: relative;
@@ -37,11 +36,13 @@ const ContentTitle = styled(Elements.H3)`
   color: ${({theme}) => theme.color.primary.normal};
   font-weight: 400;
   font-size: ${pixelToRem(18)};
+  margin-bottom: ${pixelToRem(16)};
 `;
 
 const ContentText = styled(Elements.P)`
   font-weight: 700;
   font-size: ${pixelToRem(18)};
+  margin-bottom: ${pixelToRem(16)};
 `;
 
 const Header = styled(Elements.Header)`
@@ -129,38 +130,41 @@ const SelectableButton: React.FunctionComponent<{
 }) => {
   return useMemo(() => (
     <>
-    <Elements.Button
-      name={name}
-      onClick={onClickHandler}
-      value={value}
-      customCss={css`
-        background: white;
-        color: ${({theme}) => theme.text.color.primary.normal};
-        border-color: ${({theme}) => theme.color.secondary.extraLight};
-        border-width: ${pixelToRem(1)} !important;
-        width: fit-content;
-        font-size: ${pixelToRem(14)};
-        margin-bottom: ${pixelToRem(10)};
-        
-        &:hover {
+      <Elements.Button
+        name={name}
+        onClick={onClickHandler}
+        value={value}
+        customCss={css`
+          margin-bottom: ${pixelToRem(10)};
+          padding: ${pixelToRem(16)} ${pixelToRem(28)};
           background: white;
-          border-color: ${({theme}) => theme.color.primary.normal};
-          color: ${({theme}) => theme.text.color.primary.dark};
-        }
+          color: ${({theme}) => theme.text.color.primary.black};
+          border-color: ${({theme}) => theme.color.secondary.extraLight};
+          border-width: ${pixelToRem(1)} !important;
+          border-radius: ${pixelToRem(5)};
+          width: fit-content;
+          font-size: ${pixelToRem(14)};
+          font-weight: 700;
+          
+          &:hover {
+            background: white;
+            border-color: ${({theme}) => theme.color.primary.normal};
+            color: ${({theme}) => theme.text.color.primary.dark};
+          }
 
-        &:not(last-child) {
-          margin-right: ${pixelToRem(10)};
-        }
+          &:not(last-child) {
+            margin-right: ${pixelToRem(10)};
+          }
 
-        ${(checkedValue === value) && css`
-          background: ${({theme}) => theme.color.primary.normal} !important;
-          border-color: ${({theme}) => theme.color.primary.normal};
-          color: white !important;
+          ${(checkedValue === value) && css`
+            background: ${({theme}) => theme.color.primary.normal} !important;
+            border-color: ${({theme}) => theme.color.primary.normal};
+            color: white !important;
+          `}
         `}
-      `}
-    >
-      {text}
-    </Elements.Button>
+      >
+        {text}
+      </Elements.Button>
     </>
   ), [
     name,
@@ -260,25 +264,6 @@ const RadioButton: React.FunctionComponent<{
   ]);
 };
 
-const Button = styled(Elements.Button)`
-  width: 100%;
-  background-color: ${({theme}) => theme.color.primary.normal};
-
-  @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-    width: fit-content;
-    padding: 0 ${pixelToRem(42)};
-  }
-
-  &:disabled {
-    background-color: ${({theme}) => theme.color.secondary.normal};
-    opacity: 1;
-
-    &:hover {
-      background-color: ${({theme}) => theme.color.secondary.normal};
-    }
-  }
-`;
-
 const Row = styled(Elements.Wrapper)`
   display: flex;
   flex-direction: column;
@@ -302,16 +287,17 @@ const Column: React.FunctionComponent<{
   bottomText,
   customCss,
 }) => (
-  <Elements.Wrapper customCss={css`
-    &:not(:last-child) {
-      margin-right: ${pixelToRem(20)};
-    }
+  <Elements.Wrapper
+    className='column-block'
+    customCss={css`
+      &:not(:last-child) {
+        margin-right: ${pixelToRem(20)};
+      }
   `}>
     <Elements.Wrapper
       customCss={css`
       display: flex;
       width: 100%;
-      /* height: 100%; */
     
       @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
         flex-direction: row;
@@ -416,14 +402,7 @@ const Group: React.FunctionComponent<{
         input[type="password"],
         input[type="number"],
         textarea {
-        }
-
-        input {
-          font-weight: 600;
-        }
-
-        textarea {
-          font-weight: 400;
+          ${inputStyles};
         }
 
         input[type="text"],
@@ -458,7 +437,14 @@ const Group: React.FunctionComponent<{
           `}
         >{labelText}</Elements.Label>
       )}
-      {children}
+      <Elements.Wrapper
+        customCss={css`
+          display: flex;
+          flex-direction: row;
+        `}
+      >
+        {children}
+      </Elements.Wrapper>
       {(labelBottomText) ? (
         <Elements.Label
           customCss={css`
@@ -483,14 +469,30 @@ const Group: React.FunctionComponent<{
   ]);
 };
 
-const Select = styled(Elements.Select)`
+export const Input = styled(Elements.Input)`
+  font-weight: 500;
+  ${inputStyles};
+  ${customStyles};
+`;
+
+export const Select = styled(Elements.Select)`
+  background: url(${Icons.SelectArrowIcon}) no-repeat right ${pixelToRem(14)} top 50% white;
+  cursor: pointer;
   width: 100%;
+  height: 100%;
   font-size: ${pixelToRem(16)};
+  line-height: ${pixelToRem(18)};
   padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
   color: ${({theme}) => theme.color.secondary.dark};
-  border-color: ${({theme}) => theme.color.secondary.extraLight};
   font-family: ${({theme}) => theme.font.family.primary.medium};
   font-weight: 600;
+  box-sizing: border-box;
+  margin: 0;
+  border: ${pixelToRem(1)} solid black;
+  border-radius: ${pixelToRem(10)};
+  outline: none;
+  appearance: none;
+  border-color: ${({theme}) => theme.color.secondary.extraLight} !important;
 
   &::placeholder {
     color: ${({theme}) => theme.color.secondary.extraLight};
@@ -500,21 +502,15 @@ const Select = styled(Elements.Select)`
     border-color: ${({theme}) => theme.color.primary.normal};
   }
 
-  ${({customCss}) => customCss && customCss};
-`;
-  // option {
-  //   font-weight: 400;
-  //   color: ${({theme}) => theme.color.secondary.normal};
-  //   font-family: ${({theme}) => theme.font.family.primary.medium};
-  //   padding: ${pixelToRem(30)} ${pixelToRem(10)};
-  // }
+  option {
+    font-family: Arial;
+    color: ${({theme}) => theme.color.secondary.normal};
+    padding: ${pixelToRem(10)} !important;
+    margin-bottom: ${pixelToRem(10)};
+  }
 
-  // color: orange;
-  // font-family: ${({theme}) => theme.font.family.primary.regular};
-const SelectOption = styled(Elements.Option)`
-  padding: ${pixelToRem(30)} ${pixelToRem(10)};
+  ${customStyles};
 `;
-// font-family: ${({theme}) => theme.font.family.primary.regular} !important;
 
 const Label = styled(Elements.Label)`
   position: relative;
@@ -567,13 +563,12 @@ const defaults = {
   Label,
   Main,
   Nav,
-  Button,
   SelectableButton,
   RadioButton,
   TextArea,
   Title,
   Select,
-  SelectOption,
+  Input,
   ErrorMessage,
 };
 

@@ -7,7 +7,7 @@ export const customStyles = css<IElement>`
 `;
 
 export const inputStyles = css<IElement>`
-  font-family: sans-serif;
+  font-family: ${({theme}) => theme.font.family.primary.medium};
   box-sizing: border-box;
   line-height: 100%;
   width: 100%;
@@ -15,32 +15,31 @@ export const inputStyles = css<IElement>`
   margin: 0;
   border: ${pixelToRem(1)} solid black;
   font-size: ${pixelToRem(16)};
-  padding: ${pixelToRem(13)} ${pixelToRem(20)};
+  padding: ${pixelToRem(15)} ${pixelToRem(16)};
   border-radius: ${pixelToRem(10)};
   outline: none;
   appearance: none;
+  border-color: ${({ theme }) => theme.color.secondary.extraLight};
+
+  &::placeholder {
+    color: ${({theme}) => theme.color.secondary.extraLight};
+  }
 
   &:focus {
     border-color: ${({ theme }) => theme.color.primary.normal};
+  
+    &::placeholder {
+      color: transparent;
+    } 
   }
 
-  ${({theme}) => (theme) && css`
-    ${(theme.font) && css`
-      ${(theme.font.family) && css`
-        font-family: ${theme.font.family.primary};
-      `};
-    `};
-    
-    ${(theme.color) && css`
-      border-color: ${theme.color.secondary.normal};
-    
-      &:focus {
-        border-color: ${theme.color.primary.normal};
-      }
-    `};
-  `};
+  &::-webkit-inner-spin-button {
+    appearance: none;
+  }
 
-  ${({ customCss }) => customCss && customCss};
+  &[type=number] {
+    appearance: textfield;
+  }
 `;
 
 const defaults = {
@@ -48,26 +47,3 @@ const defaults = {
 }
 
 export default defaults;
-
-// input[type="text"],
-// input[type="email"],
-// input[type="password"],
-// input[type="number"],
-// textarea {
-//   width: 100%;
-//   height: 100%;
-//   font-size: ${pixelToRem(16)};
-//   line-height: ${pixelToRem(18)};
-//   padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
-//   color: ${({theme}) => theme.color.secondary.dark};
-//   border-color: ${({theme}) => theme.color.secondary.extraLight};
-//   font-family: ${({theme}) => theme.font.family.primary.medium};
-
-//   &::placeholder {
-//     color: ${({theme}) => theme.color.secondary.extraLight};
-//   }
-
-//   &:focus {
-//     border-color: ${({theme}) => theme.color.primary.normal};
-//   }
-// }

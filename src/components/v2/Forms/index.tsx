@@ -15,8 +15,7 @@ const Component: FunctionComponent<{}> = memo(() => {
 
   useEffect(() => {
     navigate({
-      // pathname: generatePath('registration', {}),
-      pathname: generatePath('checkout', {}),
+      pathname: generatePath('registration', {}),
       search: `${searchParams}`,
     });
   }, []);

@@ -11,7 +11,7 @@ import {
 import { css } from 'styled-components';
 import Shared from '../../../Shared';
 import Form from '../../Shared/Form';
-import Elements from '../../../Shared/Elements';
+import Elements from '../../Shared/Elements';
 import { initialState, reducer } from '../../../Forms/RegistrationForm/reducer';
 import { pushToDataLayer } from '../../../../utils/googleTagManager';
 import { pixelToRem } from 'meema.utils';
@@ -138,7 +138,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         <Elements.HGroup>
           <Form.Title>{appData && appData.content && appData.content.form.registration.title}</Form.Title>
         </Elements.HGroup>
-        <Shared.Elements.WrapperHtml
+        <Elements.WrapperHtml
           customCss={css`
             font-size: ${pixelToRem(16)};
             font-weight: 400;
@@ -168,10 +168,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateFirstName}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Elements.Input
+              <Form.Input
                 name='firstName'
                 type='text'
-                placeholder='Ej. Lucas'
+                placeholder='Lucas'
                 value={firstName}
                 onChange={onChangeHandler}
               />
@@ -187,10 +187,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateFirstName}
               onUpdateHandler={onUpdateFieldHandler}
               >
-              <Elements.Input
+              <Form.Input
                 name='lastName'
                 type='text'
-                placeholder='Ej. Rodriguez'
+                placeholder='Rodriguez'
                 value={lastName}
                 onChange={onChangeHandler}
                 />
@@ -208,16 +208,16 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateEmail}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Elements.Input
+              <Form.Input
                 name='email'
                 type='email'
-                placeholder='Ej. daniela.lopez@email.com'
+                placeholder='daniela.lopez@email.com'
                 value={email}
                 onChange={onChangeHandler}
               />
             </Form.Group>
           </Form.Column>
-          <Form.Column bottomText='Escribe solo números y no agregues guiones.'>
+          <Form.Column>
             <Form.Group
               fieldName='areaCode'
               value={areaCode}
@@ -230,10 +230,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 width: 40%;
               `}
             >
-              <Elements.Input
+              <Form.Input
                 name='areaCode'
-                type='text'
-                placeholder='Ej. 11'
+                type='number'
+                placeholder='11'
                 value={areaCode}
                 maxLength={4}
                 onChange={onChangeHandler}
@@ -248,10 +248,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validatePhoneNumber}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Elements.Input
+              <Form.Input
                 name='phoneNumber'
                 type='number'
-                placeholder='Ej. 41239876'
+                placeholder='41239876'
                 value={phoneNumber}
                 onChange={onChangeHandler}
               />
@@ -268,12 +268,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           align-items: flex-end;
         `}
       >
-        <Form.Button
+        <Elements.Button
           type='submit'
           disabled={submitting && true}
         >
           {(submitting) ? <Shared.Loader mode='light' /> : (appData && appData.content && appData.content.form.registration.button_text)}
-        </Form.Button>
+        </Elements.Button>
       </Form.Nav>
     </Form.Main>
   ), [

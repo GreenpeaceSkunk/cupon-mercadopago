@@ -358,13 +358,16 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 showErrorMessage={showFieldErrors}
                 validateFn={validateNewAmount}
                 onUpdateHandler={onUpdateFieldHandler}
+                customCss={css`
+                  width: ${pixelToRem(180)};
+                `}
               >
-                <Elements.Input
+                <Form.Input
                   name='newAmount'
                   type='number'
                   disabled={!(payment.amount === 'otherAmount')} 
                   value={payment.newAmount}
-                  placeholder='Ej. $350'
+                  placeholder='$350'
                   maxLength={8}
                   onChange={onChangeHandler}
                 />
@@ -381,12 +384,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               showErrorMessage={showFieldErrors}
               validateFn={validateCreditCard}
               onUpdateHandler={onUpdateFieldHandler}
-              >
-              <Elements.Input
+            >
+              <Form.Input
                 type='text'
                 id='cardNumber'
                 name='cardNumber'
-                placeholder='Ej. 4509953566233704'
+                placeholder='4509 9535 6623 2694'
                 data-checkout='cardNumber'
                 maxLength={16}
                 value={payment.cardNumber}
@@ -403,11 +406,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateCvv}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Elements.Input
+              <Form.Input
                 type='password'
                 id='securityCode'
                 name='securityCode'
-                placeholder='Ej. 123'
+                placeholder='123'
                 data-checkout='securityCode'
                 maxLength={4}
                 value={payment.securityCode}
@@ -426,7 +429,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateMonth}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Elements.Select
+              <Form.Select
                 id='cardExpirationMonth'
                 name='cardExpirationMonth'
                 data-checkout='cardExpirationMonth'
@@ -434,10 +437,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 onChange={onChangeHandler}
               >
                 <Form.SelectOption value=""></Form.SelectOption>
-                {(['01','02','03','04','05','06','07','08','09','10','11','12']).map((value: string, key: number) => (
+                {['01','02','03','04','05','06','07','08','09','10','11','12'].map((value: string, key: number) => (
                   <Form.SelectOption key={key} value={value}>{value}</Form.SelectOption>
                 ))}
-              </Elements.Select>
+              </Form.Select>
             </Form.Group>
             <Form.Group
               fieldName='cardExpirationYear'
@@ -478,7 +481,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 onChange={onChangeHandler}
               >
                 <option value=""></option>
-                {(['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro']).map((value: string, key: number) => (
+                {['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro'].map((value: string, key: number) => (
                   <option key={key} value={value}>{value}</option>
                 ))}
               </Form.Select>
@@ -491,11 +494,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateCitizenId}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Elements.Input
+              <Form.Input
                 type='text'
                 id='docNumber'
                 name='docNumber'
-                placeholder='Ej. 31402931'
+                placeholder='31402931'
                 data-checkout='docNumber'
                 maxLength={8}
                 value={payment.docNumber}
@@ -514,12 +517,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               onUpdateHandler={onUpdateFieldHandler}
               showErrorMessage={showFieldErrors}
             >
-              <Elements.Input
+              <Form.Input
                 type='text'
                 id='cardholderName'
                 name='cardholderName'
                 data-checkout='cardholderName'
-                placeholder='Ej. Daniela Lopez'
+                placeholder='Daniela Lopez'
                 value={payment.cardholderName}
                 onChange={onChangeHandler}
               />
@@ -533,12 +536,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           align-items: flex-end;
         `}
       >
-        <Form.Button
+        <Elements.Button
           type='submit'
           disabled={submitting && true}
         >
           {(submitting) ? <Loader mode='light' /> : (appData && appData.content && appData.content.form.checkout.button_text)}
-        </Form.Button>
+        </Elements.Button>
       </Form.Nav>
     </Form.Main>
   ), [

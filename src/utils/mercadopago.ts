@@ -105,6 +105,6 @@ export const getCardType = (paymentMethodId = ''): number => {
     case 'diners':
       return 10;
     default:
-      return 0;
+      return 1;
   };
 } 

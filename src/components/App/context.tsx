@@ -1,9 +1,11 @@
-import React, { createContext, lazy, Suspense, useEffect, useMemo, useReducer, useState } from "react";
+import React, { createContext, useEffect, useMemo, useReducer, useState } from "react";
 import useQuery from "../../hooks/useQuery";
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../theme/globalStyle';
 import ErrorBoundary from '../ErrorBoundary';
+import Elements from '@bit/meema.ui-components.elements';
 import { getCoupon } from "../../services/greenlab";
+import { getDesignVersion } from "../../utils";
 import { initialState, reducer } from './reducer';
 import { initialize as initializeTagManager, pushToDataLayer } from '../../utils/googleTagManager';
 import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
@@ -11,13 +13,10 @@ import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as inititalizeAnalytics } from '../../utils/googleAnalytics';
 import { initialize as initializeHotjar } from '../../utils/hotjar';
 import { initialize as initializeHubspot } from '../../utils/hubspot';
+import { Loader } from "../Shared";
 
-// TODO: Investigate how to load dinamically
 import ThemeV1 from '../../theme/v1/Theme';
 import ThemeV2 from '../../theme/v2/Theme';
-// import Theme from `../../theme/v${window.localStorage.greenlab_app_design_version}/Theme`;
-
-// const Theme = lazy(() => import(`../../theme/v${window.localStorage.greenlab_app_design_version}/Theme`));
 
 interface IContext {
   urlSearchParams: URLSearchParams;
@@ -27,7 +26,7 @@ interface IContext {
 }
 
 interface IProps {
-  children: React.ReactNode | HTMLAllCollection;
+  children?: React.ReactNode | HTMLAllCollection | any;
 }
 
 const Context = createContext({} as IContext);
@@ -39,14 +38,24 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const [ isOpen, setIsOpen ] = useState<boolean>(false);
   const { urlSearchParams } = useQuery();
   const [ appName, setAppName ] = useState<string | null>(null);
+  const [ designVersion, setDesignVersion ] = useState<number | null>(null);
+  const [ router, setRouter ] = useState<any>(<Loader />);
 
   useEffect(() => {
+    window.sessionStorage.removeItem('greenlab_app_name');
+    window.sessionStorage.removeItem('greenlab_app_design_version');
     if(appName !== null) {
       (async () => {
         const payload = await getCoupon(appName) as any;
         if(payload) {
           window.sessionStorage.setItem('greenlab_app_name', payload.name);
-          window.sessionStorage.setItem('greenlab_app_design_version', payload.features.use_design_version ? payload.features.use_design_version : 1);
+          
+          if(payload.features.use_design_version) {
+            setDesignVersion(payload.features.use_design_version);
+          } else {
+            setDesignVersion(1);
+          }
+          
           dispatch({
             type: 'SET_APP_DATA',
             payload,
@@ -78,16 +87,24 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   }, [ appData ]);
 
   useEffect(() => {
+    if(designVersion !== null) {
+      window.sessionStorage.setItem('greenlab_app_design_version', `${designVersion}`);
+      (async () => {
+        const Router = (await import ('./lazyRouter')).default; 
+        setRouter(Router);
+      })();
+    }
+  }, [ designVersion ]);
+
+  useEffect(() => {
+    setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'general');
+
     if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
       process.env.REACT_APP_ENVIRONMENT === 'production') {
       trackEvent('PageView');
       pushToDataLayer('pageview');
     }
   }, []);
-
-  useEffect(() => {
-    setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'general')
-  }, [ ])
 
   return useMemo(() => (
     <Provider value={{
@@ -96,12 +113,19 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
       isOpen,
       setIsOpen,
     }}>
-      <ThemeProvider theme={(appData && appData.features && appData.features.use_design_version === 2) ? ThemeV2 : ThemeV1}>
-        <GlobalStyle />
-        <ErrorBoundary>
-          { children }
-        </ErrorBoundary>
-      </ThemeProvider>
+      {!appData && !designVersion
+        ? (
+          <Elements.Wrapper>
+            <Loader />
+          </Elements.Wrapper>
+        ) : (
+          <ThemeProvider theme={(getDesignVersion(designVersion as number) === "2") ? ThemeV2 : ThemeV1}>
+            <GlobalStyle />
+            <ErrorBoundary>
+              <>{router}</>
+            </ErrorBoundary>
+          </ThemeProvider>
+        )}
     </Provider>
   ), [
     appData,

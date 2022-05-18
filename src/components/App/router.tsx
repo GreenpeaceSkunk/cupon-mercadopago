@@ -2,17 +2,15 @@ import React, { Suspense, lazy, memo, useMemo, useEffect } from 'react';
 import { generatePath, useNavigate, useLocation } from 'react-router';
 import { Routes, Route } from "react-router-dom";
 import { Loader } from '../Shared';
-import { AppProvider } from './context';
 import useQuery from '../../hooks/useQuery';
 import { getDesignVersion } from '../../utils';
 
-// const Forms = React.lazy(() => import('../Forms'));
-const Forms = lazy(() => import(`../v${getDesignVersion()}/Forms`));
-const RegistrationForm = lazy(() => import(`../v${getDesignVersion()}/Forms/RegistrationForm`));
-const CheckoutForm = lazy(() => import(`../v${getDesignVersion()}/Forms/CheckoutForm`));
-const ThankYou = lazy(() => import(`../v${getDesignVersion()}/ThankYou`));
-
+const DESIGN_VERSION = getDesignVersion();
 const App = lazy(() => import('.'));
+const Forms = lazy(() => import(`../v${DESIGN_VERSION}/Forms`));
+const RegistrationForm = lazy(() => import(`../v${DESIGN_VERSION}/Forms/RegistrationForm`));
+const CheckoutForm = lazy(() => import(`../v${DESIGN_VERSION}/Forms/CheckoutForm`));
+const ThankYou = lazy(() => import(`../v${DESIGN_VERSION}/ThankYou`));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { pathname } = useLocation();
@@ -32,17 +30,15 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   }, []);
   
   return useMemo(() => (
-    <AppProvider>
-      <Routes>
-        <Route path=":couponType" element={<Suspense fallback={<Loader/>}><App/></Suspense>}>
-          <Route path='forms' element={<Suspense fallback={<Loader/>}><Forms/></Suspense>}>
-            <Route path='registration' element={<Suspense fallback={<Loader/>}><RegistrationForm/></Suspense>} />
-            <Route path='checkout' element={<Suspense fallback={<Loader/>}><CheckoutForm/></Suspense>} />
-            <Route path='thankyou' element={<Suspense fallback={<Loader/>}><ThankYou/></Suspense>} />
-          </Route>
+    <Routes>
+      <Route path=":couponType" element={<Suspense fallback={<Loader/>}><App/></Suspense>}>
+        <Route path='forms' element={<Suspense fallback={<Loader/>}><Forms/></Suspense>}>
+          <Route path='registration' element={<Suspense fallback={<Loader/>}><RegistrationForm/></Suspense>} />
+          <Route path='checkout' element={<Suspense fallback={<Loader/>}><CheckoutForm/></Suspense>} />
+          <Route path='thankyou' element={<Suspense fallback={<Loader/>}><ThankYou/></Suspense>} />
         </Route>
-      </Routes>
-    </AppProvider>
+      </Route>
+    </Routes>
   ), []);
 });
 

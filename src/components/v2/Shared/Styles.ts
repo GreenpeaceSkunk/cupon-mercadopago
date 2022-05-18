@@ -9,9 +9,7 @@ export const customStyles = css<IElement>`
 export const inputStyles = css<IElement>`
   font-family: ${({theme}) => theme.font.family.primary.medium};
   box-sizing: border-box;
-  line-height: 100%;
   width: 100%;
-  min-height: ${pixelToRem(48)};
   margin: 0;
   border: ${pixelToRem(1)} solid black;
   font-size: ${pixelToRem(16)};

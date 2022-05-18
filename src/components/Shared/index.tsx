@@ -53,11 +53,16 @@ export const Loader:React.FunctionComponent<{ mode?: 'light' | 'default' }> = ({
       justify-content: center;
       height: 100%;
       width: 100%;
+      padding: ${pixelToRem(30)};
     `}
   >
     <ThreeCircles 
       circleCss={css`
-        background-color: ${(mode === 'light') ? 'white' : (({ theme }) => theme.color.primary.normal)};
+        background-color: #6ACA25;
+
+        ${({theme}) => theme && theme.color && css`
+          background-color: ${(mode === 'light') ? 'white' : (({ theme }) => theme.color.primary.normal)};
+        `}
       `}
     />
   </Elements.Wrapper>
@@ -66,9 +71,7 @@ export const Loader:React.FunctionComponent<{ mode?: 'light' | 'default' }> = ({
 const defaults = {
   Loader,
   Logo,
-  // Form: (window.localStorage.greenlab_app_design_version === "2") ? FormV2 : FormV1,
   General,
-  // Elements,
 };
 
 export default defaults;

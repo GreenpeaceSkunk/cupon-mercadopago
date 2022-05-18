@@ -42,9 +42,9 @@ export const getAppName = (pathname: string) => {
   return paths.length ? paths[0].replaceAll('/', '') : 'default';
 } 
 
-export const getDesignVersion = () => {
-  // return (window.sessionStorage.greenlab_app_design_version !== "undefined")
-  //   ? window.sessionStorage.greenlab_app_design_version
-  //   : 2;
-  return 2;
+export const getDesignVersion = (version?: number) => {
+  const designVersion = (`${window.sessionStorage.greenlab_app_design_version}` !== "undefined")
+  ? window.sessionStorage.greenlab_app_design_version
+  : 1;
+  return `${designVersion}`;
 };

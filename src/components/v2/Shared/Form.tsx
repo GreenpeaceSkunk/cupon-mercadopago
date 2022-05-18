@@ -479,10 +479,8 @@ export const Select = styled(Elements.Select)`
   background: url(${Icons.SelectArrowIcon}) no-repeat right ${pixelToRem(14)} top 50% white;
   cursor: pointer;
   width: 100%;
-  height: 100%;
   font-size: ${pixelToRem(16)};
-  line-height: ${pixelToRem(18)};
-  padding: ${pixelToRem(15)} ${pixelToRem(16)} ${pixelToRem(15)};
+  padding: ${pixelToRem(15)} ${pixelToRem(16)};
   color: ${({theme}) => theme.color.secondary.dark};
   font-family: ${({theme}) => theme.font.family.primary.medium};
   font-weight: 600;

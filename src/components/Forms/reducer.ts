@@ -35,7 +35,7 @@ export const initialState: ContextStateType = {
       phoneNumber: '',
       areaCode: '',
       ...(autofill ? {
-        // firstName: 'Doe',
+        firstName: 'Doe',
         lastName: 'Deer',
         birthDate: '20/03/1985',
         email: 'doe.deer@email.com',

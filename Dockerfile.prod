@@ -46,8 +46,8 @@
 # Name the node stage "builder"
 FROM node:16 AS builder
 # Set working directory
-# WORKDIR /app
-WORKDIR /app/build
+WORKDIR /app
+# WORKDIR /app/build
 # Copy all files from current directory to working dir in image
 
 # If you want to install the project

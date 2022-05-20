@@ -1,88 +1,27 @@
-# FROM node:16 as app
-
-# WORKDIR /usr/app
-
-# COPY . .
-# # ENV PATH /usr/app/node_modules/.bin:$PATH
-
-# # COPY package*.json .
-# # COPY .npmrc .
-# # RUN cp .env.production.sample .env.production
-
-# RUN npm install react-scripts -g
-# RUN npm install --legacy-peer-deps
-# RUN npm run types
-# RUN npm run client:build:production
-
-# FROM nginx:alpine
-# COPY --from=app /usr/app/build /usr/share/nginx/html
-# RUN rm /etc/nginx/conf.d/default.conf
-# COPY nginx.conf /etc/nginx/conf.d
-# EXPOSE 80 
-# CMD ["nginx","-g","daemon off;"]
-
-
-# WORKDIR /usr/app/build
-# COPY . /usr/app/
-# RUN npm install -g typescript
-# RUN npm install -g react-scripts
-# RUN npm install
-# RUN npm run types
-# RUN cp /usr/app/.env.production.sample /usr/app/.env.production
-# RUN npm run client:build:production
-
-# FROM nginx:1.16.0-alpine
-# COPY --from=app /usr/app/build /usr/share/nginx/html
-# RUN rm /etc/nginx/conf.d/default.conf
-# COPY nginx.conf /etc/nginx/conf.d
-# EXPOSE 80 
-# CMD ["nginx","-g","daemon off;"]
-
-
-# Multi-stage
-# 1) Node image for building frontend assets
-# 2) nginx stage to serve frontend assets
-
 # Name the node stage "builder"
 FROM node:16 AS builder
 # Set working directory
 WORKDIR /app
-# WORKDIR /app/build
-# Copy all files from current directory to working dir in image
 
+# Copy all files from current directory to working dir in image
 # If you want to install the project
 COPY . .
 RUN npm install -g typescript
 RUN npm install -g react-scripts
 RUN npm install
 RUN npm run types
-# RUN cp .env.production.sample .
 RUN npm run client:build:production
-
-# Only if you want to add only static files
-# COPY ./build .
 
 # nginx state for serving content
 FROM nginx:alpine
 # Set working directory to nginx asset directory
 WORKDIR /usr/share/nginx/html/coupon
-# WORKDIR /usr/share/nginx/html
-# Remove default nginx static assets
-# RUN rm -rf ./*
 
 # Copy static assets from builder stage
 COPY --from=builder /app/build .
-# COPY ./build ./coupon
-# COPY --from=builder /app/build ./coupon --> it works
-
-# RUN rm /etc/nginx/conf.d/default.conf
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 RUN rm -rf /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-#RUN rm /etc/nginx/conf.d/default.conf
-#COPY nginx.conf /etc/nginx/conf.d
 
 EXPOSE 80
 

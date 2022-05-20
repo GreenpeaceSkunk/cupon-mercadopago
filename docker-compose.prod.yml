@@ -2,7 +2,7 @@ version: "3.8"
 services:
   coupon:
     image: greenpeace_mercadopago_coupon:production
-    container_name: greenpeace_mercadopago_coupon_production
+    container_name: greenpeace_mercadopago_coupon
     build:
       context: .
       dockerfile: Dockerfile

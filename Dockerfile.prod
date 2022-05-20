@@ -50,17 +50,17 @@ FROM node:16 AS builder
 WORKDIR /app/build
 # Copy all files from current directory to working dir in image
 
-# COPY . .
-# # install node modules and build assets
-# RUN npm install -g typescript
-# RUN npm install -g react-scripts
-# RUN npm install
-# RUN npm run types
-# RUN cp .env.production.sample .env.production
-# RUN npm run client:build:production
+# If you want to install the project
+COPY . .
+RUN npm install -g typescript
+RUN npm install -g react-scripts
+RUN npm install
+RUN npm run types
+# RUN cp .env.production.sample .
+RUN npm run client:build:production
 
-COPY ./build .
-
+# Only if you want to add only static files
+# COPY ./build .
 
 # nginx state for serving content
 FROM nginx:alpine

@@ -53,8 +53,7 @@ const Component: React.FunctionComponent<{}> = () => {
           align-items: center;
         `}
       >
-        <SocialMediaNav text={appData && appData.content && appData.content.thankyou.social_media_text}/>
-        
+        <SocialMediaNav text={appData && appData.content && appData.content.social_media.text}/>
         {/* {appData && appData.settings && appData.settings.tracking && appData.settings.tracking.hotjar &&
           <Wrapper
             customCss={css`
@@ -69,7 +68,6 @@ const Component: React.FunctionComponent<{}> = () => {
             </a>
           </Wrapper>
         } */}
-
       </Wrapper>
       <Wrapper
         customCss={css`

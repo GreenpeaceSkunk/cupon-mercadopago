@@ -40,7 +40,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
                 font-size: ${pixelToRem(36)};
               }
-            `}>{appData && appData.content && appData.content.thankyou.title}</Elements.H1>
+            `}>{appData && appData.content && appData.content.thank_you.title}</Elements.H1>
         </Elements.HGroup>
 
         <Elements.Img src={ThankYouPicture} alt="Gracias!"></Elements.Img>
@@ -53,7 +53,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             }
           `}
         >
-          {appData && appData.content && appData.content.thankyou.text && (
+          {appData && appData.content && appData.content.thank_you.text && (
             <Elements.P
               customCss={css`
                 text-align: center;
@@ -63,16 +63,16 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 margin-bottom: ${pixelToRem(36)};
                 border-radius: ${pixelToRem(8)};
               `}
-            >{appData.content.thankyou.text}</Elements.P>
+            >{appData.content.thank_you.text}</Elements.P>
           )}
 
-        {appData && appData.content && appData.content.thankyou.social_media_text && (
+        {appData && appData.content && appData.content.thank_you.social_media_text && (
           <Elements.H3
             customCss={css`
               text-align: center;
               color: ${({theme}) => theme.text.color.primary.normal};
             `}
-          >{appData.content.thankyou.social_media_text}</Elements.H3>
+          >{appData.content.thank_you.social_media_text}</Elements.H3>
         )} 
         </Elements.Wrapper>
         </Elements.Wrapper>
@@ -94,7 +94,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         </Suspense>
       </Elements.Wrapper>
       
-      {appData && appData.content && appData.content.thankyou.button_cta && (
+      {appData && appData.content && appData.content.thank_you.button_cta && (
         <Elements.Nav
           customCss={css`
             display: flex;
@@ -106,11 +106,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             margin-top: ${pixelToRem(90)};
           `}
         >
-          {appData.content.thankyou.button_cta.is_external ? (
+          {appData.content.thank_you.button_cta.is_external ? (
             <Elements.A
               href={
-                appData.content.thankyou.button_cta.link && appData.content.thankyou.button_cta.link !== '/'
-                ? `${appData.content.thankyou.button_cta.link}`
+                appData.content.thank_you.button_cta.link && appData.content.thank_you.button_cta.link !== '/'
+                ? `${appData.content.thank_you.button_cta.link}`
                 : `https://greenpeace.org.ar/argentina`}
                 target='_blank'
                 customCss={css`
@@ -119,7 +119,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   font-weight: 700;
                 `}
               >
-              {appData.content.thankyou.button_cta.text}
+              {appData.content.thank_you.button_cta.text}
             </Elements.A>
           ) : (
             <NavLink
@@ -129,7 +129,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 text-decoration: underline;
                 font-weight: 700;
               `}
-            >{appData.content.thankyou.button_cta.text}</NavLink>
+            >{appData.content.thank_you.button_cta.text}</NavLink>
           )}
         </Elements.Nav>
       )}

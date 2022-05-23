@@ -107,7 +107,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       const timer = setTimeout(() => {
         dispatchFormErrors({ type: 'SUBMITTED' });
         navigate({
-          pathname: generatePath(`/:couponType/forms/thankyou`, {
+          pathname: generatePath(`/:couponType/forms/thank-you`, {
             couponType: params.couponType,
           }),
           search: `${searchParams}`,

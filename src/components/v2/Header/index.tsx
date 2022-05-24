@@ -22,13 +22,13 @@ const MainHeader: FunctionComponent<{
         width: 100%;
         min-height: ${({theme}) => pixelToRem(theme.header.mobile.height)};
         background-color: ${({theme}) => theme.header.mobile.backgroundColor};
-        background-position: center center;
+        background-position: center bottom;
         background-repeat: no-repeat;
         transition: all 250ms ease;
-        background-size: cover;
+        background-size: contain;
         
         @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-          background-size: contain;
+          background-position: center center;
           min-height: ${({theme}) => pixelToRem(theme.header.tablet.height)};
           background-color: ${({theme}) => theme.header.tablet.backgroundColor};
         }

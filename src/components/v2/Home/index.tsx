@@ -12,7 +12,7 @@ const Footer = lazy(() => import('../../Footer'));
 const ModalOpenForm = lazy(() => import('../ModalOpenForm'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
-  const viewRef = useRef<HTMLElement>(null);
+  const viewRef = useRef<HTMLDivElement>(null);
   const { appData, setIsOpen } = useContext(AppContext);
   const location = useLocation();
 
@@ -25,7 +25,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   return useMemo(() => (
     <>
       <Elements.View
-        ref={viewRef}
         customCss={css`
           background: ${({theme}) => theme.color.secondary.light};
           width: 100%;
@@ -38,6 +37,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Suspense>
         </ErrorBoundary>
         <Elements.Wrapper
+          ref={viewRef}
           customCss={css`
             padding: ${pixelToRem(36)} ${pixelToRem(24)};
             

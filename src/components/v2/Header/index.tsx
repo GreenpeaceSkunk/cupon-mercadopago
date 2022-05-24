@@ -22,16 +22,13 @@ const MainHeader: FunctionComponent<{
         width: 100%;
         min-height: ${({theme}) => pixelToRem(theme.header.mobile.height)};
         background-color: ${({theme}) => theme.header.mobile.backgroundColor};
-        background-position: bottom center;
+        background-position: center center;
         background-repeat: no-repeat;
-        background-size: contain;
         transition: all 250ms ease;
-
-        ${appData && css`
-          background-image: url(${process.env.REACT_APP_GREENLAB_API_IMAGES}/${appData && appData.content && appData.content.header.picture});
-        `}
-  
+        background-size: cover;
+        
         @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+          background-size: contain;
           min-height: ${({theme}) => pixelToRem(theme.header.tablet.height)};
           background-color: ${({theme}) => theme.header.tablet.backgroundColor};
         }
@@ -40,10 +37,17 @@ const MainHeader: FunctionComponent<{
           min-height: ${({theme}) => pixelToRem(theme.header.desktop.height)};
           background-color: ${({theme}) => theme.header.desktop.backgroundColor};
         }
-  
+        
+        ${appData && css`
+          background-image: url(${process.env.REACT_APP_GREENLAB_API_IMAGES}/${appData && appData.content && appData.content.header.picture});
+          background-color: ${appData.content && appData.content.header && appData.content.header.background_color && appData.content.header.background_color} !important;
+        `}
+
         ${customCss && customCss};
       `}
     >
+
+    {appData && appData.content && appData.content.header.logo && appData.content.header.logo.show && (
       <Elements.Wrapper
         customCss={css`
           position: absolute;
@@ -65,10 +69,15 @@ const MainHeader: FunctionComponent<{
               mask-image: url(${GreenpeaceLogo});
               mask-size: 100%;
               mask-repeat: no-repeat;
+              
+              ${appData.content.header.logo.color && css`
+                background-color: ${appData.content.header.logo.color} !important;
+              `} 
             `}
           />
         </Elements.A>
       </Elements.Wrapper>
+    )}
     </Elements.Header>
   ), [
     customCss,

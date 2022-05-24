@@ -62,7 +62,7 @@ export const initialState: ContextStateType = {
         cardholderName: 'CALL',
         cardExpirationMonth: '11',
         cardExpirationYear: '2025',
-        // docNumber: '10234567',
+        docNumber: '10234567',
         docType: 'DNI',
       } : {})
     } as IPaymentData,

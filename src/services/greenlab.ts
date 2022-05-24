@@ -1,12 +1,20 @@
 import { ApiCall } from '../utils/apiCall';
 
+const getApiUrl = (): string => {
+  console.log(window.location);
+  
+  return (`${process.env.REACT_APP_ENVIRONMENT}` === 'development')
+    ? `${process.env.REACT_APP_GREENLAB_API_URL}`
+    : window.location.origin;
+}
+ 
 export const createContact = async (data: any) => {
   try {
     const response = await ApiCall({
       headers: {
         'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
       },
-      baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/hubspot/contact`,
+      baseURL: `${getApiUrl()}/hubspot/contact`,
       method: 'POST',
       data: {
         ...data,
@@ -25,7 +33,7 @@ export const updateContact = async (email: string, data: any) => {
       headers: {
         'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
       },
-      baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/hubspot/contact/email/${email}`,
+      baseURL: `${getApiUrl()}/hubspot/contact/email/${email}`,
       method: 'POST',
       data,
     });
@@ -36,12 +44,14 @@ export const updateContact = async (email: string, data: any) => {
 }
 
 export const getCoupon = async (appName = '') => {
+  console.log('getCoupon', getApiUrl());
+  
   try {
     const response = await ApiCall({
       headers: {
         'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
       },
-      baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/application/coupon/${appName}?env=${process.env.REACT_APP_ENVIRONMENT}`,
+      baseURL: `${getApiUrl()}/application/coupon/${appName}?env=${process.env.REACT_APP_ENVIRONMENT}`,
       method: 'GET',
     });
     return response;
@@ -56,7 +66,7 @@ export const postRecord = async (data: any) => {
       headers: {
         'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
       },
-      baseURL: `${process.env.REACT_APP_GREENLAB_API_URL}/forma/form/${data.form_id}/record`,
+      baseURL: `${getApiUrl()}/forma/form/${data.form_id}/record`,
       method: 'POST',
       data,
     });

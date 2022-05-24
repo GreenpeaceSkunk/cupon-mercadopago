@@ -87,19 +87,37 @@ export const WrapperHtml = styled(Elements.Wrapper)`
   color: ${({theme}) => theme.text.color.primary.normal};
   font-family: ${({theme}) => theme.font.family.primary.regular};
   
-  p {
-    margin-top: ${pixelToRem(12)};
-    margin-bottom: ${pixelToRem(12)};
+  * {
     font-size: ${pixelToRem(16)};
-    line-height: 1.2;
-    
+    line-height: 1.4;
+
     @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
       font-size: ${pixelToRem(18)};
     }
   }
 
+  p {
+    margin-top: ${pixelToRem(20)};
+    
+    &:not(:last-child) {
+      margin-bottom: ${pixelToRem(20)};
+    }
+  }
+
   strong {
     font-family: ${({theme}) => theme.font.family.primary.bold};
+  }
+
+  ul {
+    list-style-type: circle !important;
+  }
+  
+  li {
+    margin-left: ${pixelToRem(20)};
+
+    &:not(last-child) {
+      margin-bottom: ${pixelToRem(10)};
+    }
   }
 
   ${customStyles};

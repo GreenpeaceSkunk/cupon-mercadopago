@@ -4,6 +4,7 @@ import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { css } from 'styled-components';
 import { AppContext } from '../../App/context';
 import GreenpeaceLogo from '../../../images/greenpeace-logo.svg';
+import { getApiImagesUrl } from '../../../services/greenlab';
 
 const MainHeader: FunctionComponent<{
   customCss?: CustomCSSType;
@@ -39,7 +40,7 @@ const MainHeader: FunctionComponent<{
         }
         
         ${appData && css`
-          background-image: url(${process.env.REACT_APP_GREENLAB_API_IMAGES}/${appData && appData.content && appData.content.header.picture});
+          background-image: url(${getApiImagesUrl()}/${appData && appData.content && appData.content.header.picture});
           background-color: ${appData.content && appData.content.header && appData.content.header.background_color && appData.content.header.background_color} !important;
         `}
 

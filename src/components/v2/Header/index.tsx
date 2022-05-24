@@ -26,9 +26,10 @@ const MainHeader: FunctionComponent<{
         background-position: center bottom;
         background-repeat: no-repeat;
         transition: all 250ms ease;
-        background-size: contain;
+        background-size: cover;
         
         @media (min-width: ${({theme}) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+          background-size: contain;
           background-position: center center;
           min-height: ${({theme}) => pixelToRem(theme.header.tablet.height)};
           background-color: ${({theme}) => theme.header.tablet.backgroundColor};

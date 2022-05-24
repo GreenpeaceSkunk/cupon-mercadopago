@@ -106,31 +106,21 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             margin-top: ${pixelToRem(90)};
           `}
         >
-          {appData.content.thank_you.button_cta.is_external ? (
-            <Elements.A
-              href={
-                appData.content.thank_you.button_cta.link && appData.content.thank_you.button_cta.link !== '/'
+          <Elements.A
+            href={
+              appData.content.thank_you.button_cta.link
                 ? `${appData.content.thank_you.button_cta.link}`
-                : `https://greenpeace.org.ar/argentina`}
-                target='_blank'
-                customCss={css`
-                  color: ${({theme}) => theme.text.color.secondary.normal};
-                  text-decoration: underline;
-                  font-weight: 700;
-                `}
-              >
-              {appData.content.thank_you.button_cta.text}
-            </Elements.A>
-          ) : (
-            <NavLink
-              to={process.env.PUBLIC_URL}
+                : `https://www.greenpeace.org.ar/argentina`
+              }
+              target='_blank'
               customCss={css`
                 color: ${({theme}) => theme.text.color.secondary.normal};
                 text-decoration: underline;
                 font-weight: 700;
               `}
-            >{appData.content.thank_you.button_cta.text}</NavLink>
-          )}
+            >
+            {appData.content.thank_you.button_cta.text}
+          </Elements.A>
         </Elements.Nav>
       )}
     </Elements.View>

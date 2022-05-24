@@ -48,7 +48,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           customCss={css`
             text-align: center;
           `}
-        >Estaremos procesando tu donación y ante cualquier novedad nos comunicaremos con vos.</Elements.P>
+        >{appData && appData.content && appData.content.thank_you.text}</Elements.P>
       </Elements.Wrapper>
       <Elements.Wrapper
         customCss={css`

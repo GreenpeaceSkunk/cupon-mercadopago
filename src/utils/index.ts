@@ -48,3 +48,16 @@ export const getDesignVersion = (version?: number) => {
   : 1;
   return `${designVersion}`;
 };
+
+/**
+ * Take the coupon name as a parameter.
+ * If not coupon has been set, then return the base url.
+ * @returns string
+ */
+export const getCouponUrl = ():string => {
+  if(/app=/.test(document.location.search)) {
+    return `${document.location.origin}${document.location.pathname}?${document.location.search.slice(document.location.search.indexOf("app=")).split("&")[0]}`;
+  }
+
+  return `${document.location.origin}${document.location.pathname}`;
+}

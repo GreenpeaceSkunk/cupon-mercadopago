@@ -1,4 +1,5 @@
 import { ApiCall } from '../utils/apiCall';
+import { getCouponUrl } from '../utils';
 
 export const getApiUrl = (): string => {
   return (`${process.env.REACT_APP_ENVIRONMENT}` === 'development')
@@ -23,6 +24,7 @@ export const createContact = async (data: any) => {
       data: {
         ...data,
         origin: document.location.href,
+        couponUrl: getCouponUrl(),
       },
     });
     return response;

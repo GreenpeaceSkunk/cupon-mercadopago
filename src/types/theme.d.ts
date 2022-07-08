@@ -31,6 +31,11 @@ type FontFamilyType = {
   thinItalic?: string;
 };
 
+type ResponsiveScreenType = {
+  minWidth?: number;
+  maxWidth?: number;
+};
+
 export interface ITheme {
   color: {
     primary: ColorType;
@@ -107,6 +112,14 @@ export interface ITheme {
     };
   };
   responsive: {
+    screen?: {
+      extraSmall: ResponsiveScreenType,
+      small: ResponsiveScreenType,
+      medium: ResponsiveScreenType,
+      large: ResponsiveScreenType,
+      extraLarge: ResponsiveScreenType,
+      extraExtraLarge: ResponsiveScreenType,
+    },
     mobile: {
       minWidth?: number;
       maxWidth?: number;

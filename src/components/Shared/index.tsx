@@ -48,7 +48,6 @@ export const Loader:React.FunctionComponent<{ mode?: 'light' | 'default' }> = ({
       justify-content: center;
       height: 100%;
       width: 100%;
-      padding: ${pixelToRem(30)};
     `}
   >
     <ThreeCircles 

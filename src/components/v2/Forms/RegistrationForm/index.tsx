@@ -45,7 +45,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     evt.preventDefault();
     
     dispatch({
-      type: 'UPDATE_USER_DATA',
+      type: 'UPDATE_FIELD',
       payload: { [ evt.currentTarget.name ]: evt.currentTarget.value }
     });
   }, [

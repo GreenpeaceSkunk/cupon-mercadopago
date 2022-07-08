@@ -54,7 +54,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     const name = evt.currentTarget.name;
     let value = evt.currentTarget.value;
 
-    if(name === 'birthDate') {
+    if(name === 'birthDate' && birthDate) {
       value = addOrRemoveSlashToDate((value.length < birthDate.length && birthDate.charAt(birthDate.length - 1) === '/') ? birthDate : value);
     }
 
@@ -65,7 +65,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       });
     } else {
       dispatch({
-        type: 'UPDATE_USER_DATA',
+        type: 'UPDATE_FIELD',
         payload: { [name]: value }
       });
     }

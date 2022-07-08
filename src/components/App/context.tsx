@@ -5,7 +5,6 @@ import { GlobalStyle } from '../../theme/globalStyle';
 import ErrorBoundary from '../ErrorBoundary';
 import Elements from '@bit/meema.ui-components.elements';
 import { getCoupon } from "../../services/greenlab";
-import { getDesignVersion } from "../../utils";
 import { initialState, reducer } from './reducer';
 import { initialize as initializeTagManager, pushToDataLayer } from '../../utils/googleTagManager';
 import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
@@ -14,9 +13,6 @@ import { initialize as inititalizeAnalytics } from '../../utils/googleAnalytics'
 import { initialize as initializeHotjar } from '../../utils/hotjar';
 import { initialize as initializeHubspot } from '../../utils/hubspot';
 import { Loader } from "../Shared";
-
-import ThemeV1 from '../../theme/v1/Theme';
-import ThemeV2 from '../../theme/v2/Theme';
 
 interface IContext {
   urlSearchParams: URLSearchParams;
@@ -36,10 +32,11 @@ const { Provider, Consumer } = Context;
 const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const [{ appData }, dispatch ] = useReducer(reducer, initialState);
   const [ isOpen, setIsOpen ] = useState<boolean>(false);
-  const { urlSearchParams } = useQuery();
   const [ appName, setAppName ] = useState<string | null>(null);
-  const [ designVersion, setDesignVersion ] = useState<number | null>(null);
+  const [ designVersion, setDesignVersion ] = useState<number>();
+  const [ theme, setTheme ] = useState<any>();
   const [ router, setRouter ] = useState<any>(<Loader />);
+  const { urlSearchParams } = useQuery();
 
   useEffect(() => {
     window.sessionStorage.removeItem('greenlab_app_name');
@@ -49,13 +46,6 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
         const payload = await getCoupon(appName) as any;
         if(payload) {
           window.sessionStorage.setItem('greenlab_app_name', payload.name);
-          
-          if(payload.features.use_design_version) {
-            setDesignVersion(payload.features.use_design_version);
-          } else {
-            setDesignVersion(1);
-          }
-          
           dispatch({
             type: 'SET_APP_DATA',
             payload,
@@ -66,32 +56,42 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   }, [ appName ]);
 
   useEffect(() => {
-    if(appData && appData.settings) {
-      document.title = appData.settings.title 
-        ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
-        : 'Greenpeace Argentina';
+    if(appData) {
+      if(appData.features) {
+        if(appData.features.use_design_version) {
+          setDesignVersion(appData.features.use_design_version);
+        } else {
+          setDesignVersion(1);
+        }
+      }
 
-      initializeHubspot(appData.settings.tracking.hubspot.id);
-      initializeMercadopago();
-      
-      switch (process.env.REACT_APP_ENVIRONMENT) {
-        case 'test':
-        case 'production':
-          initializeTagManager(appData.settings.tracking.google.tag_manager.id);
-          inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
-          initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
-          initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
-          break;
+      if(appData.settings) {
+        document.title = appData.settings.title 
+          ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
+          : 'Greenpeace Argentina';
+  
+        initializeHubspot(appData.settings.tracking.hubspot.id);
+        initializeMercadopago();
+        
+        switch (process.env.REACT_APP_ENVIRONMENT) {
+          case 'test':
+          case 'production':
+            initializeTagManager(appData.settings.tracking.google.tag_manager.id);
+            inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
+            initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
+            initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
+            break;
+        }
       }
     }
   }, [ appData ]);
 
   useEffect(() => {
-    if(designVersion !== null) {
+    if(designVersion) {
       window.sessionStorage.setItem('greenlab_app_design_version', `${designVersion}`);
       (async () => {
-        const Router = (await import ('./lazyRouter')).default; 
-        setRouter(Router);
+        setTheme((await import (`../../theme/v${designVersion}/Theme`)).default);
+        setRouter((await import ('./lazyRouter')).default);
       })();
     }
   }, [ designVersion ]);
@@ -113,24 +113,27 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
       isOpen,
       setIsOpen,
     }}>
-      {!appData && !designVersion
+      {(!appData || !designVersion || !theme)
         ? (
           <Elements.Wrapper>
             <Loader />
           </Elements.Wrapper>
-        ) : (
-          <ThemeProvider theme={(getDesignVersion(designVersion as number) === "2") ? ThemeV2 : ThemeV1}>
+        ) : <>
+          <ThemeProvider theme={theme}>
             <GlobalStyle />
             <ErrorBoundary>
               <>{router}</>
             </ErrorBoundary>
           </ThemeProvider>
-        )}
+
+        </>}
     </Provider>
   ), [
     appData,
     urlSearchParams,
     isOpen,
+    theme,
+    designVersion,
     children,
   ]);
 };
@@ -140,3 +143,4 @@ export {
   Consumer as AppConsumer,
   Context as AppContext,
 }
+

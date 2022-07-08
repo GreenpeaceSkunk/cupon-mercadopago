@@ -50,8 +50,6 @@ export const updateContact = async (email: string, data: any) => {
 }
 
 export const getCoupon = async (appName = '') => {
-  console.log('getCoupon', getApiUrl());
-  
   try {
     const response = await ApiCall({
       headers: {

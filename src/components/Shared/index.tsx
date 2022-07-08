@@ -1,12 +1,7 @@
-import Images from '../../images';
 import Elements from '../Shared/Elements';
 import ThreeCircles from '@bit/meema.ui-components.loaders.three-circles';
 import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { css } from 'styled-components';
-import FormV1 from '../v1/Shared/Form';
-import FormV2 from '../v2/Shared/Form';
-// import Form from './Form';
-// import Form from `../../v${window.localStorage.greenlab_app_design_version}/Shared/Form`;
 import General from './General';
 import GreenpeaceLogo from '../../images/greenpeace-logo.svg';
 

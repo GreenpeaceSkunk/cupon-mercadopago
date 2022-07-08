@@ -65,17 +65,31 @@ export type ServiceParams = {
 export interface IUserData {
   firstName: string;
   lastName: string;
-  birthDate: string;
   email: string;
   areaCode: string;
   phoneNumber: string;
-  birthDate: string;
-  genre: '' | 'female' | 'male' | 'non-binary';
+  docNumber: string;
+  docType: string;
+  constituentId?: string;
+  citizenId?: string;
+  birthDate?: string;
+  referredFirstName?: string;
+  referredLastName?: string;
+  referredEmail?: string;
+  referredAreaCode?: string;
+  referredPhoneNumber?: string;
+  referredDocNumber?: string;
+  referredDocType?: string;
+}
+
+export interface IHubspotUserData {
+  email: string;
 }
 
 export interface IPaymentData {
   cardNumber: string;
   cardholderName: string;
+  cardType?: string;
   securityCode: string;
   cardExpirationMonth: string;
   cardExpirationYear: string;

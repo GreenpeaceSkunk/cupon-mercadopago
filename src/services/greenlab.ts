@@ -64,6 +64,21 @@ export const getCoupon = async (appName = '') => {
   }
 }
 
+export const getUserByEmail = async (email: string) => {
+  try {
+    const response = await ApiCall({
+      headers: {
+        'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
+      },
+      baseURL: `${getApiUrl()}/hubspot/contact/email/${email}`,
+      method: 'GET',
+    });
+    return response;
+  } catch(error: any) {
+    console.log(error);
+  }
+}
+
 export const postRecord = async (data: any) => {
   try {
     const response = await ApiCall({

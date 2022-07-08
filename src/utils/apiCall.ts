@@ -20,8 +20,7 @@ const ApiCall = async <A>(config: AxiosRequestConfig) => {
     const { response } = error as AxiosError;
     let errorMessage, errorCode;
     
-    if(response?.data && response?.data) {
-      console.log(response?.data?.code)
+    if(response?.data) {
       errorCode = response?.data?.code;
       errorMessage = response?.data?.message;
     } else {

@@ -9,6 +9,7 @@
     "@bit/meema.ui-components.carousel": "0.0.64",
     "@bit/meema.ui-components.elements": "0.0.49",
     "@bit/meema.ui-components.loaders.three-circles": "0.0.2",
+    "@dan.tovbein/meema-styled-elements": "^1.0.32",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",

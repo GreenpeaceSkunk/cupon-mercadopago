@@ -1,9 +1,9 @@
-import { SharedState, SharedActions, GenericReducerFn, IData, IUserData, IPaymentData, } from 'greenpeace';
+import { SharedState, SharedActions, GenericReducerFn, IData, IUserData, IPaymentData } from 'greenpeace';
 
 export type FieldErrorType = { [fieldName: string]:boolean } | null;
 export type ErrorsType = { [index: string]: FieldErrorType } | null;
 
-type PayloadType = { [x: string]: string | number };
+type FieldType = { [x: string]: string | number };
 
 const autofill = process.env.REACT_APP_AUTOFILL_VALUES ? (process.env.REACT_APP_AUTOFILL_VALUES === 'true') ? true : false : false;
 
@@ -17,8 +17,9 @@ export type ContextStateType = {
 } & SharedState;
 
 export type ContextActionType = 
-| { type: 'UPDATE_USER_DATA', payload: PayloadType }
-| { type: 'UPDATE_PAYMENT_DATA', payload: PayloadType }
+| { type: 'UPDATE_USER_DATA', payload: IUserData }
+| { type: 'UPDATE_FIELD', payload: FieldType }
+| { type: 'UPDATE_PAYMENT_DATA', payload: FieldType }
 | { type: 'SET_ERROR', error: string | null }
 | { type: 'UPDATE_FORM_STATUS' }
 | { type: 'RESET' }
@@ -34,6 +35,17 @@ export const initialState: ContextStateType = {
       genre: '',
       phoneNumber: '',
       areaCode: '',
+      docNumber: '',
+      docType: '',
+      citizenId: '',
+      constituentId: '',
+      referredAreaCode: '',
+      referredDocNumber: '',
+      referredDocType: '',
+      referredEmail: '',
+      referredFirstName: '',
+      referredLastName: '',
+      referredPhoneNumber: '',
       ...(autofill ? {
         firstName: 'Doe',
         lastName: 'Deer',
@@ -42,6 +54,17 @@ export const initialState: ContextStateType = {
         genre: '',
         phoneNumber: '44440000',
         areaCode: '11',
+        docNumber: '12345678',
+        docType: 'DNI',
+        citizenId: '',
+        constituentId: '',
+        referredAreaCode: '351',
+        referredDocNumber: '19283475',
+        referredDocType: 'DNI',
+        referredEmail: 'jhon.doe@email.com',
+        referredFirstName: 'Jhon',
+        referredLastName: 'Doe',
+        referredPhoneNumber: '98765432',
       } : {}),
     } as IUserData,
     payment: {
@@ -54,6 +77,7 @@ export const initialState: ContextStateType = {
       docType: 'DNI',
       newAmount: '',
       ...(autofill ? {
+        cardType: '3',
         cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
         // cardNumber: '371180303257522', // AMEX
@@ -77,6 +101,17 @@ export const initialState: ContextStateType = {
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
   switch (action.type) {
     case 'UPDATE_USER_DATA':
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          user: {
+            ...state.data.user,
+            ...action.payload,
+          },
+        },
+      }
+    case 'UPDATE_FIELD':
       return {
         ...state,
         data: {

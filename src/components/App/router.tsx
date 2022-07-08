@@ -39,7 +39,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         </Route>
       </Route>
     </Routes>
-  ), []);
+  ), [
+    pathname,
+    searchParams,
+    navigate,
+  ]);
 });
 
 Component.displayName = 'AppRouter';

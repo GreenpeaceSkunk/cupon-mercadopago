@@ -1,5 +1,24 @@
 import { CustomHTMLScriptElement } from 'greenpeace';
 
+export type CardType = {
+  id: number;
+  value: string;
+  description: string;
+};
+
+export const cardTypes: CardType[] = [
+  { id: 2, value: 'visa', description: 'Visa' },
+  { id: 4, value: 'debvisa', description: 'Visa débito' },
+  { id: 3, value: 'mastercard', description: 'Mastercard' },
+  { id: 5, value: 'amex', description: 'Amex' },
+  { id: 6, value: 'cabal', description: 'Cabal' },
+  { id: 6, value: 'debcabal', description: 'Cabal débito' },
+  { id: 7, value: 'cmr', description: 'CMR' },
+  { id: 7, value: 'cencosud', description: 'Cencosud' },
+  { id: 8, value: 'naranja', description: 'Naranja' },
+  { id: 10, value: 'diners', description: 'Diners' },
+];
+
 // https://www.mercadopago.com.ar/developers/es/guides/online-payments/checkout-api/handling-responses
 export const ERROR_CODES: {[key: string]: string} = {
   'E301': 'Ingresa un número de tarjeta válido.',
@@ -43,7 +62,6 @@ export const setPublishableKey = (publicKey: string) => {
 export const createToken = async (form: HTMLFormElement):Promise<{ isValid: boolean; message: string; }> => {
   return new Promise((resolve, reject) => {
     const result = async (status: any, response: any) => {
-      console.log(response);
       if (status === 200 || status === 201) {
         if(form) {
           let card = document.createElement('input');

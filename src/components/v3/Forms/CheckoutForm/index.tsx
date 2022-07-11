@@ -284,6 +284,27 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         <Form.Row>
           <Form.Column>
             <Form.Group
+              fieldName='cardNumber'
+              value={payment.cardNumber}
+              labelText='Número de la tarjeta'
+              showErrorMessage={showFieldErrors}
+              validateFn={validateCreditCard}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Form.Input
+                type='text'
+                id='cardNumber'
+                name='cardNumber'
+                placeholder='4509 9535 6623 2694'
+                data-checkout='cardNumber'
+                maxLength={16}
+                value={payment.cardNumber}
+                onChange={onChangeHandler}
+              />
+            </Form.Group>
+          </Form.Column>
+          <Form.Column>
+            <Form.Group
               fieldName='cardType'
               value={payment.cardType}
               labelText='Tipo de tarjeta'
@@ -303,27 +324,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   <option key={cardType.value} value={cardType.value}>{cardType.description}</option>
                 ))}
               </Form.Select>
-            </Form.Group>
-          </Form.Column>
-          <Form.Column>
-            <Form.Group
-              fieldName='cardNumber'
-              value={payment.cardNumber}
-              labelText='Número de la tarjeta'
-              showErrorMessage={showFieldErrors}
-              validateFn={validateCreditCard}
-              onUpdateHandler={onUpdateFieldHandler}
-            >
-              <Form.Input
-                type='text'
-                id='cardNumber'
-                name='cardNumber'
-                placeholder='4509 9535 6623 2694'
-                data-checkout='cardNumber'
-                maxLength={16}
-                value={payment.cardNumber}
-                onChange={onChangeHandler}
-              />
             </Form.Group>
           </Form.Column>
           <Form.Column>

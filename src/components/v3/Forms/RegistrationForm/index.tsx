@@ -19,7 +19,7 @@ import { pushToDataLayer } from '../../../../utils/googleTagManager';
 import { pixelToRem } from 'meema.utils';
 import useQuery from '../../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../../Snackbar';
-import { createContact, getUserByEmail } from '../../../../services/greenlab';
+import { createContact, getUserByEmail, updateContact } from '../../../../services/greenlab';
 import { AppContext } from '../../../App/context';
 import { Spacer } from '../../Shared/Widgets';
 
@@ -64,6 +64,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     setSearching(true);
     const response = await getUserByEmail(user.email) as any;
     setSearching(false);
+    
     if(!response.error) {
       dispatch({
         type: 'UPDATE_USER_DATA',
@@ -89,7 +90,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     evt.preventDefault();
 
     dispatchFormErrors({ type: 'SUBMIT' });
-
+    
     if(!allowNext) {
       setShowFieldErrors(true);
       
@@ -97,33 +98,29 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SET_ERROR',
         error: 'Tenés campos incompletos o con errores. Revisalos para continuar.',
       });
-
+      
       if(snackbarRef && snackbarRef.current) {
         snackbarRef.current.showSnackbar();
       }
     } else {
-      (async () => {
-        // const contact = await createContact({
-        //   email: user.email,
-        //   firstname: user.firstName,
-        //   lastname: user.lastName,
-        //   phone: `${user.areaCode}${user.phoneNumber}`,
-        //   donationStatus: 'requested',
-        // });
+      (async () => {        
+        // Don't need to check if the contact has been created.
+        await updateContact(user.email, {
+          firstname: user.firstName,
+          lastname: user.lastName,
+          dni__c: user.docNumber,
+        });
+        pushToDataLayer({ 'event' : 'petitionSignup' });
   
-        // if(contact) {
-          pushToDataLayer({ 'event' : 'petitionSignup' });
-  
-          if(params) {
-            navigate({
-              pathname: generatePath('/:couponType/forms/:formType', {
-                couponType: params.couponType,
-                formType: 'checkout',
-              }),
-              search: searchParams,
-            }, { replace: true });
-          }
-        // }
+        if(params) {
+          navigate({
+            pathname: generatePath('/:couponType/forms/:formType', {
+              couponType: params.couponType,
+              formType: 'checkout',
+            }),
+            search: searchParams,
+          }, { replace: true });
+        }
       })();
     }
   }, [

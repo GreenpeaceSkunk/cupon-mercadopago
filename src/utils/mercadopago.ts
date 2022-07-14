@@ -4,19 +4,20 @@ export type CardType = {
   id: number;
   value: string;
   description: string;
+  enable: boolean;
 };
 
 export const cardTypes: CardType[] = [
-  { id: 2, value: 'visa', description: 'Visa' },
-  { id: 4, value: 'debvisa', description: 'Visa débito' },
-  { id: 3, value: 'mastercard', description: 'Mastercard' },
-  { id: 5, value: 'amex', description: 'Amex' },
-  { id: 6, value: 'cabal', description: 'Cabal' },
-  { id: 6, value: 'debcabal', description: 'Cabal débito' },
-  { id: 7, value: 'cmr', description: 'CMR' },
-  { id: 7, value: 'cencosud', description: 'Cencosud' },
-  { id: 8, value: 'naranja', description: 'Naranja' },
-  { id: 10, value: 'diners', description: 'Diners' },
+  { id: 2, value: 'visa', description: 'Visa', enable: true },
+  { id: 4, value: 'debvisa', description: 'Visa débito', enable: true },
+  { id: 3, value: 'mastercard', description: 'Mastercard', enable: true },
+  { id: 5, value: 'amex', description: 'Amex', enable: true },
+  { id: 6, value: 'cabal', description: 'Cabal', enable: true },
+  { id: 6, value: 'debcabal', description: 'Cabal débito', enable: false },
+  { id: 7, value: 'cmr', description: 'CMR', enable: false },
+  { id: 7, value: 'cencosud', description: 'Cencosud', enable: false },
+  { id: 8, value: 'naranja', description: 'Naranja', enable: true },
+  { id: 10, value: 'diners', description: 'Diners', enable: false },
 ];
 
 // https://www.mercadopago.com.ar/developers/es/guides/online-payments/checkout-api/handling-responses

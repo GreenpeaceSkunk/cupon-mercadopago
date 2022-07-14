@@ -19,7 +19,7 @@ import { pushToDataLayer } from '../../../../utils/googleTagManager';
 import { pixelToRem } from 'meema.utils';
 import useQuery from '../../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../../Snackbar';
-import { createContact, getUserByEmail } from '../../../../services/greenlab';
+import { createContact, getUserByEmail, updateContact } from '../../../../services/greenlab';
 import { AppContext } from '../../../App/context';
 import { Spacer } from '../../Shared/Widgets';
 
@@ -39,7 +39,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const { searchParams } = useQuery();
   const snackbarRef = useRef<ISnackbarRef>(null);
   
-  const onChangeHandlerUser = useCallback((evt: OnChangeEvent) => {
+  const onChangeHandlerField = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
     
     dispatch({
@@ -64,6 +64,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     setSearching(true);
     const response = await getUserByEmail(user.email) as any;
     setSearching(false);
+    
     if(!response.error) {
       dispatch({
         type: 'UPDATE_USER_DATA',
@@ -89,7 +90,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     evt.preventDefault();
 
     dispatchFormErrors({ type: 'SUBMIT' });
-
+    
     if(!allowNext) {
       setShowFieldErrors(true);
       
@@ -97,33 +98,29 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         type: 'SET_ERROR',
         error: 'Tenés campos incompletos o con errores. Revisalos para continuar.',
       });
-
+      
       if(snackbarRef && snackbarRef.current) {
         snackbarRef.current.showSnackbar();
       }
     } else {
-      (async () => {
-        // const contact = await createContact({
-        //   email: user.email,
+      (async () => {        
+        // Don't need to check if the contact has been created.
+        // await updateContact(user.email, {
         //   firstname: user.firstName,
         //   lastname: user.lastName,
-        //   phone: `${user.areaCode}${user.phoneNumber}`,
-        //   donationStatus: 'requested',
+        //   dni__c: user.docNumber,
         // });
+        pushToDataLayer({ 'event' : 'petitionSignup' });
   
-        // if(contact) {
-          pushToDataLayer({ 'event' : 'petitionSignup' });
-  
-          if(params) {
-            navigate({
-              pathname: generatePath('/:couponType/forms/:formType', {
-                couponType: params.couponType,
-                formType: 'checkout',
-              }),
-              search: searchParams,
-            }, { replace: true });
-          }
-        // }
+        if(params) {
+          navigate({
+            pathname: generatePath('/:couponType/forms/:formType', {
+              couponType: params.couponType,
+              formType: 'checkout',
+            }),
+            search: searchParams,
+          }, { replace: true });
+        }
       })();
     }
   }, [
@@ -177,57 +174,56 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             <Form.ContentTitle>{appData.content.form.registration.content_text}</Form.ContentTitle>
           )}
         </Elements.Wrapper>
-        {appData!.features!.enable_search_contact && (
-          <Form.Row>
-            <Form.Column>
-              <Form.Group
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
+              value={user.email}
+              fieldName='email'
+              labelText='Correo electrónico'
+              showErrorMessage={showFieldErrors}
+              isRequired={true}
+              validateFn={validateEmail}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Form.Input
+                name='email'
+                type='email'
+                placeholder='daniela.lopez@email.com'
                 value={user.email}
-                fieldName='email'
-                labelText='Correo electrónico'
-                showErrorMessage={showFieldErrors}
-                isRequired={true}
-                validateFn={validateEmail}
-                onUpdateHandler={onUpdateFieldHandler}
-              >
-                <Form.Input
-                  name='email'
-                  type='email'
-                  placeholder='daniela.lopez@email.com'
-                  value={user.email}
-                  onChange={onChangeHandlerUser}
-                />
-              </Form.Group>
-            </Form.Column>
-            <Form.Column
+                onChange={onChangeHandlerField}
+              />
+            </Form.Group>
+          </Form.Column>
+          {appData!.features!.enable_search_contact && (
+          <Form.Column
+            customCss={css`
+              flex-direction: column !important;
+            `}
+          >
+            <Elements.P
               customCss={css`
-                flex-direction: column !important;
+                margin-bottom: ${pixelToRem(10)};
+              `}
+            >{(appData!.content!.form!.registration!.search_text)}</Elements.P>
+            <Form.Nav
+              customCss={css`
+                align-items: flex-start;
               `}
             >
-              <Elements.P
-                customCss={css`
-                  margin-bottom: ${pixelToRem(10)};
-                `}
-              >{(appData!.content!.form!.registration!.search_text)}</Elements.P>
-              <Form.Nav
-                customCss={css`
-                  align-items: flex-start;
-                `}
+              <Elements.Button
+                format='text'
+                onClick={onSearchHandler}
+                disabled={searching && true}
               >
-                <Elements.Button
-                  format='text'
-                  onClick={onSearchHandler}
-                  disabled={searching && true}
-                >
-                  {(searching)
-                    ? <Shared.Loader mode='light' />
-                    : (appData!.content!.form!.registration!.search_button_text)}
-                </Elements.Button>
-              </Form.Nav>
-              <Spacer small={20} medium={0} large={0} />
-
-            </Form.Column>
-          </Form.Row>
+                {(searching)
+                  ? <Shared.Loader mode='light' />
+                  : (appData!.content!.form!.registration!.search_button_text)}
+              </Elements.Button>
+            </Form.Nav>
+            <Spacer small={20} medium={0} large={0} />
+          </Form.Column>
         )}
+        </Form.Row>
         <Form.Row>
           <Form.Column>
             <Form.Group
@@ -244,7 +240,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 type='text'
                 placeholder='Lucas'
                 value={user.firstName}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
                 disabled={false}
               />
             </Form.Group>
@@ -264,7 +260,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 type='text'
                 placeholder='Rodriguez'
                 value={user.lastName}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
                 disabled={false}
               />
             </Form.Group>
@@ -290,7 +286,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 placeholder='11'
                 value={user.areaCode}
                 maxLength={4}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
                 disabled={false}
               />
             </Form.Group>
@@ -308,7 +304,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 type='number'
                 placeholder='41239876'
                 value={user.phoneNumber}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
                 disabled={false}
               />
             </Form.Group>
@@ -318,6 +314,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               fieldName='docType'
               value={user.docType}
               labelText='Tipo de documento'
+              isRequired={true}
               showErrorMessage={showFieldErrors}
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
@@ -327,7 +324,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 name='docType'
                 data-checkout='docType'
                 value={user.docType}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
               >
                 <option value=""></option>
                 {['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro'].map((value: string, key: number) => (
@@ -339,6 +336,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               fieldName='docNumber'
               value={user.docNumber}
               labelText='Número'
+              isRequired={true}
               showErrorMessage={showFieldErrors}
               validateFn={validateCitizenId}
               onUpdateHandler={onUpdateFieldHandler}
@@ -351,13 +349,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 data-checkout='docNumber'
                 maxLength={8}
                 value={user.docNumber}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
               />
             </Form.Group>
           </Form.Column>
         </Form.Row>
         
-        <Spacer small={40} medium={20} large={40} />
+        <Spacer small={40} medium={20} large={25} />
 
         <Elements.Wrapper>
           {appData!.content.form!.registration!.content_title_2 && (
@@ -369,6 +367,27 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           )}
         </Elements.Wrapper>
 
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
+              value={user!.referredEmail}
+              fieldName='referredEmail'
+              labelText='Correo electrónico'
+              showErrorMessage={showFieldErrors}
+              isRequired={true}
+              validateFn={validateEmail}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Form.Input
+                name='referredEmail'
+                type='email'
+                placeholder='daniela.lopez@email.com'
+                value={user!.referredEmail}
+                onChange={onChangeHandlerField}
+              />
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
         <Form.Row>
           <Form.Column>
             <Form.Group
@@ -385,7 +404,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 type='text'
                 placeholder='Lucas'
                 value={user!.referredFirstName}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
                 disabled={false}
               />
             </Form.Group>
@@ -405,32 +424,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 type='text'
                 placeholder='Rodriguez'
                 value={user!.referredLastName}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
                 disabled={false}
               />
             </Form.Group>
           </Form.Column>
         </Form.Row>
         <Form.Row>
-          <Form.Column>
-            <Form.Group
-              value={user!.referredEmail}
-              fieldName='referredEmail'
-              labelText='Correo electrónico'
-              showErrorMessage={showFieldErrors}
-              isRequired={true}
-              validateFn={validateEmail}
-              onUpdateHandler={onUpdateFieldHandler}
-            >
-              <Form.Input
-                name='referredEmail'
-                type='email'
-                placeholder='daniela.lopez@email.com'
-                value={user!.referredEmail}
-                onChange={onChangeHandlerUser}
-              />
-            </Form.Group>
-          </Form.Column>
           <Form.Column>
             <Form.Group
               fieldName='referredAreaCode'
@@ -450,7 +450,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 placeholder='11'
                 value={user!.referredAreaCode}
                 maxLength={4}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
                 disabled={false}
               />
             </Form.Group>
@@ -468,8 +468,50 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 type='number'
                 placeholder='41239876'
                 value={user!.referredPhoneNumber}
-                onChange={onChangeHandlerUser}
+                onChange={onChangeHandlerField}
                 disabled={false}
+              />
+            </Form.Group>
+          </Form.Column>
+          <Form.Column>
+            <Form.Group
+              fieldName='referredDocType'
+              value={user.referredDocType}
+              labelText='Tipo de documento'
+              showErrorMessage={showFieldErrors}
+              validateFn={validateEmptyField}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Form.Select
+                id='referredDocType'
+                name='referredDocType'
+                data-checkout='referredDocType'
+                value={user!.referredDocType}
+                onChange={onChangeHandlerField}
+              >
+                <option value=""></option>
+                {['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro'].map((value: string, key: number) => (
+                  <option key={key} value={value}>{value}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group
+              fieldName='referredDocNumber'
+              value={user!.referredDocNumber}
+              labelText='Número'
+              showErrorMessage={showFieldErrors}
+              validateFn={validateCitizenId}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Form.Input
+                type='text'
+                id='referredDocNumber'
+                name='referredDocNumber'
+                placeholder='31402931'
+                data-checkout='referredDocNumber'
+                maxLength={8}
+                value={user!.referredDocNumber}
+                onChange={onChangeHandlerField}
               />
             </Form.Group>
           </Form.Column>
@@ -505,7 +547,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     appData,
     onSearchHandler,
     onSubmitHandler,
-    onChangeHandlerUser,
+    onChangeHandlerField,
     onUpdateFieldHandler,
     dispatch,
     dispatchFormErrors,

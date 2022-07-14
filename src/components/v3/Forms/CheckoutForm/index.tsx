@@ -107,7 +107,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             utm: `utm_campaign=${ urlSearchParams.get('utm_campaign')}&utm_medium=${ urlSearchParams.get('utm_medium')}&utm_source=${ urlSearchParams.get('utm_source')}&utm_content=${ urlSearchParams.get('utm_content')}&utm_term=${ urlSearchParams.get('utm_term')}`,
             fromUrl: document.location.href,
             userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
-            campaignId: `${appData.settings.tracking.salesforce.campaign_id}`,
+            // campaignId: `${appData.settings.tracking.salesforce.campaign_id}`,
           });
         }
       }
@@ -262,6 +262,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 value={payment.newAmount}
                 labelText='Ingrese el monto'
                 showErrorMessage={showFieldErrors}
+                isRequired={true}
                 validateFn={validateNewAmount}
                 onUpdateHandler={onUpdateFieldHandler}
                 customCss={css`
@@ -284,32 +285,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         <Form.Row>
           <Form.Column>
             <Form.Group
-              fieldName='cardType'
-              value={payment.cardType}
-              labelText='Tipo de tarjeta'
-              showErrorMessage={showFieldErrors}
-              validateFn={validateEmptyField}
-              onUpdateHandler={onUpdateFieldHandler}
-            >
-              <Form.Select
-                id='cardType'
-                name='cardType'
-                data-checkout='cardType'
-                value={payment.cardType}
-                onChange={onChangeHandler}
-              >
-                <option value=""></option>
-                {cardTypes.map((cardType: CardType) => (
-                  <option key={cardType.value} value={cardType.value}>{cardType.description}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          </Form.Column>
-          <Form.Column>
-            <Form.Group
               fieldName='cardNumber'
               value={payment.cardNumber}
               labelText='Número de la tarjeta'
+              isRequired={true}
               showErrorMessage={showFieldErrors}
               validateFn={validateCreditCard}
               onUpdateHandler={onUpdateFieldHandler}
@@ -328,23 +307,26 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Column>
           <Form.Column>
             <Form.Group
-              fieldName='securityCode'
-              value={payment.securityCode}
-              labelText='Código de seguridad'
+              fieldName='cardType'
+              value={payment.cardType}
+              labelText='Tipo de tarjeta'
+              isRequired={true}
               showErrorMessage={showFieldErrors}
-              validateFn={validateCvv}
+              validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Form.Input
-                type='password'
-                id='securityCode'
-                name='securityCode'
-                placeholder='123'
-                data-checkout='securityCode'
-                maxLength={4}
-                value={payment.securityCode}
+              <Form.Select
+                id='cardType'
+                name='cardType'
+                data-checkout='cardType'
+                value={payment.cardType}
                 onChange={onChangeHandler}
-              />
+              >
+                <option value=""></option>
+                {cardTypes.map((cardType: CardType) => cardType.enable && (
+                  <option key={cardType.value} value={cardType.value}>{cardType.description}</option>
+                ))}
+              </Form.Select>
             </Form.Group>
           </Form.Column>
         </Form.Row>
@@ -354,6 +336,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               fieldName='cardExpirationMonth'
               value={payment.cardExpirationMonth}
               labelText='Mes de expiración'
+              isRequired={true}
               showErrorMessage={showFieldErrors}
               validateFn={validateMonth}
               onUpdateHandler={onUpdateFieldHandler}
@@ -375,6 +358,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               fieldName='cardExpirationYear'
               value={payment.cardExpirationYear}
               labelText='Año de expiración'
+              isRequired={true}
               showErrorMessage={showFieldErrors}
               validateFn={validateYear}
               onUpdateHandler={onUpdateFieldHandler}
@@ -398,6 +382,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               fieldName='docType'
               value={payment.docType}
               labelText='Tipo de documento'
+              isRequired={true}
               showErrorMessage={showFieldErrors}
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
@@ -419,6 +404,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               fieldName='docNumber'
               value={payment.docNumber}
               labelText='Número'
+              isRequired={true}
               showErrorMessage={showFieldErrors}
               validateFn={validateCitizenId}
               onUpdateHandler={onUpdateFieldHandler}
@@ -442,6 +428,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               value={payment.cardholderName}
               fieldName='cardholderName'
               labelText='Titular de la tarjeta'
+              isRequired={true}
               validateFn={validateCardHolderName}
               onUpdateHandler={onUpdateFieldHandler}
               showErrorMessage={showFieldErrors}

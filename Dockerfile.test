@@ -7,8 +7,8 @@ WORKDIR /app
 # If you want to install the project
 COPY . .
 RUN npm install -g typescript
-RUN npm install -g react-scripts
-RUN npm install
+RUN npm install react-scripts -g
+RUN npm install --legacy-peer-deps
 RUN npm run types
 RUN npm run client:build:test
 

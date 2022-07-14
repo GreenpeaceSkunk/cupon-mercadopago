@@ -60,7 +60,7 @@ export const initialState: ContextStateType = {
         constituentId: '',
         referredAreaCode: '351',
         referredDocNumber: '19283475',
-        referredDocType: 'DNI',
+        referredDocType: 'LC',
         referredEmail: 'jhon.doe@email.com',
         referredFirstName: 'Jhon',
         referredLastName: 'Doe',
@@ -77,7 +77,7 @@ export const initialState: ContextStateType = {
       docType: 'DNI',
       newAmount: '',
       ...(autofill ? {
-        cardType: '3',
+        cardType: 'mastercard',
         cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
         // cardNumber: '371180303257522', // AMEX

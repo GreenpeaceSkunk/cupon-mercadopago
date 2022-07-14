@@ -351,7 +351,7 @@ const Group: React.FunctionComponent<{
   const [ errorMessage, setErrorMessage ] = useState<string>('');
 
   useEffect(() => {
-    if(validateFn) {
+    if(validateFn && isRequired) {
       let validator: ValidationType;  
       if(maxLength) {
         validator = validateFn(value, maxLength);

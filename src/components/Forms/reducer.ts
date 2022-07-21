@@ -12,16 +12,20 @@ export type ContextStateType = {
     user: IUserData;
     payment: IPaymentData;
   };
-  errors: ErrorsType;
+  errors: FieldErrorType;
   isEdited: boolean;
+  allowNext: boolean;
+  submitted: boolean;
+  submitting: boolean;
 } & SharedState;
 
 export type ContextActionType = 
-| { type: 'UPDATE_USER_DATA', payload: IUserData }
 | { type: 'UPDATE_FIELD', payload: FieldType }
+| { type: 'UPDATE_FIELD_ERRORS', payload: { fieldName: string; isValid: boolean; } }
+| { type: 'UPDATE_USER_DATA', payload: FieldType }
 | { type: 'UPDATE_PAYMENT_DATA', payload: FieldType }
-| { type: 'SET_ERROR', error: string | null }
 | { type: 'UPDATE_FORM_STATUS' }
+| { type: 'SET_ERROR', error: string | null }
 | { type: 'RESET' }
 | SharedActions;
 
@@ -94,13 +98,14 @@ export const initialState: ContextStateType = {
   submitting: false,
   submitted: false,
   isEdited: false,
+  allowNext: false,
   error: null,
   errors: null,
 }
 
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
   switch (action.type) {
-    case 'UPDATE_USER_DATA':
+    case 'UPDATE_FIELD':
       return {
         ...state,
         data: {
@@ -111,7 +116,7 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
           },
         },
       }
-    case 'UPDATE_FIELD':
+    case 'UPDATE_USER_DATA':
       return {
         ...state,
         data: {
@@ -138,6 +143,33 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
           },
         },
       }
+    case 'UPDATE_FIELD_ERRORS':
+      let tmpErrors = (state.errors) ? {...state.errors} : {};
+      
+      if(action.payload.isValid) {
+        delete tmpErrors[`${action.payload.fieldName}`];
+      } else {
+        tmpErrors[`${action.payload.fieldName}`] = false;
+      }
+      
+      // Remove the newAMount field only if the amount is valid
+      if(action.payload.fieldName === 'amount' && action.payload.isValid && !tmpErrors['newAmount']) {
+        delete tmpErrors['newAmount'];
+      }
+      
+      return {
+        ...state,
+        errors: tmpErrors,
+        allowNext: Object.values(tmpErrors).length ? false : true,
+      }
+    case 'SET_ERROR': {
+      return {
+        ...state,
+        submitting: false,
+        submitted: false,
+        error: action.error,
+      }
+    }
     case 'RESET': {
       return {
         ...state,
@@ -167,3 +199,10 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
     }
   }
 }
+
+const _ = {
+  initialState,
+  reducer,
+};
+
+export default _;

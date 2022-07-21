@@ -6,6 +6,10 @@ import { useParams } from 'react-router-dom';
 export interface IContext {
   data: IData;
   params: ParamsType;
+  allowNext: boolean;
+  submitted: boolean;
+  submitting: boolean;
+  error: string | null;
   dispatch: (action: ContextActionType) => void;
 }
 
@@ -18,7 +22,7 @@ Context.displayName = 'FormContext';
 const { Provider, Consumer } = Context;
 
 const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
-  const [{ data }, dispatch] = useReducer(reducer, initialState);
+  const [{ data, allowNext, error, submitted, submitting }, dispatch] = useReducer(reducer, initialState);
   const params = useParams<ParamsType>();
 
   return useMemo(() => (
@@ -26,6 +30,10 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
       value={{
         data,
         params,
+        allowNext,
+        submitted,
+        submitting,
+        error,
         dispatch,
       }}>
         {children}
@@ -33,6 +41,10 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   ), [
     data,
     params,
+    allowNext,
+    submitted,
+    submitting,
+    error,
     children,
     dispatch,
   ]);

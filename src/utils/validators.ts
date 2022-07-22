@@ -180,12 +180,18 @@ export const validateCitizenId = (value: string, minLength = 8): ValidationType 
 }
 
 export const validateCreditCard = (value: string): ValidationType => {
+  const isCreditCard = /^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/;
+  // const isVisa = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
+  // const isMastercard = /^(?:5[1-5][0-9]{14})$/;
+  // const isAmex = /^(?:3[47][0-9]{13})$/;
+  // const isDiscover = /^(?:6(?:011|5[0-9][0-9])[0-9]{12})$/;
+
   if(value === '') {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['SK012'],
     };
-  } else if (!(/^(?:(4[0-9]{12}(?:[0-9]{3})?)|(5[1-5][0-9]{14})|(6(?:011|5[0-9]{2})[0-9]{12})|(3[47][0-9]{13})|(3(?:0[0-5]|[68][0-9])[0-9]{11})|((?:2131|1800|35[0-9]{3})[0-9]{11}))$/.test(value))) {
+  } else if (!isCreditCard.test(value)) {
     return {
       isValid: false,
       errorMessage: ERROR_CODES['SK014'], 

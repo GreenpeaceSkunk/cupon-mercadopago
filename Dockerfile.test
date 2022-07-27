@@ -6,8 +6,10 @@ WORKDIR /app
 # Copy all files from current directory to working dir in image
 # If you want to install the project
 COPY . .
-RUN npm install -g typescript
-RUN npm install react-scripts -g
+
+RUN npm install -g npm@8.15.0
+RUN npm install --location=global typescript
+RUN npm install --location=global react-scripts
 RUN npm install --legacy-peer-deps
 RUN npm run types
 RUN npm run client:build:test

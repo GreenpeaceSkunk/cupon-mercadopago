@@ -4,9 +4,6 @@
   "private": true,
   "dependencies": {
     "@analytics/google-analytics": "^0.5.3",
-    "@bit/meema.gpar-ui-components.form": "0.0.4",
-    "@bit/meema.gpar-ui-components.general.button": "0.0.3",
-    "@bit/meema.ui-components.carousel": "0.0.64",
     "@bit/meema.ui-components.elements": "0.0.49",
     "@bit/meema.ui-components.loaders.three-circles": "0.0.2",
     "@dan.tovbein/meema-styled-elements": "^1.0.32",

@@ -7,7 +7,7 @@ WORKDIR /app
 # If you want to install the project
 COPY . .
 
-RUN npm install -g npm@8.15.0 --location=global
+RUN npm install --location=global npm@8.15.0
 RUN npm install --location=global typescript
 RUN npm install --location=global react-scripts
 RUN npm install --legacy-peer-deps

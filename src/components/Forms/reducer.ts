@@ -87,7 +87,7 @@ export const initialState: ContextStateType = {
         // cardNumber: '371180303257522', // AMEX
         securityCode: '123',
         // securityCode: '1234',
-        cardholderName: 'CALL',
+        cardholderName: 'APRO',
         cardExpirationMonth: '11',
         cardExpirationYear: '2025',
         docNumber: '10234567',

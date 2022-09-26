@@ -1,5 +1,9 @@
-import { AxiosResquestError } from 'greenpeace';
+import { AxiosResquestError, CouponType } from 'greenpeace';
+import { URLSearchParams } from 'url';
+import { IData, IPaymentData, IUserData } from '../types';
 import { ApiCall } from '../utils/apiCall';
+import { createToken, getCardType, getInstallments, setPublishableKey } from '../utils/mercadopago';
+import { postRecord, updateContact } from './greenlab';
 
 const API_URL = 'https://api.mercadopago.com/v1';
 
@@ -79,7 +83,7 @@ export const getPublicKey = async (): Promise<any | AxiosResquestError> => {
   });;
 };
 
-export const doSubscriptionPayment = async (data: any): Promise<any | AxiosResquestError> => ApiCall({
+export const createStaging = async (data: any): Promise<any | AxiosResquestError> => ApiCall({
   url: `${process.env.REACT_APP_GREENPEACE_MERCADOPAGO_API_URL}/createStaging`,
   method: 'POST',
   data,
@@ -88,11 +92,164 @@ export const doSubscriptionPayment = async (data: any): Promise<any | AxiosResqu
   // },
 });
 
+
+
+/**
+ * Post the payment to the API
+ * 
+ * @param form 
+ * @param data 
+ * @param couponType 
+ * @param campaignId 
+ * @param params 
+ * @param formId 
+ * @returns 
+ */
+export const doSubscriptionPayment = async (
+  form: HTMLFormElement,
+  data: IData,
+  couponType: CouponType,
+  params: URLSearchParams,
+  campaignId: string,
+  formId?: string,
+): Promise<{
+  error: boolean;
+  message?: string;
+}> => {
+  const { user, payment } = data;
+
+  setPublishableKey(await getPublicKey());
+
+  const token = await createToken(form);
+  const amount = payment.amount === 'otherAmount' ? payment.newAmount : payment.amount;
+
+  if(token.isValid) {
+    const paymentMethod = await getInstallments({
+      bin: payment.cardNumber.slice(0, 6),
+      amount,
+    });
+
+    if(paymentMethod) {
+
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+    
+      let payload = {
+        device_id: window.MP_DEVICE_SESSION_ID,
+        payment_method_id: paymentMethod.payment_method_id,
+        payment_type_id: '',
+        issuer_id: paymentMethod.issuer.id,
+        token: window.Mercadopago.tokenId,
+        type: couponType,
+        amount,
+        nombre: user.firstName,
+        apellido: user.lastName,
+        cod_area: user.areaCode,
+        telefono: user.phoneNumber,
+        email: user.email,
+        genero: '',
+        pais: '',
+        direccion: '',
+        localidad: '',
+        provincia: '',
+        codigo_provincia: '',
+        codigo_postal: '',
+        ocupacion: '',
+        tipodocumento: payment.docType,
+        mes_vencimiento: payment.cardExpirationMonth,
+        ano_vencimiento: payment.cardExpirationYear,
+        documento: payment.docNumber,
+        firstDigits: payment.cardNumber.slice(0, 6),
+        lastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
+        date: today,
+        utms: [
+          { campo: 'gpi__utm_campaign__c', valor: params.get('utm_campaign') },
+          { campo: 'gpi__utm_medium__c', valor: params.get('utm_medium') },
+          { campo: 'gpi__utm_source__c', valor: params.get('utm_source') },
+          { campo: 'gpi__utm_content__c', valor: params.get('utm_content') },
+          { campo: 'gpi__utm_term__c', valor: params.get('utm_term') },
+        ],
+        campaign_id: `${campaignId}`,
+      };
+
+      const result = await createStaging(payload);
+
+      let donationStatus = 'pending';
+      let errorCode, errorMessage;
+      
+      if(result['error']) {
+        errorCode = result.errorCode;
+        errorMessage = result.message.replace(/,/g, '').replace(/;/g, '');
+        
+        await updateContact(payload.email, { donationStatus });
+      } else {
+        window.userAmount = amount;
+        donationStatus = 'done';
+
+        await updateContact(payload.email, { donationStatus });
+      }
+
+      // Backup to Forma.
+      if(formId) {
+        await postRecord({
+          amount,
+          areaCode: user.areaCode,
+          campaignId: `${campaignId}`,
+          card: payment.cardNumber,
+          card_type: getCardType(paymentMethod.payment_method_id),
+          cardLastDigits: payload.lastDigits,
+          cardExpMonth: payload.mes_vencimiento,
+          cardExpYear: payload.ano_vencimiento,
+          citizenId: user.docNumber,
+          citizenIdType: user.docType,
+          mpDeviceId: window.MP_DEVICE_SESSION_ID,
+          donationStatus,
+          email: user.email,
+          errorCode: errorCode || '',
+          errorMessage: errorMessage || '',
+          firstName: user.firstName,
+          form_id: formId,
+          fromUrl: document.location.href,
+          lastName: user.lastName,
+          mpPayMethodId: paymentMethod.issuer.name,
+          mpPayOptId: '',
+          phoneNumber: user.phoneNumber,
+          recurrenceDay: tomorrow.getDate(),
+          transactionDate: today,
+          userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
+          utm: `utm_campaign=${ params.get('utm_campaign')}&utm_medium=${ params.get('utm_medium')}&utm_source=${ params.get('utm_source')}&utm_content=${ params.get('utm_content')}&utm_term=${ params.get('utm_term')}`,
+        });
+      }
+    // }
+  } else {
+      console.log('Ocurrió un error inesperado, pruebe con otra tarjeta.');
+
+      return {
+        error: true,
+        message: 'Ocurrió un error inesperado, pruebe con otra tarjeta.',
+      }
+    }
+  } else {
+    console.log(token.message);
+
+    return {
+      error: true,
+      message: token.message,
+    }
+  }
+
+  return {
+    error: false,
+  };
+} 
+
 const _ = {
   getPaymentMethods,
   getPaymentMethodsSearch,
   getPaymentMethodsInstallments,
   getIdentificationTypes,
+  createStaging,
   doSubscriptionPayment,
 };
 

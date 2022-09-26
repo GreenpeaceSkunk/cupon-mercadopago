@@ -85,10 +85,15 @@ export const createToken = async (form: HTMLFormElement):Promise<{ isValid: bool
 export const getInstallments = async (params: any): Promise<any> => {
   return new Promise((resolve, reject) => {
     window.Mercadopago.getInstallments(params, (status: number, installments: any[]) => {
+      console.log(installments);
       if(installments.length) {
         const paymentMethods = installments.map((paymentMethod: any) => (
-          paymentMethod.processing_mode === 'gateway' ? paymentMethod : null
+          paymentMethod.processing_mode === 'aggregator' ? paymentMethod : null
         )).filter((paymentMethod: any) => paymentMethod !== null);
+
+        console.log("installments", installments.map((paymentMethod: any) => (
+          paymentMethod.processing_mode === 'aggregator' ? paymentMethod : null
+        )))
         resolve(paymentMethods.length ? paymentMethods[0] : null);
       } else {
         resolve(null);

@@ -35,8 +35,10 @@ declare global {
 
 }
 
+export type CouponType = 'regular' | 'oneoff';
+
 export type ParamsType = {
-  couponType?: string;
+  couponType?: CouponType;
 };
 
 export interface CustomHTMLScriptElement extends HTMLScriptElement {

@@ -213,7 +213,7 @@ export const doSubscriptionPayment = async (
           fromUrl: document.location.href,
           lastName: user.lastName,
           mpPayMethodId: paymentMethod.issuer.name,
-          mpPayOptId: '',
+          mpPayOptId: paymentMethod.payment_method_id,
           phoneNumber: user.phoneNumber,
           recurrenceDay: tomorrow.getDate(),
           transactionDate: today,

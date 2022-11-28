@@ -1,7 +1,8 @@
-import React, { createContext, useMemo, useReducer } from 'react';
+import React, { createContext, useEffect, useMemo, useReducer } from 'react';
 import { ContextActionType, initialState, reducer } from './reducer';
 import { IData, ParamsType } from 'greenpeace';
 import { useParams } from 'react-router-dom';
+import useQuery from '../../hooks/useQuery';
 
 export interface IContext {
   data: IData;

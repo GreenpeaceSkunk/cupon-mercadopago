@@ -133,11 +133,36 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ]);
 
   useEffect(() => {
-    if(appData && appData.content && appData.content.amounts) {
+    if(urlSearchParams.get('donate')) {
+      const amounts = appData.content.amounts.values || [];
       dispatch({
         type: 'UPDATE_PAYMENT_DATA',
-        payload: { amount: `${appData.content.amounts.default}` }
-      });
+        payload: {
+          ...(amounts.filter((a:number) => `${a}` === urlSearchParams.get('donate')).length) ? {
+            amount: `${urlSearchParams.get('donate')}`,
+          } : {
+            amount: 'otherAmount',
+            newAmount: `${urlSearchParams.get('donate')}`,
+          },
+        }
+      })
+    } else {
+      if(appData && appData.content) {
+        if(appData.content.amounts.values.filter((v: number) => v === appData.content.amounts.default).length) {
+          dispatch({
+            type: 'UPDATE_PAYMENT_DATA',
+            payload: { 'amount': `${appData.content.amounts.default}` }
+          });
+        } else {
+          dispatch({
+            type: 'UPDATE_PAYMENT_DATA',
+            payload: { 
+              'amount': 'otherAmount',
+              'newAmount': `${appData.content.amounts.default}`,
+            }
+          });
+        }
+      }
     }
     
     if(contentFormRef && contentFormRef.current) {

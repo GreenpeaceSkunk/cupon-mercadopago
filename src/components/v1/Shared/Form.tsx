@@ -330,6 +330,15 @@ const Label = styled(Elements.Label)`
   width: 100%;
 `;
 
+const MPSecurityFieldWrapper = styled(Elements.Wrapper)`
+  background: white;
+  width: 100%;
+  height: ${pixelToRem(48)};
+  border: solid ${pixelToRem(1)} ${({theme}) => theme.color.secondary.normal};
+  padding: ${pixelToRem(13)} ${pixelToRem(20)};
+  border-radius: ${pixelToRem(10)};
+`;
+
 const Row = styled(Elements.Wrapper)`
   display: grid;
   flex-direction: row;
@@ -420,6 +429,7 @@ const defaults = {
   TextArea,
   Title,
   ErrorMessage,
+  MPSecurityFieldWrapper,
 };
 
 export default defaults;

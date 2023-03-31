@@ -75,23 +75,23 @@ export const initialState: ContextStateType = {
       cardNumber: '', 
       cardholderName: '',
       securityCode: '',
-      cardExpirationMonth: '',
-      cardExpirationYear: '',
+      cardExpirationMonth: '12',
+      cardExpirationYear: '25',
       docNumber: '',
       docType: 'DNI',
       newAmount: '',
       ...(autofill ? {
         cardType: 'mastercard',
-        cardNumber: '4509953566233704', // Visa
+        // cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
         // cardNumber: '371180303257522', // AMEX
-        securityCode: '123',
+        securityCode: '',
         // securityCode: '1234',
         cardholderName: 'APRO',
-        cardExpirationMonth: '11',
-        cardExpirationYear: '2025',
+        // cardExpirationMonth: '11',
+        // cardExpirationYear: '2025',
         docNumber: '10234567',
-        docType: 'DNI',
+        // docType: 'DNI',
       } : {})
     } as IPaymentData,
   } as IData,

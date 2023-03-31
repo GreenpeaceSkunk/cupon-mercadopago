@@ -80,7 +80,7 @@ export const getPublicKey = async (): Promise<any | AxiosResquestError> => {
     url: `${process.env.REACT_APP_GREENPEACE_MERCADOPAGO_API_URL}/getPublicKey`,
     method: 'GET',
     params: {},
-  });;
+  });
 };
 
 export const createStaging = async (data: any): Promise<any | AxiosResquestError> => ApiCall({
@@ -91,8 +91,6 @@ export const createStaging = async (data: any): Promise<any | AxiosResquestError
   //   'X-meli-session-id': window.MP_DEVICE_SESSION_ID,
   // },
 });
-
-
 
 /**
  * Post the payment to the API
@@ -112,25 +110,27 @@ export const doSubscriptionPayment = async (
   params: URLSearchParams,
   campaignId: string,
   formId?: string,
+  MercadoPago?: any,
 ): Promise<{
   error: boolean;
   message?: string;
 }> => {
   const { user, payment } = data;
 
-  setPublishableKey(await getPublicKey());
-
-  const token = await createToken(form);
+  const token = await createToken(form, MercadoPago, data);
   const amount = payment.amount === 'otherAmount' ? payment.newAmount : payment.amount;
-
+  
   if(token.isValid) {
-    const paymentMethod = await getInstallments({
-      bin: payment.cardNumber.slice(0, 6),
-      amount,
-    });
-
+      const paymentMethod = await getInstallments(
+        {
+          amount,
+          bin: payment.cardNumber,
+          paymentTypeId: 'credit_card'
+        },
+        MercadoPago
+      );
+      
     if(paymentMethod) {
-
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -138,9 +138,9 @@ export const doSubscriptionPayment = async (
       let payload = {
         device_id: window.MP_DEVICE_SESSION_ID,
         payment_method_id: paymentMethod.payment_method_id,
-        payment_type_id: '',
+        payment_type_id: 'credit_card',
         issuer_id: paymentMethod.issuer.id,
-        token: window.Mercadopago.tokenId,
+        token: `${token.tokenId}`,
         type: couponType,
         amount,
         nombre: user.firstName,
@@ -190,13 +190,14 @@ export const doSubscriptionPayment = async (
         await updateContact(payload.email, { donationStatus });
       }
 
-      // Backup to Forma.
+      /* Backup to Forma. */
       if(formId) {
         await postRecord({
           amount,
           areaCode: user.areaCode,
           campaignId: `${campaignId}`,
-          card: payment.cardNumber,
+          /* This is a workaround to send always at least 16 digits of card number */
+          card: payment.cardNumber.length === 8 ? `${payment.cardNumber}00000000` : payment.cardNumber,
           card_type: getCardType(paymentMethod.payment_method_id),
           cardLastDigits: payload.lastDigits,
           cardExpMonth: payload.mes_vencimiento,
@@ -221,24 +222,15 @@ export const doSubscriptionPayment = async (
           utm: `utm_campaign=${ params.get('utm_campaign')}&utm_medium=${ params.get('utm_medium')}&utm_source=${ params.get('utm_source')}&utm_content=${ params.get('utm_content')}&utm_term=${ params.get('utm_term')}`,
         });
       }
-    // }
-  } else {
-      console.log('Ocurrió un error inesperado, pruebe con otra tarjeta.');
-
-      return {
-        error: true,
-        message: 'Ocurrió un error inesperado, pruebe con otra tarjeta.',
-      }
     }
-  } else {
-    console.log(token.message);
 
+  } else {
     return {
       error: true,
       message: token.message,
     }
   }
-
+  
   return {
     error: false,
   };

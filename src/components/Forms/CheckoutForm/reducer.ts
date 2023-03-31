@@ -7,6 +7,7 @@ export type ContextStateType = {
   isEdited: boolean;
   allowNext: boolean;
   attemps: number,
+  errorDate: Date | null, 
 } & SharedState;
 
 export type ContextActionType = 
@@ -14,7 +15,7 @@ export type ContextActionType =
 | { type: 'RESET_FIELD_ERRORS' }
 | { type: 'UPDATE_FORM_STATUS' }
 | { type: 'RESET' }
-| { type: 'SET_ERROR', error: string | null }
+| { type: 'SET_ERROR', error: string | null, errorDate?: Date | null }
 | { type: 'SUBMITTED_WITH_ERRORS', error: string | null }
 | SharedActions;
 
@@ -25,6 +26,7 @@ export const initialState: ContextStateType = {
   submitting: false,
   isEdited: false,
   allowNext: false,
+  errorDate: null,
   attemps: 0,
 }
 
@@ -97,6 +99,7 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
         submitting: false,
         submitted: false,
         error: action.error,
+        errorDate: action.errorDate || null,
       };
     }
     default: {

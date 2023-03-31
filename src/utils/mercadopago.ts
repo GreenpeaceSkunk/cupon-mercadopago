@@ -1,4 +1,4 @@
-import { CustomHTMLScriptElement } from 'greenpeace';
+import { CustomHTMLScriptElement, IData } from 'greenpeace';
 
 export type CardType = {
   id: number;
@@ -42,7 +42,7 @@ export const initializeSdk = async () => {
   return await (async () => {
     let script = document.createElement('script');
     script.type = 'text/javascript';
-    script.src = `//secure.mlstatic.com/sdk/javascript/v1/mercadopago.js`;
+    script.src = `//sdk.mercadopago.com/js/v2`; 
     document.body.appendChild(script);
   })();
 }
@@ -56,50 +56,49 @@ export const initializeSecurityPayment = async () => {
   })();
 }
 
-export const setPublishableKey = (publicKey: string) => {
-  window.Mercadopago.setPublishableKey(publicKey);
+export const setPublishableKey = (publicKey: string): any => {
+  if(window.MercadoPago) {
+    const MercadoPago = new window.MercadoPago(publicKey);
+    return MercadoPago;
+  }
+
+  return null;
 }
 
-export const createToken = async (form: HTMLFormElement):Promise<{ isValid: boolean; message: string; }> => {
-  return new Promise((resolve, reject) => {
-    const result = async (status: any, response: any) => {
-      if (status === 200 || status === 201) {
-        if(form) {
-          let card = document.createElement('input');
-          card.setAttribute('name', 'token');
-          card.setAttribute('type', 'hidden');
-          card.setAttribute('value', response.id);
-          form.appendChild(card);
-          resolve({ isValid: true, message: '' });
-        }
-      } else {
-        const errorCode = (response.cause.length) ? response.cause[0].code as string : 'default';
-        resolve({ isValid: false, message: ERROR_CODES[errorCode] });
-      }
+/** To Review */
+export const getIdentificationTypes = async (): Promise<any> => {
+  return null;
+}
+
+export const createToken = async (form: HTMLFormElement, MercadoPago?: any, data?: IData):Promise<{ isValid: boolean; message: string; tokenId: string | null }> => {
+  return await MercadoPago.createCardToken({
+    cardholderName: data?.payment.cardholderName,
+    identificationType: data?.payment.docType,
+    identificationNumber: data?.payment.docNumber,
+  })
+  .then((result: any) => {
+    if(form) {
+      let card = document.createElement('input');
+      card.setAttribute('name', 'token');
+      card.setAttribute('type', 'hidden');
+      card.setAttribute('value', result.id);
+      form.appendChild(card);
+
+      return Promise.resolve({ isValid: true, message: '', tokenId: result.id  });
     }
-    window.Mercadopago.tokenId = '';
-    window.Mercadopago.createToken(form, result);
+  }).catch((error: any) => {
+    return Promise.resolve({ isValid: false, message: error.message || 'Ocurrió un error inesperado, pruebe con otra tarjeta.', tokenId: null });
   });
 }
 
-export const getInstallments = async (params: any): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    window.Mercadopago.getInstallments(params, (status: number, installments: any[]) => {
-      console.log(installments);
-      if(installments.length) {
-        const paymentMethods = installments.map((paymentMethod: any) => (
-          paymentMethod.processing_mode === 'aggregator' ? paymentMethod : null
-        )).filter((paymentMethod: any) => paymentMethod !== null);
-
-        console.log("installments", installments.map((paymentMethod: any) => (
-          paymentMethod.processing_mode === 'aggregator' ? paymentMethod : null
-        )))
-        resolve(paymentMethods.length ? paymentMethods[0] : null);
-      } else {
-        resolve(null);
-      }
-    });
+export const getInstallments = async (params: any, MercadoPago?: any): Promise<any> => {
+  const installments = await MercadoPago.getInstallments({
+    amount: params.amount,
+    bin: params.bin,
+    paymentTypeId: 'credit_card',
   });
+
+  return installments[0];
 }
 
 /**
@@ -113,6 +112,7 @@ export const getCardType = (paymentMethodId = ''): number => {
     case 'visa':
       return 2;
     case 'mastercard':
+    case 'master':
       return 3;
     case 'debvisa':
       return 4;

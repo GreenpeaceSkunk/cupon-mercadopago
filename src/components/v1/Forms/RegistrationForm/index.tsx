@@ -129,7 +129,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         if(params) {
           navigate({
             pathname: generatePath('/:couponType/forms/:formType', {
-              couponType: params.couponType,
+              couponType: `${params.couponType}`,
               formType: 'checkout',
             }),
             search: searchParams,
@@ -224,7 +224,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   onChangeHandler={onChangeHandler}
                 />
             </Form.Group>
-            </Form.Column>
+          </Form.Column>
             {(amount === 'otherAmount') ? (
               <Form.Column>
                 <Form.Group
@@ -239,7 +239,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     name='newAmount'
                     type='text'
                     disabled={!(amount === 'otherAmount')} 
-                    value={newAmount}
+                    // value={newAmount}
                     placeholder='Ej. $350'
                     maxLength={8}
                     onChange={onChangeHandler}

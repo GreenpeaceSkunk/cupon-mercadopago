@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useContext, useMemo } from 'react';
+import React, { FunctionComponent, useContext, useMemo, useRef } from 'react';
 import Elements from '../../Shared/Elements';
 import { pixelToRem, CustomCSSType } from 'meema.utils';
 import { css } from 'styled-components';

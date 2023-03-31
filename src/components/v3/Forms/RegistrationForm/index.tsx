@@ -115,7 +115,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         if(params) {
           navigate({
             pathname: generatePath('/:couponType/forms/:formType', {
-              couponType: params.couponType,
+              couponType: `${params.couponType}`,
               formType: 'checkout',
             }),
             search: searchParams,

@@ -7,6 +7,7 @@ import { css } from 'styled-components';
 import { getPublicKey, doSubscriptionPayment } from '../../../../services/mercadopago';
 import { Loader } from '../../../Shared';
 import Elements from '../../Shared/Elements';
+import MPElements from '../../../Shared/Elements';
 import Form from '../../Shared/Form';
 import { initialState, reducer } from '../../../Forms/CheckoutForm/reducer';
 import { createToken, getCardType, getInstallments, setPublishableKey } from '../../../../utils/mercadopago';
@@ -15,27 +16,34 @@ import Snackbar, { IRef as ISnackbarRef } from '../../../Snackbar';
 import { AppContext } from '../../../App/context';
 import { postRecord, updateContact } from '../../../../services/greenlab';
 import { pixelToRem } from 'meema.utils';
+import { CheckoutFormContext, CheckoutFormProvider } from '../../../Forms/CheckoutForm/context';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
-  const { data: { payment, user }, params, dispatch } = useContext(FormContext);
-  const [{ submitting, submitted, allowNext, error, attemps }, dispatchFormErrors ] = useReducer(reducer, initialState);
+  // const { data: { payment, user }, params, dispatch } = useContext(FormContext);
+  // const [{ submitting, submitted, allowNext, error, attemps }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
   const contentFormRef = useRef<HTMLDivElement>(null);
   const snackbarRef = useRef<ISnackbarRef>(null);
   const { searchParams, urlSearchParams } = useQuery();
-
-  const onChangeHandler = useCallback((evt: OnChangeEvent) => {
-    evt.preventDefault();
-    dispatch({
-      type: 'UPDATE_PAYMENT_DATA',
-      payload: { [ evt.currentTarget.name ]: evt.currentTarget.value }
-    });
-  }, [
+  const {
+    submitted,
+    submitting,
+    allowNext,
+    error,
+    errorDate,
+    attemps,
+    payment,
+    user,
+    params,
+    mercadoPago,
     dispatch,
-  ]);
+    dispatchFormErrors,
+    onChangeHandler,
+    onUpdateFieldHandler,
+  } = useContext(CheckoutFormContext);
   
   const onClickHandler = useCallback((evt: OnClickEvent) => {
     evt.preventDefault();
@@ -46,16 +54,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   }, [
     dispatch,
   ]);
-
-  const onUpdateFieldHandler = useCallback((fieldName: string, isValid: boolean, value: any) => {
-    dispatchFormErrors({
-      type: 'UPDATE_FIELD_ERRORS',
-      payload: {
-        fieldName,
-        isValid,
-      }
-    });
-  }, []);
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
@@ -79,6 +77,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             urlSearchParams,
             appData?.settings?.tracking?.salesforce?.campaign_id,
             appData?.settings?.service?.forma?.transactions_form,
+            mercadoPago,
           );
 
           if(response.error) {
@@ -92,7 +91,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               
               navigate({
                 pathname: generatePath(`/:couponType/forms/thank-you`, {
-                  couponType: params.couponType,
+                  couponType: `${params.couponType}`,
                 }),
                 search: `${searchParams}`,
               }, { replace: true });
@@ -115,6 +114,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     params,
     urlSearchParams,
     appData,
+    mercadoPago,
     dispatchFormErrors,
   ]);
   
@@ -130,6 +130,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     }
   }, [
     error,
+    errorDate,
   ]);
 
   useEffect(() => {
@@ -275,16 +276,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateCreditCard}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Form.Input
-                type='text'
-                id='cardNumber'
-                name='cardNumber'
-                placeholder='4509 9535 6623 2694'
-                data-checkout='cardNumber'
-                maxLength={16}
-                value={payment.cardNumber}
-                onChange={onChangeHandler}
-              />
+              <MPElements.MPSecurityField id="form-checkout__cardNumber"></MPElements.MPSecurityField>
             </Form.Group>
           </Form.Column>
           <Form.Column>
@@ -296,64 +288,21 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateCvv}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Form.Input
-                type='password'
-                id='securityCode'
-                name='securityCode'
-                placeholder='123'
-                data-checkout='securityCode'
-                maxLength={4}
-                value={payment.securityCode}
-                onChange={onChangeHandler}
-              />
+              <MPElements.MPSecurityField id="form-checkout__securityCode"></MPElements.MPSecurityField>
             </Form.Group>
-          </Form.Column>
-        </Form.Row>
-        <Form.Row>
-          <Form.Column>
             <Form.Group
               fieldName='cardExpirationMonth'
               value={payment.cardExpirationMonth}
-              labelText='Mes de expiración'
+              labelText='Fecha de de expiración'
               showErrorMessage={showFieldErrors}
               validateFn={validateMonth}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Form.Select
-                id='cardExpirationMonth'
-                name='cardExpirationMonth'
-                data-checkout='cardExpirationMonth'
-                value={payment.cardExpirationMonth}
-                onChange={onChangeHandler}
-              >
-                <option value=""></option>
-                {['01','02','03','04','05','06','07','08','09','10','11','12'].map((value: string, key: number) => (
-                  <option key={key} value={value}>{value}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group
-              fieldName='cardExpirationYear'
-              value={payment.cardExpirationYear}
-              labelText='Año de expiración'
-              showErrorMessage={showFieldErrors}
-              validateFn={validateYear}
-              onUpdateHandler={onUpdateFieldHandler}
-            >
-              <Form.Select
-                id='cardExpirationYear'
-                name='cardExpirationYear'
-                data-checkout='cardExpirationYear'
-                value={payment.cardExpirationYear}
-                onChange={onChangeHandler}
-              >
-                <option value=""></option>
-                {(Array.from(Array(20).keys()).map((value) => value + (new Date().getFullYear()))).map((value: number, key: number) => (
-                  <option key={key} value={value}>{value}</option>
-                ))}
-              </Form.Select>
+              <MPElements.MPSecurityField id="form-checkout__expirationDate"></MPElements.MPSecurityField>
             </Form.Group>
           </Form.Column>
+        </Form.Row>
+        <Form.Row>
           <Form.Column>
             <Form.Group
               fieldName='docType'
@@ -364,17 +313,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               onUpdateHandler={onUpdateFieldHandler}
             >
               <Form.Select
-                id='docType'
-                name='docType'
-                data-checkout='docType'
+                id="form-checkout__identificationType"
+                name="docType"
+                data-checkout="docType"
                 value={payment.docType}
                 onChange={onChangeHandler}
-              >
-                <option value=""></option>
-                {['DNI', 'Cédula de identidad', 'LC', 'LE', 'Otro'].map((value: string, key: number) => (
-                  <option key={key} value={value}>{value}</option>
-                ))}
-              </Form.Select>
+              ></Form.Select>
             </Form.Group>
             <Form.Group
               fieldName='docNumber'
@@ -396,8 +340,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               />
             </Form.Group>
           </Form.Column>
-        </Form.Row>
-        <Form.Row>
           <Form.Column>
             <Form.Group
               value={payment.cardholderName}
@@ -418,6 +360,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               />
             </Form.Group>
           </Form.Column>
+        </Form.Row>
+        <Form.Row>
         </Form.Row>
       </Form.Content>
       <Snackbar ref={snackbarRef} text={error} />
@@ -454,4 +398,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 });
 
 Component.displayName = 'CheckoutForm';
-export default Component;
+export default () => (
+  <CheckoutFormProvider>
+    <Component />
+  </CheckoutFormProvider>
+);

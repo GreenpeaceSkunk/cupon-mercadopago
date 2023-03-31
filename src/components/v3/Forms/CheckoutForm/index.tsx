@@ -116,7 +116,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         dispatchFormErrors({ type: 'SUBMITTED' });
         navigate({
           pathname: generatePath(`/:couponType/forms/thank-you`, {
-            couponType: params.couponType,
+            couponType: `${params.couponType}`,
           }),
           search: `${searchParams}`,
         }, { replace: true });

@@ -115,7 +115,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         dispatch({ type: 'SUBMITTED' });
         navigate({
           pathname: generatePath(`/:couponType/forms/thank-you`, {
-            couponType: params.couponType,
+            couponType: `${params.couponType}`,
           }),
           search: `${searchParams}`,
         }, { replace: true });
@@ -236,7 +236,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 
                 navigate({
                   pathname: generatePath(`/:couponType/forms/thank-you`, {
-                    couponType: params.couponType,
+                    couponType: `${params.couponType}`,
                   }),
                   search: `${searchParams}`,
                 }, { replace: true });

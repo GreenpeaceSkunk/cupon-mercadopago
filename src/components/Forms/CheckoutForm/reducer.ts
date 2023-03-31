@@ -26,6 +26,7 @@ export const initialState: ContextStateType = {
   submitting: false,
   isEdited: false,
   allowNext: false,
+  errorDate: null,
   attemps: 0,
 }
 

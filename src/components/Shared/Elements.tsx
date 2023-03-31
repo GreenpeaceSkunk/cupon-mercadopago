@@ -164,6 +164,16 @@ export const Button = styled(Elements.Button)`
   ${customStyles};
 `;
 
+export const MPSecurityField = styled(Elements.Wrapper)`
+  height: 3rem;
+  background: white;
+  ${sharedInputStyles};
+  ${customStyles};
+
+  iframe {
+  }
+`;
+
 const _ = {
   A,
   Button,
@@ -188,6 +198,7 @@ const _ = {
   View,
   Wrapper,
   WrapperHtml,
+  MPSecurityField,
 };
 
 export default _;

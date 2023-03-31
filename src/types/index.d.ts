@@ -15,7 +15,8 @@ declare global {
         event: (portalId: string, eventId: string, userEmail: string, callback?: any) => void;
       }
     };
-
+    MercadoPago: any;
+    /* To be deprectaded */
     Mercadopago: {
       setPublishableKey: (a: string) => void;
       createToken: (a: any, b: any) => string;
@@ -23,6 +24,7 @@ declare global {
       key: string;
       tokenId: string;
     };
+    /** */
     MP_DEVICE_SESSION_ID: string;
     
     userAmount: any;
@@ -39,6 +41,8 @@ export type CouponType = 'regular' | 'oneoff';
 
 export type ParamsType = {
   couponType?: CouponType;
+  amount?: string;
+  amounts?: string;
 };
 
 export interface CustomHTMLScriptElement extends HTMLScriptElement {

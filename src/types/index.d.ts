@@ -15,17 +15,21 @@ declare global {
         event: (portalId: string, eventId: string, userEmail: string, callback?: any) => void;
       }
     };
+    mp: any; // Instance of MercadoPago
+    __mercadopago: any; // Instance of MercadoPago
     MercadoPago: any;
     /* To be deprectaded */
     Mercadopago: {
       setPublishableKey: (a: string) => void;
       createToken: (a: any, b: any) => string;
       getInstallments: (a: any, b: any) => any;
+      // getPaymentMethods: (a: any, b: any) => any;
       key: string;
       tokenId: string;
     };
     /** */
     MP_DEVICE_SESSION_ID: string;
+    deviceId: string;
     
     userAmount: any;
     hj: any;

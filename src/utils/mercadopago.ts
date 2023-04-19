@@ -112,6 +112,7 @@ export const getCardType = (paymentMethodId = ''): number => {
     case 'visa':
       return 2;
     case 'mastercard':
+    case 'master':
       return 3;
     case 'debvisa':
       return 4;

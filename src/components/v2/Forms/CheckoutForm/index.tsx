@@ -38,7 +38,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     payment,
     user,
     params,
-    mercadoPago,
     dispatch,
     dispatchFormErrors,
     onChangeHandler,
@@ -77,7 +76,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             urlSearchParams,
             appData?.settings?.tracking?.salesforce?.campaign_id,
             appData?.settings?.service?.forma?.transactions_form,
-            mercadoPago,
+            // mercadoPago,
           );
 
           if(response.error) {
@@ -114,7 +113,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     params,
     urlSearchParams,
     appData,
-    mercadoPago,
     dispatchFormErrors,
   ]);
   

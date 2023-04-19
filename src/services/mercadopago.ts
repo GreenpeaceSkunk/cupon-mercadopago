@@ -92,8 +92,6 @@ export const createStaging = async (data: any): Promise<any | AxiosResquestError
   // },
 });
 
-
-
 /**
  * Post the payment to the API
  * 

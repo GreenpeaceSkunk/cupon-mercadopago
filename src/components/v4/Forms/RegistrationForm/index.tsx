@@ -440,7 +440,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
             >
-              <Elements.Wrapper>
+              <Elements.Wrapper
+                customCss={css`
+                  display: grid;
+                  grid-template-columns: repeat(3, 1fr);
+                  gap: 0 ${pixelToRem(10)};
+                  width: 100%;
+                `}
+              >
                 {appData.content.amounts.values.map((value: number) => (
                   <Form.SelectableButton
                     key={`${value}`}
@@ -462,29 +469,24 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             </Form.Group>
           </Form.Column>
           <Form.Column>
-            {(payment.amount === 'otherAmount') ? (
-              <Form.Group
-                fieldName='newAmount'
+            <Form.Group
+              fieldName='newAmount'
+              value={payment.newAmount}
+              labelText='Ingrese el monto'
+              showErrorMessage={showFieldErrors}
+              validateFn={validateNewAmount}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Form.Input
+                name='newAmount'
+                type='number'
+                disabled={!(payment.amount === 'otherAmount')} 
                 value={payment.newAmount}
-                labelText='Ingrese el monto'
-                showErrorMessage={showFieldErrors}
-                validateFn={validateNewAmount}
-                onUpdateHandler={onUpdateFieldHandler}
-                customCss={css`
-                  width: ${pixelToRem(180)};
-                `}
-              >
-                <Form.Input
-                  name='newAmount'
-                  type='number'
-                  disabled={!(payment.amount === 'otherAmount')} 
-                  value={payment.newAmount}
-                  placeholder='$350'
-                  maxLength={8}
-                  onChange={onUpdatePaymentData}
-                />
-              </Form.Group>
-            ) : null}
+                placeholder='Ingrese el monto'
+                maxLength={8}
+                onChange={onUpdatePaymentData}
+              />
+            </Form.Group>
           </Form.Column>
         </Form.Row>
         <Form.Row>

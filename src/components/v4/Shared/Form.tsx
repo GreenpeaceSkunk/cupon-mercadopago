@@ -142,7 +142,6 @@ const SelectableButton: React.FunctionComponent<{
           border-color: ${({theme}) => theme.color.secondary.extraLight};
           border-width: ${pixelToRem(1)} !important;
           border-radius: ${pixelToRem(5)};
-          width: fit-content;
           font-size: ${pixelToRem(14)};
           font-weight: 700;
           
@@ -150,10 +149,6 @@ const SelectableButton: React.FunctionComponent<{
             background: white;
             border-color: ${({theme}) => theme.color.primary.normal};
             color: ${({theme}) => theme.text.color.primary.dark};
-          }
-
-          &:not(last-child) {
-            margin-right: ${pixelToRem(10)};
           }
 
           ${(checkedValue === value) && css`

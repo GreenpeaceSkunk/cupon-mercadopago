@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { CheckoutFormProvider } from '../../../Forms/CheckoutForm/context';
-import MPSecurityFieldsForm from '../../../Forms/CheckoutForm/MPSecurityFieldsForm';
+import { getPaymentGateway } from '../../../../utils';
+
+const LazyCheckoutForm = lazy(() => {
+  return (getPaymentGateway())
+    ? import('../../../Forms/CheckoutForm/MPSecurityFieldsForm')
+    : import('../../../Forms/CheckoutForm')
+}); 
 
 const Component: React.FunctionComponent<{}> = () => {
   return (
     <CheckoutFormProvider>
-      <MPSecurityFieldsForm />
+      <Suspense fallback={<div>Cargando formulario</div>}>
+        <LazyCheckoutForm />
+      </Suspense>
     </CheckoutFormProvider>
   );
 };

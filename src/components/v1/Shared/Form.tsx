@@ -151,7 +151,7 @@ const RadioButton: React.FunctionComponent<{
         type='radio'
         name={name}
         value={value}
-        checked={(checkedValue === value)}
+        checked={(`${checkedValue}` === value)}
         data-text={text}
         onChange={onChangeHandler}
         customCss={css`
@@ -172,7 +172,7 @@ const RadioButton: React.FunctionComponent<{
           border: solid ${pixelToRem(1)} ${({theme}) => theme.color.secondary.normal};
           margin-right: ${pixelToRem(10)};
 
-          ${(checkedValue === value) && css`
+          ${(`${checkedValue}` === value) && css`
             border-color: ${({theme}) => theme.color.primary.normal};
             background-color: ${({theme}) => theme.color.primary.normal};
             border-width: ${pixelToRem(4)};
@@ -204,6 +204,59 @@ const RadioButton: React.FunctionComponent<{
   ]);
 };
 
+const Row = styled(Elements.Wrapper)`
+  display: grid;
+
+  > * {
+    margin-bottom: ${pixelToRem(10)};
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+`;
+
+const Column: React.FunctionComponent<{
+  children: React.ReactNode | HTMLAllCollection;
+  bottomText?: string;
+  customCss?: CustomCSSType;
+}> = ({
+  children,
+  bottomText,
+  customCss,
+}) => (
+  <Elements.Wrapper
+    className='column'
+    customCss={css`
+      ${(customCss) && customCss};
+    `}
+  >
+    <Elements.Wrapper
+      customCss={css`
+        display: flex;
+        width: 100%;
+
+        ${innerMargin(20, 20)};
+
+        @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+          flex-direction: row;
+        }
+      `}
+    >{children}</Elements.Wrapper>
+    {(bottomText) && (
+      <Elements.Span
+        customCss={css`
+          font-size: ${pixelToRem(15)};
+        `}
+      >{bottomText}</Elements.Span>
+    )}
+  </Elements.Wrapper>
+);
+
 const Group: React.FunctionComponent<{
   children?: React.ReactNode | HTMLAllCollection;
   fieldName: string;
@@ -213,6 +266,10 @@ const Group: React.FunctionComponent<{
   showErrorMessage?: boolean;
   customCss?: CustomCSSType;
   maxLength?: number;
+  regExp?: string;
+  isRequired?: boolean;
+  displayAs?: 'grid' | 'flex' | 'block';
+  gridColumns?: number;
   validateFn?: (value: any, maxLength?: number) => ValidationType;
   onUpdateHandler?: (fieldName: string, isValid: boolean, value?: string|number) => void;
 }> = ({
@@ -221,9 +278,12 @@ const Group: React.FunctionComponent<{
   labelText,
   labelBottomText,
   showErrorMessage = false,
+  isRequired = true,
   value = '',
   customCss,
   maxLength,
+  displayAs = 'block',
+  gridColumns = 3,
   validateFn,
   onUpdateHandler,
 }) => {
@@ -231,7 +291,7 @@ const Group: React.FunctionComponent<{
   const [ errorMessage, setErrorMessage ] = useState<string>('');
 
   useEffect(() => {
-    if(validateFn) {
+    if(isRequired && validateFn) {
       let validator: ValidationType;      
       if(maxLength) {
         validator = validateFn(value, maxLength);
@@ -254,6 +314,7 @@ const Group: React.FunctionComponent<{
     validateFn,
     fieldName,
     value,
+    isRequired,
   ]);
 
   return useMemo(() => (
@@ -296,11 +357,24 @@ const Group: React.FunctionComponent<{
           customCss={css`
             text-align: left;
             font-family: ${({theme}) => theme.font.family.primary.regular};
-            margin-bottom: ${pixelToRem(6)};
+            margin-bottom: ${pixelToRem(14)};
           `}
         >{labelText}</Elements.Label>
       )}
-      {children}
+      <Elements.Wrapper
+        customCss={css`
+          display: ${displayAs};
+
+          ${(displayAs === 'grid') && css`
+            grid-template-columns: repeat(1, 1fr);
+            gap: ${pixelToRem(5)};
+
+            @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+              grid-template-columns: repeat(${gridColumns}, 1fr);
+            }
+          `}
+        `}
+      >{children}</Elements.Wrapper>
       {(labelBottomText) ? (
         <Elements.Label
           customCss={css`
@@ -322,6 +396,9 @@ const Group: React.FunctionComponent<{
     value,
     customCss,
     isValid,
+    isRequired,
+    displayAs,
+    gridColumns,
   ]);
 };
 
@@ -338,56 +415,6 @@ const MPSecurityFieldWrapper = styled(Elements.Wrapper)`
   padding: ${pixelToRem(13)} ${pixelToRem(20)};
   border-radius: ${pixelToRem(10)};
 `;
-
-const Row = styled(Elements.Wrapper)`
-  display: grid;
-  flex-direction: row;
-  width: 100%;
-
-  > * {
-    margin-bottom: ${pixelToRem(10)};
-
-    &:first-child {
-      margin-left: 0;
-    }
-    
-    &:last-child {
-      margin-right: 0;
-    }
-  }
-`;
-
-const Column: React.FunctionComponent<{
-  children: React.ReactNode | HTMLAllCollection;
-  bottomText?: string;
-}> = ({
-  children,
-  bottomText,
-}) => (
-  <Elements.Wrapper>
-    <Elements.Wrapper
-      customCss={css`
-      display: flex;
-      width: 100%;
-
-      ${innerMargin(20, 20)};
-    
-      @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
-        flex-direction: row;
-      }
-    `}
-    >
-      {children}
-    </Elements.Wrapper>
-    {(bottomText) && (
-      <Elements.Span
-        customCss={css`
-          font-size: ${pixelToRem(15)};
-        `}
-      >{bottomText}</Elements.Span>
-    )}
-  </Elements.Wrapper>
-);
 
 const ErrorMessage = styled(Elements.Wrapper)`
   display: flex;

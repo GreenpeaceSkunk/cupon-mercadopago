@@ -53,21 +53,10 @@ const Component: React.FunctionComponent<{}> = () => {
           align-items: center;
         `}
       >
-        <SocialMediaNav text={appData && appData.content && appData.content.social_media.text}/>
-        {/* {appData && appData.settings && appData.settings.tracking && appData.settings.tracking.hotjar &&
-          <Wrapper
-            customCss={css`
-              margin-top: ${pixelToRem(20)};
-            `}
-          >
-            <a href="//www.hotjar.com/?utm_source=badge">
-              <img
-                src="https://static.hotjar.com/b/hotjar-badge.png"
-                alt="Hotjar - Unlimited insights from your web and mobile sites"
-              />
-            </a>
-          </Wrapper>
-        } */}
+        <SocialMediaNav
+          text={appData && appData.content && appData.content.social_media.text}
+          data={appData && appData.content && appData.content.social_media.profiles}
+        />
       </Wrapper>
       <Wrapper
         customCss={css`

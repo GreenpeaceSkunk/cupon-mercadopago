@@ -83,6 +83,10 @@ export interface IUserData {
   constituentId?: string;
   citizenId?: string;
   birthDate?: string;
+  country?: string;
+  province?: string;
+  city?: string;
+  address?: string;
   referredFirstName?: string;
   referredLastName?: string;
   referredEmail?: string;
@@ -103,6 +107,7 @@ export interface IPaymentData {
   securityCode: string;
   cardExpirationMonth: string;
   cardExpirationYear: string;
+  cardExpiration: string;
   issuerInput: string;
   transactionAmount: string;
   paymentMethodId: string;

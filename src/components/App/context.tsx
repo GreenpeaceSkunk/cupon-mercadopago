@@ -56,34 +56,56 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   }, [ appName ]);
 
   useEffect(() => {
-    if(appData) {
-      if(appData.features) {
-        if(appData.features.use_design_version) {
-          setDesignVersion(appData.features.use_design_version);
-        } else {
-          setDesignVersion(1);
-        }
-      }
+    (async () => {
+      if(appData) {
+        if(appData.features) {
 
-      if(appData.settings) {
-        document.title = appData.settings.title 
-          ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
-          : 'Greenpeace Argentina';
-  
-        initializeHubspot(appData.settings.tracking.hubspot.id);
-        initializeMercadopago();
-        
-        switch (process.env.REACT_APP_ENVIRONMENT) {
-          case 'test':
-          case 'production':
-            initializeTagManager(appData.settings.tracking.google.tag_manager.id);
-            inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
-            initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
-            initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
-            break;
+          if(appData.features.use_design_version) {
+            setDesignVersion(appData.features.use_design_version);
+          } else {
+            setDesignVersion(1);
+          }
+
+          if(appData.features.payment_gateway.enabled) {
+            window.localStorage.setItem('ENABLE_PAYMENT_GATEWAY', appData.features.payment_gateway.enabled);
+
+            switch (appData.features.payment_gateway.third_party) {
+              case 'mercadopago':
+                initializeMercadopago();
+                break;
+              case 'transbank':
+                // TODO: implement it
+                alert('Transbank is not already implemented');
+                break;
+                case 'payu':
+                  // TODO: implement it
+                  alert('PayU is not already implemented');
+                  break;
+                  default:
+                alert('Please define a `Payment Gateway`');
+            }
+          }
+        }
+
+        if(appData.settings) {
+          document.title = appData.settings.title
+            ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
+            : `Greenpeace ${appData.settings.general.country}`;
+
+          initializeHubspot(appData.settings.tracking.hubspot.id);
+
+          switch (process.env.REACT_APP_ENVIRONMENT) {
+            case 'test':
+            case 'production':
+              initializeTagManager(appData.settings.tracking.google.tag_manager.id);
+              inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
+              initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
+              initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
+              break;
+          }
         }
       }
-    }
+    })();
   }, [ appData ]);
 
   useEffect(() => {
@@ -98,6 +120,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
 
   useEffect(() => {
     setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'general');
+    window.localStorage.removeItem('ENABLE_PAYMENT_GATEWAY');
 
     if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
       process.env.REACT_APP_ENVIRONMENT === 'production') {

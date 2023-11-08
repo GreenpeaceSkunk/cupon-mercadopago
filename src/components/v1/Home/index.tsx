@@ -91,14 +91,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData && appData.content && appData.content.home.title}</Elements.H1>
+              >{appData && appData.content && appData.content.home?.title}</Elements.H1>
               <Elements.WrapperHtml
                 customCss={css`
                   color: ${({theme}) => theme.color.secondary.dark};
                   font-size: ${pixelToRem(18)};
                   line-height: 140%;
                 `}
-                dangerouslySetInnerHTML={{__html: appData && appData.content && appData.content.home.text }}
+                dangerouslySetInnerHTML={{__html: appData && appData.content && appData.content.home?.text }}
               />
               <Elements.Span
                 customCss={css`
@@ -110,7 +110,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData && appData.content && appData.content.home.highlighted_text}</Elements.Span>
+              >{appData && appData.content && appData.content.home?.highlighted_text}</Elements.Span>
               <Elements.Button
                 onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
                 customCss={css`
@@ -122,7 +122,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     display: none;
                   }
                 `}
-              >{appData && appData.content && appData.content.home.button_text}</Elements.Button>
+              >{appData && appData.content && appData.content.home?.button_text}</Elements.Button>
             </Elements.Wrapper>
           </Elements.Wrapper>
         </Elements.Wrapper>
@@ -134,7 +134,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             width: 100%;
 
             @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
-              width: ${pixelToRem(480)};
+              width: ${pixelToRem(600)};
             }
           `}
         >

@@ -63,7 +63,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               margin-top: ${pixelToRem(40)};
             `}
             theme='color'
-            text={appData && appData.content && appData.content.thank_you.social_media_text}
+            text={appData && appData.content && appData.content.social_media.text}
+            data={appData && appData.content && appData.content.social_media.profiles}
           />
         </Suspense>
       </Elements.Wrapper>

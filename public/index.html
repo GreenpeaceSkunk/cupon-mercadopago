@@ -22,22 +22,32 @@
 
     <script>
       window.addEventListener('load', async function () {
-        const user = await window.axios({
-          url: `%REACT_APP_GREENPEACE_MERCADOPAGO_API_URL%/getPublicKey`,
-          method: 'GET',
-        });
+        if(window.localStorage.getItem('ENABLE_PAYMENT_GATEWAY') === null) {
+          let enablePaymentGateway;
+          const interval = setInterval(async () => {
+            if(window.localStorage.getItem('ENABLE_PAYMENT_GATEWAY') !== null) {
+              clearInterval(interval);
+              if(window.localStorage.getItem('ENABLE_PAYMENT_GATEWAY') === 'true') {
+                const user = await window.axios({
+                  url: `%REACT_APP_GREENPEACE_MERCADOPAGO_API_URL%/getPublicKey`,
+                  method: 'GET',
+                });
 
-        if(user) {
-          mp = new MercadoPago(user.data, {
-            locale: "en-US",
-            advancedFraudPrevention: true,
-          });
-
-          window.__mercadopago = mp;
+                if(user) {
+                  mp = new MercadoPago(user.data, {
+                    locale: "en-US",
+                    advancedFraudPrevention: true,
+                  });
+                  window.__mercadopago = mp;
+                }
+              } else {
+                console.log('Payment Gateway is disabled');
+              }
+            }
+          }, 500);
         }
       });
     </script>
-
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

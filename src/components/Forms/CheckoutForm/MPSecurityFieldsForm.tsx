@@ -4,13 +4,12 @@ import { validateCardHolderName, validateCitizenId, validateEmptyField } from '.
 import { css } from 'styled-components';
 import Elements from '../../Shared/Elements';
 import { createStaging } from '../../../services/mercadopago';
-import Shared, { Loader } from '../../Shared';
+import Shared from '../../Shared';
 import Form from '../../v1/Shared/Form';
 import useQuery from '../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
 import { AppContext } from '../../App/context';
-import { IData } from 'greenpeace';
-import { CheckoutFormContext, CheckoutFormProvider } from './context';
+import { CheckoutFormContext } from './context';
 import { postRecord, updateContact } from '../../../services/greenlab';
 import { getCardType } from '../../../utils/mercadopago';
 
@@ -340,9 +339,9 @@ const MPSecurityFieldsForm: React.FunctionComponent<{}> = () => {
     <Form.Main id="paymentForm">
       <Form.Header>
         <Elements.HGroup>
-          <Form.Title>{appData && appData.content && appData.content.form.checkout.title}</Form.Title>
+          <Form.Title>{appData && appData.content && appData.content.form.checkout?.title}</Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>{appData && appData.content && appData.content.form.checkout.text}</Shared.General.Text>
+        <Shared.General.Text>{appData && appData.content && appData.content.form.checkout?.text}</Shared.General.Text>
       </Form.Header>
       <Form.Content>
         <Form.Row>
@@ -433,7 +432,7 @@ const MPSecurityFieldsForm: React.FunctionComponent<{}> = () => {
           onClick={getCardToken}
         >{(submitting)
           ? <Shared.Loader mode='light' />
-          : (appData && appData.content && appData.content.form.checkout.button_text)}
+          : (appData && appData.content && appData.content.form.checkout?.button_text)}
         </Elements.Button>
       </Form.Nav>
     </Form.Main>

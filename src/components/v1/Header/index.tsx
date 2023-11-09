@@ -44,12 +44,14 @@ const MainHeader: FunctionComponent<{
           min-height: ${({theme}) => pixelToRem(theme.header.desktop.height)};
           background-color: ${({theme}) => theme.header.desktop.backgroundColor};
         }
-  
+
         ${customCss && customCss};
       `}
     >
       <Elements.Wrapper>
-        <Logo />
+        {appData && appData.content && appData.content.header.logo.show !== false && (
+          <Logo color={appData.content.header.logo.color}/>
+        )}
       </Elements.Wrapper>
       <Elements.Wrapper
         customCss={css`

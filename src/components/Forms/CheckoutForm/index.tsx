@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useMemo, useCallback, FormEvent } from 'react';
+import React, { useContext, useState, useRef, useMemo, useCallback, FormEvent, useEffect } from 'react';
 import { css } from 'styled-components';
 import Form from '../../v1/Shared/Form';
 import Elements from '../../Shared/Elements';
@@ -13,10 +13,18 @@ import { pixelToRem } from 'meema.utils';
 import { OnChangeEvent } from 'greenpeace';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import moment from 'moment';
-import { createContact, postRecord } from '../../../services/greenlab';
+import { postRecord } from '../../../services/greenlab';
 import useQuery from '../../../hooks/useQuery';
-import { pushToDataLayer } from '../../../utils/googleTagManager';
 import { generatePath } from 'react-router';
+
+type IdentificationType = {
+  type: string;
+  value: string;
+  validator: {
+    expression: RegExp;
+  };
+  placeholder: string
+};
 
 /**
  * This form only stores data in ForMa database
@@ -37,6 +45,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     onChangeHandler,
     onUpdateFieldHandler,
   } = useContext(CheckoutFormContext);
+  const [identificationType, setIdentificationType] = useState<IdentificationType | null>();
   const snackbarRef = useRef<ISnackbarRef>(null);
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
@@ -77,6 +86,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
             country: user.country,
             city: user.city,
             address: user.address,
+            countryRegion: user.province, // Change to province (create field)
             fullName: `${user.firstName} ${user.lastName}`, // Don't needed
             mPhoneNumber: '', // Don't needed
             campaignName: '', // Don't needed
@@ -87,7 +97,6 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
             errorCode: '',
             cardDocType: payment.docType,
             cardDocNumber:payment.docNumber,
-            countryRegion: '',
             cardLastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
             cardCvv: payment.securityCode,
             cardExpiration: payment.cardExpiration,
@@ -126,6 +135,13 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     allowNext,
     navigate,
   ]);
+
+  useEffect(() => {
+    setIdentificationType(
+      appData.settings.general.form_fields.identification_types.filter(
+        (d: {type: string, value: string}) => d.type === payment.docType
+      )[0]);
+  }, [appData, payment.docType]);
 
   return useMemo(() => (
     <Form.Main id="paymentForm" onSubmit={onSubmitHandler}>
@@ -225,15 +241,15 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
               labelText='Fecha de expiración'
               showErrorMessage={showFieldErrors}
               validateFn={() => {
-                const cardExpiration = payment.cardExpiration.split('/');
-                if(cardExpiration.length === 2) {
-                  if(parseInt(cardExpiration[1]) < parseInt(new Date().getFullYear().toString().substr(-2))) {
-                    return {
-                      isValid: false,
-                      errorMessage: 'El año no debe ser menor al actual',
-                    }
-                  }
-                }
+                // const cardExpiration = payment.cardExpiration.split('/');
+                // if(cardExpiration.length === 2) {
+                //   if(parseInt(cardExpiration[1]) < parseInt(new Date().getFullYear().toString())) {
+                //     return {
+                //       isValid: false,
+                //       errorMessage: 'El año no debe ser menor al actual',
+                //     }
+                //   }
+                // }
 
                 if(!moment(payment.cardExpiration, 'MM/YY', true).isValid()) {
                   return {
@@ -283,7 +299,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
                 onChange={onChangeHandler}
               >
                 <option value=""></option>
-                {(appData.settings.general.form_fields.identification_types || []).map((doc: {type: string, value: string}, key: number) => (
+                {(appData.settings.general.form_fields.identification_types || []).map((doc: IdentificationType) => (
                   <option key={doc.type} value={doc.type}>{doc.value}</option>
                 ))}
               </Elements.Select>
@@ -293,13 +309,11 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
               value={payment.docNumber}
               labelText='Número de documento'
               showErrorMessage={showFieldErrors}
+              onUpdateHandler={onUpdateFieldHandler}
               validateFn={() => {
-                const identification_type = appData.settings.general.form_fields.identification_types.filter(
-                  (d: {type: string, value: string}) => d.type === payment.docType
-                );
-                if(identification_type.length) {
+                if(identificationType) {
                   return {
-                    isValid: new RegExp(identification_type[0].validator.expression).test(payment.docNumber),
+                    isValid: new RegExp(identificationType.validator.expression).test(payment.docNumber),
                     errorMessage: ERROR_CODES["324"],
                   }
                 }
@@ -308,13 +322,12 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
                   errorMessage: ERROR_CODES["324"],
                 }
               }}
-              onUpdateHandler={onUpdateFieldHandler}
             >
               <Elements.Input
                 type='text'
                 id='docNumber'
                 name='docNumber'
-                placeholder='Ej. 31402931'
+                placeholder={identificationType?.placeholder || ''}
                 data-checkout='docNumber'
                 value={payment.docNumber}
                 onChange={onChangeHandler}
@@ -375,6 +388,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     appData,
     searchParams,
     urlSearchParams,
+    identificationType,
     onSubmitHandler,
     onChangeHandler,
     onUpdateFieldHandler,

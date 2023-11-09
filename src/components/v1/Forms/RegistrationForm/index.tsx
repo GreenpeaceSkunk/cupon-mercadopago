@@ -357,7 +357,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               <Elements.Input
                 name='phoneNumber'
                 type='text'
-                placeholder='Ej. 41239876'
+                placeholder={appData.settings.general.form_fields.phone_mobile_number?.placeholder || ''}
                 value={phoneNumber}
                 onChange={onChangeHandler}
               />

@@ -316,8 +316,6 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
                 name='docNumber'
                 placeholder='Ej. 31402931'
                 data-checkout='docNumber'
-                minLength={8} // Ver validación
-                maxLength={8} // Ver validación
                 value={payment.docNumber}
                 onChange={onChangeHandler}
               />

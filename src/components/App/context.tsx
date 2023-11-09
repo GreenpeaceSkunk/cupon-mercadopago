@@ -10,7 +10,7 @@ import { initialize as initializeTagManager, pushToDataLayer } from '../../utils
 import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
 import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as inititalizeAnalytics } from '../../utils/googleAnalytics';
-import { initialize as initializeHotjar } from '../../utils/hotjar';
+// import { initialize as initializeHotjar } from '../../utils/hotjar';
 import { initialize as initializeHubspot } from '../../utils/hubspot';
 import { Loader } from "../Shared";
 
@@ -100,7 +100,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
               initializeTagManager(appData.settings.tracking.google.tag_manager.id);
               inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
               initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
-              initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
+              // initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
               break;
           }
         }

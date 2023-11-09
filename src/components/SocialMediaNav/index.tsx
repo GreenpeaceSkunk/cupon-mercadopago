@@ -38,7 +38,6 @@ const Component: FunctionComponent<{
   textWeight = 'normal',
   data = null,
 }) => useMemo(() => {
-  console.log(data)
   return (
     <Elements.Wrapper
       customCss={css`

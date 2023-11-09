@@ -365,7 +365,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Column>
         </Form.Row>
 
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.country) && (
+        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.country.enabled) && (
           <Form.Row>
             <Form.Column>
               <Form.Group
@@ -393,7 +393,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Row>
         )}
 
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.province && country === appData.settings.general.country) && (
+        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.province.enabled && country === appData.settings.general.country) && (
           <Form.Row>
             <Form.Column>
               <Form.Group
@@ -422,7 +422,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Row>
         )}
 
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.city && country === appData.settings.general.country) && (
+        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.city.enabled && country === appData.settings.general.country) && (
           <Form.Row>
             <Form.Column>
               <Form.Group
@@ -451,7 +451,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Row>
         )}
 
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.address) && (
+        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.address.enabled) && (
           <Form.Row>
             <Form.Column>
               <Form.Group

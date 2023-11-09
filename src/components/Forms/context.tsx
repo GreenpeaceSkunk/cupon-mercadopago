@@ -31,7 +31,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   useEffect(() => {
     (async () => {
       if(appData.settings.general.form_fields) {
-        if(appData.settings.general.form_fields.location.country) {
+        if(appData.settings.general.form_fields.location.country.enabled) {
           dispatch({
             type: 'SET_FORM_FIELDS_SETTINGS',
             payload: {
@@ -40,7 +40,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
           });
         }
 
-        if(appData.settings.general.form_fields.location.province) {
+        if(appData.settings.general.form_fields.location.province.enabled) {
           dispatch({
             type: 'SET_FORM_FIELDS_SETTINGS',
             payload: {
@@ -49,7 +49,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
           });
         }
 
-        if(appData.settings.general.form_fields.location.city) {
+        if(appData.settings.general.form_fields.location.city.enabled) {
           dispatch({
             type: 'SET_FORM_FIELDS_SETTINGS',
             payload: {

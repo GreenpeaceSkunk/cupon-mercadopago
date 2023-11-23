@@ -4,10 +4,11 @@ export type FieldErrorType = { [fieldName: string]:boolean } | null;
 export type ErrorsType = { [index: string]: FieldErrorType } | null;
 
 type FieldType = { [x: string]: string | number };
+export type ProvinceType = {name: string; slug: string; cities: Array<string>};
 
 export type FormSharedType = {
   countries?: Array<{code: string; label: string; phone: string}>; // { code: "AD", label: "Andorra", phone: "376" } 
-  provinces?: Array<string>;
+  provinces?: Array<ProvinceType>;
   cities?: Array<string>;
 }
 
@@ -108,7 +109,11 @@ export const initialState: ContextStateType = {
       } : {})
     } as IPaymentData,
   } as IData,
-  shared: {},
+  shared: {
+    cities: [],
+    countries: [],
+    provinces: [],
+  },
   submitting: false,
   submitted: false,
   isEdited: false,

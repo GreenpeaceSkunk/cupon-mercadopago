@@ -21,6 +21,8 @@ import useQuery from '../../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../../Snackbar';
 import { createContact } from '../../../../services/greenlab';
 import { AppContext } from '../../../App/context';
+import { pixelToRem } from 'meema.utils';
+import { ProvinceType } from '../../../Forms/reducer';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
@@ -164,7 +166,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     (async () => {
       dispatch({
         type: 'UPDATE_FIELD',
-        payload: { ['country']: appData.settings.general.country }
+        payload: { ['country']: appData.country }
       });
 
       if(urlSearchParams.get('donate')) {
@@ -218,7 +220,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             <Form.Group
               value={amount}
               fieldName='amount'
-              labelText={`${params.couponType === 'oneoff' ? 'Autorizo el pago por única vez de:' : 'Autorizo el débito automático mensual de:'}`}
+              labelText={`
+                ${params.couponType === 'oneoff'
+                  ? appData.content.form.general.coupon_oneoff_label_text
+                  : appData.content.form.general.coupon_regular_label_text}`}
               showErrorMessage={showFieldErrors}
               displayAs='grid'
               gridColumns={3}
@@ -267,6 +272,20 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 </Form.Group>
               </Form.Column>
             ) : null}
+            {(params.couponType === 'oneoff') && (
+               <Form.Column>
+                <Elements.P
+                  dangerouslySetInnerHTML={{__html: appData.content.form.general.coupon_oneoff_label_text_2}}
+                  customCss={css`
+                    display: block;
+                    background: white;
+                    font-size: ${pixelToRem(14)};
+                    padding: ${pixelToRem(16)};
+                    border-radius: ${pixelToRem(6)};
+                  `}
+                />
+               </Form.Column>
+            )}
         </Form.Row>
         <Form.Row>
           <Form.Column>
@@ -393,62 +412,61 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Row>
         )}
 
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.province.enabled && country === appData.settings.general.country) && (
-          <Form.Row>
-            <Form.Column>
-              <Form.Group
-                fieldName='province'
-                value={province}
-                labelText='Provincia'
-                showErrorMessage={showFieldErrors}
-                validateFn={validateEmptyField}
-                onUpdateHandler={onUpdateFieldHandler}
-                isRequired={false}
-              >
-                <Elements.Select
-                  id="province"
-                  name="province"
-                  data-checkout="province"
+        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.province.enabled) && (
+          <>
+            <Form.Row>
+              <Form.Column>
+                <Form.Group
+                  fieldName='province'
                   value={province}
-                  onChange={onChangeHandler}
+                  labelText='Provincia'
+                  showErrorMessage={showFieldErrors}
+                  validateFn={validateEmptyField}
+                  onUpdateHandler={onUpdateFieldHandler}
+                  isRequired={false}
                 >
-                  <option value=""></option>
-                  {(provinces || []).map((value: string, key: number) => (
-                    <option key={key} value={value}>{value}</option>
-                  ))}
-                </Elements.Select>
-              </Form.Group>
-            </Form.Column>
-          </Form.Row>
-        )}
-
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.city.enabled && country === appData.settings.general.country) && (
-          <Form.Row>
-            <Form.Column>
-              <Form.Group
-                fieldName='city'
-                value={city}
-                labelText='Ciudad'
-                showErrorMessage={showFieldErrors}
-                validateFn={validateEmptyField}
-                onUpdateHandler={onUpdateFieldHandler}
-                isRequired={false}
-              >
-                <Elements.Select
-                  id="city"
-                  name="city"
-                  data-checkout="city"
+                  <Elements.Select
+                    id="province"
+                    name="province"
+                    data-checkout="province"
+                    value={province}
+                    onChange={onChangeHandler}
+                  >
+                    <option value=""></option>
+                    {(provinces || []).map((value: ProvinceType) => (
+                      <option key={value.slug} value={value.name}>{value.name}</option>
+                    ))}
+                  </Elements.Select>
+                </Form.Group>
+              </Form.Column>
+            </Form.Row>
+            <Form.Row>
+              <Form.Column>
+                <Form.Group
+                  fieldName='city'
                   value={city}
-                  onChange={onChangeHandler}
+                  labelText='Ciudad'
+                  showErrorMessage={showFieldErrors}
+                  validateFn={validateEmptyField}
+                  onUpdateHandler={onUpdateFieldHandler}
+                  isRequired={false}
                 >
-                  <option value=""></option>
-                  {(cities || []).map((value: string, key: number) => (
-                    <option key={key} value={value}>{value}</option>
-                  ))}
-                </Elements.Select>
-              </Form.Group>
-            </Form.Column>
-          </Form.Row>
+                  <Elements.Select
+                    id="city"
+                    name="city"
+                    data-checkout="city"
+                    value={city}
+                    onChange={onChangeHandler}
+                  >
+                    <option value=""></option>
+                    {(cities || []).map((value: string, key: number) => (
+                      <option key={key} value={value}>{value}</option>
+                    ))}
+                  </Elements.Select>
+                </Form.Group>
+              </Form.Column>
+            </Form.Row>
+          </>
         )}
 
         {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.address.enabled) && (

@@ -67,14 +67,14 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
 
           if(appData.features.payment_gateway.enabled) {
             switch (appData.features.payment_gateway.third_party) {
-              case 'mercadopago':
+              case 'Mercadopago':
                 initializeMercadopago();
                 break;
-              case 'transbank':
+              case 'Transbank':
                 // TODO: implement it
                 alert('Transbank is not already implemented');
                 break;
-                case 'payu':
+                case 'PayU':
                   // TODO: implement it
                   alert('PayU is not already implemented');
                   break;

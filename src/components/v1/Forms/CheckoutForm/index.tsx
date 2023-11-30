@@ -7,7 +7,7 @@ const Component: React.FunctionComponent<{}> = () => {
 
   const LazyCheckoutForm = lazy(() => {
     return (appData.features.payment_gateway.enabled)
-      ? import('../../../Forms/Mercadopago')
+      ? import(`../../../Forms/CheckoutForm/${appData.features.payment_gateway.third_party}`)
       : import('../../../Forms/CheckoutForm')
   });
 

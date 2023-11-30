@@ -104,7 +104,7 @@ export const initialState: ContextStateType = {
         cardholderName: 'APRO',
         // cardExpirationMonth: '11',
         // cardExpirationYear: '2025',
-        docNumber: '1023456789',
+        docNumber: '102345678',
         // docType: 'DNI',
       } : {})
     } as IPaymentData,

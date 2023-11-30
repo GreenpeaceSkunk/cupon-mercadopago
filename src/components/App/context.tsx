@@ -79,7 +79,6 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
                   alert('PayU is not already implemented');
                   break;
                   default:
-                alert('Please define a `Payment Gateway`');
             }
           }
         }

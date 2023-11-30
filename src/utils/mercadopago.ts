@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { CustomHTMLScriptElement, IData } from 'greenpeace';
 
 export type CardType = {
@@ -35,24 +36,37 @@ export const initialize = () => {
   (async () => {
     await initializeSdk();
     await initializeSecurityPayment();
+
+    const user = await axios({
+      url: `${process.env.REACT_APP_GREENPEACE_MERCADOPAGO_API_URL}/getPublicKey`,
+      method: 'GET',
+    });
+
+    if(user) {
+      const mp = new window.MercadoPago(user.data, {
+        locale: "en-US",
+        advancedFraudPrevention: true,
+      });
+      window.__mercadopago = mp;
+    }
   })();
 }
 
 export const initializeSdk = async () => {
   return await (async () => {
     let script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = `//sdk.mercadopago.com/js/v2`; 
-    document.body.appendChild(script);
+    script.setAttribute('src',"//sdk.mercadopago.com/js/v2");
+    document.getElementsByTagName("head")[0].appendChild(script);
   })();
 }
 
 export const initializeSecurityPayment = async () => {
   return await (async () => {
     let script: CustomHTMLScriptElement = document.createElement('script');
-    script.src = `//www.mercadopago.com/v2/security.js`;
-    script.view = 'home';
-    document.body.appendChild(script);
+    script.setAttribute('src',"//www.mercadopago.com/v2/security.js");
+    script.setAttribute('view',"checkout");
+    script.setAttribute('output',"deviceId");
+    document.getElementsByTagName("head")[0].appendChild(script);
   })();
 }
 

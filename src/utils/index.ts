@@ -52,10 +52,6 @@ export const getDesignVersion = (version?: number) => {
   return `${designVersion}`;
 };
 
-export const getPaymentGateway = () => {
-  return (window.localStorage.getItem('ENABLE_PAYMENT_GATEWAY') === 'true');
-}
-
 /**
  * Take the coupon name as a parameter.
  * If not coupon has been set, then return the base url.

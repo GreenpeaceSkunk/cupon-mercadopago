@@ -66,8 +66,6 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
           }
 
           if(appData.features.payment_gateway.enabled) {
-            window.localStorage.setItem('ENABLE_PAYMENT_GATEWAY', appData.features.payment_gateway.enabled);
-
             switch (appData.features.payment_gateway.third_party) {
               case 'mercadopago':
                 initializeMercadopago();
@@ -87,9 +85,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
         }
 
         if(appData.settings) {
-          document.title = appData.settings.title
-            ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
-            : `Greenpeace ${appData.settings.general.country}`;
+          document.title = appData.site_title ? appData.site_title : `Greenpeace ${appData.country}`;
 
           initializeHubspot(appData.settings.tracking.hubspot.id);
 
@@ -118,7 +114,6 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
 
   useEffect(() => {
     setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'general');
-    window.localStorage.removeItem('ENABLE_PAYMENT_GATEWAY');
 
     if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
       process.env.REACT_APP_ENVIRONMENT === 'production') {

@@ -85,6 +85,7 @@ const ButtonClose = styled(Elements.Button)`
   align-items: center;
   padding: 0;
   z-index: 1;
+  background-color: transparent;
 
   &:before {
     display: flex;
@@ -97,7 +98,7 @@ const ButtonClose = styled(Elements.Button)`
   }
 
   &:hover {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.05);
     box-shadow: none !important;
   }
 

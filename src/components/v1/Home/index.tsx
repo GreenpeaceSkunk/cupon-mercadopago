@@ -27,7 +27,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
-          
+
           @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
             flex-direction: row;
           }
@@ -131,9 +131,13 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             position: relative;
             flex-shrink: 0;
             flex-grow: 0;
-            width: 100%;
+            width: 100vw;
 
-            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
+            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.screen.medium.minWidth)}) {
+              width: 50vw;
+            }
+
+            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.screen.extraLarge.minWidth)}) {
               width: ${pixelToRem(600)};
             }
           `}

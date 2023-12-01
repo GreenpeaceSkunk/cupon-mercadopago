@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { lazy, Suspense, useContext, useMemo } from 'react';
 import { CheckoutFormProvider } from '../../../Forms/CheckoutForm/context';
-import MPSecurityFieldsForm from '../../../Forms/CheckoutForm/MPSecurityFieldsForm';
+import { AppContext } from '../../../App/context';
 
 const Component: React.FunctionComponent<{}> = () => {
-  return (
+  const {appData} = useContext(AppContext);
+
+  const LazyCheckoutForm = lazy(() => {
+    return (appData.features.payment_gateway.enabled)
+      ? import(`../../../Forms/CheckoutForm/${appData.features.payment_gateway.third_party}`)
+      : import('../../../Forms/CheckoutForm')
+  });
+
+  return useMemo(() => (
     <CheckoutFormProvider>
-      <MPSecurityFieldsForm />
+      <Suspense fallback={<div>Cargando formulario</div>}>
+        <LazyCheckoutForm />
+      </Suspense>
     </CheckoutFormProvider>
-  );
+  ), [ appData ]);
 };
 
 Component.displayName = 'CheckoutForm';

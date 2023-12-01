@@ -4,6 +4,13 @@ export type FieldErrorType = { [fieldName: string]:boolean } | null;
 export type ErrorsType = { [index: string]: FieldErrorType } | null;
 
 type FieldType = { [x: string]: string | number };
+export type ProvinceType = {name: string; slug: string; cities: Array<string>};
+
+export type FormSharedType = {
+  countries?: Array<{code: string; label: string; phone: string}>; // { code: "AD", label: "Andorra", phone: "376" } 
+  provinces?: Array<ProvinceType>;
+  cities?: Array<string>;
+}
 
 const autofill = process.env.REACT_APP_AUTOFILL_VALUES ? (process.env.REACT_APP_AUTOFILL_VALUES === 'true') ? true : false : false;
 
@@ -12,6 +19,7 @@ export type ContextStateType = {
     user: IUserData;
     payment: IPaymentData;
   };
+  shared: FormSharedType
   errors: FieldErrorType;
   isEdited: boolean;
   allowNext: boolean;
@@ -25,6 +33,7 @@ export type ContextActionType =
 | { type: 'UPDATE_USER_DATA', payload: FieldType }
 | { type: 'UPDATE_PAYMENT_DATA', payload: FieldType }
 | { type: 'UPDATE_FORM_STATUS' }
+| { type: 'SET_FORM_FIELDS_SETTINGS', payload: FormSharedType }
 | { type: 'SET_ERROR', error: string | null }
 | { type: 'RESET' }
 | SharedActions;
@@ -42,6 +51,9 @@ export const initialState: ContextStateType = {
       docNumber: '',
       docType: '',
       citizenId: '',
+      country: '',
+      province: '',
+      city: '',
       constituentId: '',
       referredAreaCode: '',
       referredDocNumber: '',
@@ -72,29 +84,36 @@ export const initialState: ContextStateType = {
       } : {}),
     } as IUserData,
     payment: {
-      cardNumber: '', 
+      cardNumber: '',
       cardholderName: '',
       securityCode: '',
       cardExpirationMonth: '12',
       cardExpirationYear: '25',
+      cardExpiration: '11/77',
       docNumber: '',
-      docType: 'DNI',
+      // docType: 'DNI',
+      docType: 'cedula_extranjera',
       newAmount: '',
       ...(autofill ? {
-        cardType: 'mastercard',
-        // cardNumber: '4509953566233704', // Visa
+        cardType: '2',
+        cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
         // cardNumber: '371180303257522', // AMEX
-        securityCode: '',
+        securityCode: '123',
         // securityCode: '1234',
         cardholderName: 'APRO',
         // cardExpirationMonth: '11',
         // cardExpirationYear: '2025',
-        docNumber: '10234567',
+        docNumber: '102345678',
         // docType: 'DNI',
       } : {})
     } as IPaymentData,
   } as IData,
+  shared: {
+    cities: [],
+    countries: [],
+    provinces: [],
+  },
   submitting: false,
   submitted: false,
   isEdited: false,
@@ -162,6 +181,15 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
         errors: tmpErrors,
         allowNext: Object.values(tmpErrors).length ? false : true,
       }
+    case 'SET_FORM_FIELDS_SETTINGS': {
+      return {
+        ...state,
+        shared: {
+          ...state.shared,
+          ...action.payload,
+        },
+      }
+    }
     case 'SET_ERROR': {
       return {
         ...state,

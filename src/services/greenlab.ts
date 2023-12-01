@@ -40,7 +40,7 @@ export const updateContact = async (email: string, data: any) => {
         'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
       },
       baseURL: `${getApiUrl()}/hubspot/contact/email/${email}`,
-      method: 'POST',
+      method: 'PUT',
       data,
     });
     return response;
@@ -79,13 +79,13 @@ export const getUserByEmail = async (email: string) => {
   }
 }
 
-export const postRecord = async (data: any) => {
+export const postRecord = async (data: any, form_id?: number) => {
   try {
     const response = await ApiCall({
       headers: {
         'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
       },
-      baseURL: `${getApiUrl()}/forma/form/${data.form_id}/record`,
+      baseURL: `${getApiUrl()}/forma/form/${data.form_id || form_id!}/record`,
       method: 'POST',
       data,
     });

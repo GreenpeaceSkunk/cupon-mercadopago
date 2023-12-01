@@ -17,11 +17,12 @@ import Form from '../../Shared/Form';
 import { addOrRemoveSlashToDate } from '../../../../utils';
 import { initialState, reducer } from '../../../Forms/RegistrationForm/reducer';
 import { pushToDataLayer } from '../../../../utils/googleTagManager';
-// import { pixelToRem } from 'meema.utils';
 import useQuery from '../../../../hooks/useQuery';
 import Snackbar, { IRef as ISnackbarRef } from '../../../Snackbar';
 import { createContact } from '../../../../services/greenlab';
 import { AppContext } from '../../../App/context';
+import { pixelToRem } from 'meema.utils';
+import { ProvinceType } from '../../../Forms/reducer';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
@@ -34,11 +35,20 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         email,
         areaCode,
         phoneNumber,
+        country,
+        province,
+        city,
+        address,
       },
       payment: {
         amount,
         newAmount,
       },
+    },
+    shared: {
+      countries,
+      provinces,
+      cities,
     },
     params,
     dispatch,
@@ -51,6 +61,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
+
     const name = evt.currentTarget.name;
     let value = evt.currentTarget.value;
 
@@ -84,7 +95,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           (fieldName === 'amount' && value === 'otherAmount')
           ? false
           : (fieldName === 'newAmount' && amount === 'otherAmount')
-          ? validateNewAmount(value).isValid
+          ? validateNewAmount(value, appData.settings.general.amounts.min_other_amount).isValid
           : true,
         }
       });
@@ -99,42 +110,44 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     }
   }, [
     amount,
+    appData,
     dispatchFormErrors,
   ]);
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
     evt.preventDefault();
-    
+
     if(!allowNext) {
       setShowFieldErrors(true);
       if(snackbarRef && snackbarRef.current) {
         snackbarRef.current.showSnackbar();
       }
-    } else {
-      dispatchFormErrors({
-        type: 'SUBMIT',
-      });
+      return;
+    }
 
-      const contact = await createContact({
-        email,
-        firstname: firstName,
-        lastname: lastName,
-        phone: `${areaCode}${phoneNumber}`,
-        donationStatus: 'requested',
-      });
+    dispatchFormErrors({
+      type: 'SUBMIT',
+    });
 
-      if(contact) {
-        pushToDataLayer({ 'event' : 'petitionSignup' });
+    const contact = await createContact({
+      email,
+      firstname: firstName,
+      lastname: lastName,
+      phone: `${areaCode}${phoneNumber}`,
+      donationStatus: 'requested',
+    });
 
-        if(params) {
-          navigate({
-            pathname: generatePath('/:couponType/forms/:formType', {
-              couponType: `${params.couponType}`,
-              formType: 'checkout',
-            }),
-            search: searchParams,
-          }, { replace: true });
-        }
+    if(contact) {
+      pushToDataLayer({ 'event' : 'petitionSignup' });
+
+      if(params) {
+        navigate({
+          pathname: generatePath('/:couponType/forms/:formType', {
+            couponType: `${params.couponType}`,
+            formType: 'checkout',
+          }),
+          search: searchParams,
+        }, { replace: true });
       }
     }
   }, [
@@ -150,42 +163,49 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   ]);
 
   useEffect(() => {
-    if(urlSearchParams.get('donate')) {
-      const amounts = appData.content.amounts.values || [];
+    (async () => {
       dispatch({
-        type: 'UPDATE_PAYMENT_DATA',
-        payload: {
-          ...(amounts.filter((a:number) => `${a}` === urlSearchParams.get('donate')).length) ? {
-            amount: `${urlSearchParams.get('donate')}`,
-          } : {
-            amount: 'otherAmount',
-            newAmount: `${urlSearchParams.get('donate')}`,
-          },
-        }
-      })
-    } else {
-      if(appData && appData.content) {
-        if(appData.content.amounts.values.filter((v: number) => v === appData.content.amounts.default).length) {
-          dispatch({
-            type: 'UPDATE_PAYMENT_DATA',
-            payload: { 'amount': `${appData.content.amounts.default}` }
-          });
-        } else {
-          dispatch({
-            type: 'UPDATE_PAYMENT_DATA',
-            payload: { 
-              'amount': 'otherAmount',
-              'newAmount': `${appData.content.amounts.default}`,
-            }
-          });
+        type: 'UPDATE_FIELD',
+        payload: { ['country']: appData.country }
+      });
+
+      if(urlSearchParams.get('donate')) {
+        const amounts = appData.settings.general.amounts.values || [];
+        dispatch({
+          type: 'UPDATE_PAYMENT_DATA',
+          payload: {
+            ...(amounts.filter((a:number) => `${a}` === urlSearchParams.get('donate')).length) ? {
+              amount: `${urlSearchParams.get('donate')}`,
+            } : {
+              amount: 'otherAmount',
+              newAmount: `${urlSearchParams.get('donate')}`,
+            },
+          }
+        })
+      } else {
+        if(appData && appData.content) {
+          if(appData.settings.general.amounts.values.filter((v: number) => v === appData.settings.general.amounts.default).length) {
+            dispatch({
+              type: 'UPDATE_PAYMENT_DATA',
+              payload: {'amount': `${appData.settings.general.amounts.default || ''}`}
+            });
+          } else {
+            dispatch({
+              type: 'UPDATE_PAYMENT_DATA',
+              payload: {
+                'amount': 'otherAmount',
+                'newAmount': `${appData.settings.general.amounts.default}`,
+              }
+            });
+          }
         }
       }
-    }
+    })();
   }, [
     appData,
     dispatch,
   ]);
-  
+
   return useMemo(() => (
     <Form.Main id='sign-form' onSubmit={onSubmitHandler}>
       <Form.Header>
@@ -200,29 +220,35 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             <Form.Group
               value={amount}
               fieldName='amount'
-              labelText={`${params.couponType === 'oneoff' ? 'Autorizo el pago por única vez de:' : 'Autorizo el débito automático mensual de:'}`}
+              labelText={`
+                ${params.couponType === 'oneoff'
+                  ? appData.content.form.general.coupon_oneoff_label_text
+                  : appData.content.form.general.coupon_regular_label_text}`}
               showErrorMessage={showFieldErrors}
+              displayAs='grid'
+              gridColumns={3}
               validateFn={validateEmptyField}
               onUpdateHandler={onUpdateFieldHandler}
-              >
-                {appData && appData.content && appData.content.amounts.values.map((value: number) => (
-                  <Form.RadioButton
-                    key={`${value}`}
-                    text={`$${value}`}
-                    name='amount'
-                    value={`${value}`}
-                    checkedValue={amount}
-                    onChangeHandler={onChangeHandler}
-                  />
-                ))}
+            >
+              {appData && appData.content && appData.settings.general.amounts.values.map((value: number) => (
                 <Form.RadioButton
-                  key='otherAmount'
-                  text='Otras donaciones'
+                  key={`${value}`}
+                  text={`${appData.settings.general.amounts.currency}${value}`}
                   name='amount'
-                  value='otherAmount'
+                  value={`${value}`}
                   checkedValue={amount}
                   onChangeHandler={onChangeHandler}
                 />
+              ))}
+              <Form.RadioButton
+                key='otherAmount'
+                text='Otras donaciones'
+                name='amount'
+                value='otherAmount'
+                checkedValue={amount}
+                onChangeHandler={onChangeHandler}
+                customCss={css``}
+              />
             </Form.Group>
           </Form.Column>
             {(amount === 'otherAmount') ? (
@@ -232,21 +258,34 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   value={newAmount}
                   labelText='Ingrese el monto'
                   showErrorMessage={showFieldErrors}
-                  validateFn={validateNewAmount}
+                  validateFn={() => validateNewAmount(newAmount, appData.settings.general.amounts.min_other_amount)}
                   onUpdateHandler={onUpdateFieldHandler}
                 >
                   <Elements.Input
                     name='newAmount'
                     type='text'
                     disabled={!(amount === 'otherAmount')} 
-                    // value={newAmount}
-                    placeholder='Ej. $350'
+                    placeholder={`Ej. ${appData.settings.general.amounts.currency}${appData.settings.general.amounts.min_other_amount}`}
                     maxLength={8}
                     onChange={onChangeHandler}
                   />
                 </Form.Group>
               </Form.Column>
             ) : null}
+            {(params.couponType === 'oneoff') && (
+               <Form.Column>
+                <Elements.P
+                  dangerouslySetInnerHTML={{__html: appData.content.form.general.coupon_oneoff_label_text_2}}
+                  customCss={css`
+                    display: block;
+                    background: white;
+                    font-size: ${pixelToRem(14)};
+                    padding: ${pixelToRem(16)};
+                    border-radius: ${pixelToRem(6)};
+                  `}
+                />
+               </Form.Column>
+            )}
         </Form.Row>
         <Form.Row>
           <Form.Column>
@@ -305,9 +344,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Column>
         </Form.Row>
         <Form.Row>
-          <Form.Column
-            bottomText='Escribe solo números y no agregues guiones.'
-          >
+          <Form.Column bottomText='Escribe solo números y no agregues guiones.'>
             <Form.Group
               fieldName='areaCode'
               value={areaCode}
@@ -339,13 +376,122 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               <Elements.Input
                 name='phoneNumber'
                 type='text'
-                placeholder='Ej. 41239876'
+                placeholder={appData.settings.general.form_fields.phone_mobile_number?.placeholder || ''}
                 value={phoneNumber}
                 onChange={onChangeHandler}
               />
             </Form.Group>
           </Form.Column>
         </Form.Row>
+
+        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.country.enabled) && (
+          <Form.Row>
+            <Form.Column>
+              <Form.Group
+                fieldName='country'
+                value={country}
+                labelText='País'
+                showErrorMessage={showFieldErrors}
+                validateFn={validateEmptyField}
+                onUpdateHandler={onUpdateFieldHandler}
+              >
+                <Elements.Select
+                  id="country"
+                  name="country"
+                  data-checkout="country"
+                  value={country}
+                  onChange={onChangeHandler}
+                >
+                  <option value=""></option>
+                  {(countries || []).map((value: any, key: number) => (
+                    <option key={key} value={value.label}>{value.label}</option>
+                  ))}
+                </Elements.Select>
+              </Form.Group>
+            </Form.Column>
+          </Form.Row>
+        )}
+
+        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.province.enabled) && (
+          <>
+            <Form.Row>
+              <Form.Column>
+                <Form.Group
+                  fieldName='province'
+                  value={province}
+                  labelText='Provincia'
+                  showErrorMessage={showFieldErrors}
+                  validateFn={validateEmptyField}
+                  onUpdateHandler={onUpdateFieldHandler}
+                  isRequired={false}
+                >
+                  <Elements.Select
+                    id="province"
+                    name="province"
+                    data-checkout="province"
+                    value={province}
+                    onChange={onChangeHandler}
+                  >
+                    <option value=""></option>
+                    {(provinces || []).map((value: ProvinceType) => (
+                      <option key={value.slug} value={value.name}>{value.name}</option>
+                    ))}
+                  </Elements.Select>
+                </Form.Group>
+              </Form.Column>
+            </Form.Row>
+            <Form.Row>
+              <Form.Column>
+                <Form.Group
+                  fieldName='city'
+                  value={city}
+                  labelText='Ciudad'
+                  showErrorMessage={showFieldErrors}
+                  validateFn={validateEmptyField}
+                  onUpdateHandler={onUpdateFieldHandler}
+                  isRequired={false}
+                >
+                  <Elements.Select
+                    id="city"
+                    name="city"
+                    data-checkout="city"
+                    value={city}
+                    onChange={onChangeHandler}
+                  >
+                    <option value=""></option>
+                    {(cities || []).map((value: string, key: number) => (
+                      <option key={key} value={value}>{value}</option>
+                    ))}
+                  </Elements.Select>
+                </Form.Group>
+              </Form.Column>
+            </Form.Row>
+          </>
+        )}
+
+        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.address.enabled) && (
+          <Form.Row>
+            <Form.Column>
+              <Form.Group
+                value={address}
+                fieldName='address'
+                labelText='Dirección'
+                showErrorMessage={showFieldErrors}
+                validateFn={validateEmptyField}
+                onUpdateHandler={onUpdateFieldHandler}
+                isRequired={false}
+              >
+                <Elements.Input
+                  name='address'
+                  type='address'
+                  placeholder=''
+                  value={address}
+                  onChange={onChangeHandler}
+                />
+              </Form.Group>
+            </Form.Column>
+          </Form.Row>
+        )}
       </Form.Content>
       <Snackbar
         ref={snackbarRef}
@@ -362,14 +508,21 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       </Form.Nav>
     </Form.Main>
   ), [
+    address,
     firstName,
     lastName,
     phoneNumber,
     amount,
     newAmount,
     email,
+    country,
+    province,
+    city,
     areaCode,
     submitting,
+    countries,
+    provinces,
+    cities,
     params,
     snackbarRef,
     showFieldErrors,

@@ -10,7 +10,6 @@ import { initialize as initializeTagManager, pushToDataLayer } from '../../utils
 import { initialize as initializeFacebookPixel, trackEvent } from '../../utils/facebookPixel';
 import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as inititalizeAnalytics } from '../../utils/googleAnalytics';
-import { initialize as initializeHotjar } from '../../utils/hotjar';
 import { initialize as initializeHubspot } from '../../utils/hubspot';
 import { Loader } from "../Shared";
 
@@ -56,34 +55,50 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   }, [ appName ]);
 
   useEffect(() => {
-    if(appData) {
-      if(appData.features) {
-        if(appData.features.use_design_version) {
-          setDesignVersion(appData.features.use_design_version);
-        } else {
-          setDesignVersion(1);
-        }
-      }
+    (async () => {
+      if(appData) {
+        if(appData.features) {
 
-      if(appData.settings) {
-        document.title = appData.settings.title 
-          ? `${process.env.REACT_APP_ENVIRONMENT !== 'production' ? '['+process.env.REACT_APP_ENVIRONMENT+'] ' : ''}${appData.settings.title}` 
-          : 'Greenpeace Argentina';
-  
-        initializeHubspot(appData.settings.tracking.hubspot.id);
-        initializeMercadopago();
-        
-        switch (process.env.REACT_APP_ENVIRONMENT) {
-          case 'test':
-          case 'production':
-            initializeTagManager(appData.settings.tracking.google.tag_manager.id);
-            inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
-            initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
-            initializeHotjar(appData.settings.tracking.hotjar.id, appData.settings.tracking.hotjar.sv);
-            break;
+          if(appData.features.use_design_version) {
+            setDesignVersion(appData.features.use_design_version);
+          } else {
+            setDesignVersion(1);
+          }
+
+          if(appData.features.payment_gateway.enabled) {
+            switch (appData.features.payment_gateway.third_party) {
+              case 'Mercadopago':
+                initializeMercadopago();
+                break;
+              case 'Transbank':
+                // TODO: implement it
+                alert('Transbank is not already implemented');
+                break;
+                case 'PayU':
+                  // TODO: implement it
+                  alert('PayU is not already implemented');
+                  break;
+                  default:
+            }
+          }
+        }
+
+        if(appData.settings) {
+          document.title = appData.site_title ? appData.site_title : `Greenpeace ${appData.country}`;
+
+          initializeHubspot(appData.settings.tracking.hubspot.id);
+
+          switch (process.env.REACT_APP_ENVIRONMENT) {
+            case 'test':
+            case 'production':
+              initializeTagManager(appData.settings.tracking.google.tag_manager.id);
+              inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
+              initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
+              break;
+          }
         }
       }
-    }
+    })();
   }, [ appData ]);
 
   useEffect(() => {

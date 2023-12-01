@@ -1,20 +1,19 @@
 import React, { useContext, useState, useRef, useEffect } from 'react';
 import { generatePath, useNavigate } from 'react-router-dom';
-import { validateCardHolderName, validateCitizenId, validateEmptyField } from '../../../utils/validators';
+import { validateCardHolderName, validateCitizenId, validateEmptyField } from '../../../../utils/validators';
 import { css } from 'styled-components';
-import Elements from '../../Shared/Elements';
-import { createStaging } from '../../../services/mercadopago';
-import Shared, { Loader } from '../../Shared';
-import Form from '../../v1/Shared/Form';
-import useQuery from '../../../hooks/useQuery';
-import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
-import { AppContext } from '../../App/context';
-import { IData } from 'greenpeace';
-import { CheckoutFormContext, CheckoutFormProvider } from './context';
-import { postRecord, updateContact } from '../../../services/greenlab';
-import { getCardType } from '../../../utils/mercadopago';
+import Elements from '../../../Shared/Elements';
+import { createStaging } from '../../../../services/mercadopago';
+import Shared from '../../../Shared';
+import Form from '../../../v1/Shared/Form';
+import useQuery from '../../../../hooks/useQuery';
+import Snackbar, { IRef as ISnackbarRef } from '../../../Snackbar';
+import { AppContext } from '../../../App/context';
+import { CheckoutFormContext } from '../context';
+import { postRecord, updateContact } from '../../../../services/greenlab';
+import { getCardType } from '../../../../utils/mercadopago';
 
-const MPSecurityFieldsForm: React.FunctionComponent<{}> = () => {
+const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
   const navigate = useNavigate();
   const [bin, setBin] = useState<string>('');
   const [paymentMethods, setPaymentMethods] = useState<any>();
@@ -70,14 +69,13 @@ const MPSecurityFieldsForm: React.FunctionComponent<{}> = () => {
       if(results.length) {
         const paymentMethod = results[0];
         (document.getElementById('paymentMethodId') as any).value = paymentMethod.id;
-        // updatePCIFieldsSettings(results[0]);
       }
     }
   }
 
   async function initSecurityFields() {
     const _cardNumberElement_ = window.__mercadopago.fields.create('cardNumber', {
-      placeholder: "Ej. 5053 1803 1950"
+      placeholder: "Ej. 4509 9535 6623 3704"
     })
     .on('binChange', getPaymentMethods)
     .mount('cardNumber');
@@ -208,8 +206,10 @@ const MPSecurityFieldsForm: React.FunctionComponent<{}> = () => {
           let errorCode, errorMessage;
           
           if(result['error']) {
+            if(result.message) {
+              errorMessage = result.message.replace(/,/g, '').replace(/;/g, '');
+            }
             errorCode = result.errorCode;
-            errorMessage = result.message.replace(/,/g, '').replace(/;/g, '');
             
             await updateContact(payload.email, { donationStatus });
           } else {
@@ -340,9 +340,9 @@ const MPSecurityFieldsForm: React.FunctionComponent<{}> = () => {
     <Form.Main id="paymentForm">
       <Form.Header>
         <Elements.HGroup>
-          <Form.Title>{appData && appData.content && appData.content.form.checkout.title}</Form.Title>
+          <Form.Title>{appData && appData.content && appData.content.form.checkout?.title}</Form.Title>
         </Elements.HGroup>
-        <Shared.General.Text>{appData && appData.content && appData.content.form.checkout.text}</Shared.General.Text>
+        <Shared.General.Text>{appData && appData.content && appData.content.form.checkout?.text}</Shared.General.Text>
       </Form.Header>
       <Form.Content>
         <Form.Row>
@@ -433,12 +433,12 @@ const MPSecurityFieldsForm: React.FunctionComponent<{}> = () => {
           onClick={getCardToken}
         >{(submitting)
           ? <Shared.Loader mode='light' />
-          : (appData && appData.content && appData.content.form.checkout.button_text)}
+          : (appData && appData.content && appData.content.form.checkout?.button_text)}
         </Elements.Button>
       </Form.Nav>
     </Form.Main>
   )
 };
 
-MPSecurityFieldsForm.displayName = 'MPSecurityFieldsForm';
-export default MPSecurityFieldsForm;
+MercadopagoCheckoutForm.displayName = 'MercadopagoCheckoutForm';
+export default MercadopagoCheckoutForm;

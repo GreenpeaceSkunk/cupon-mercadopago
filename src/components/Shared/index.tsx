@@ -17,9 +17,12 @@ export const Logo: React.FunctionComponent<{ color?: 'white' | 'green'; customCs
   >
     <Elements.Wrapper
       customCss={css`
-        width: ${pixelToRem(140)};
-        height: ${pixelToRem(20)};
+        width: ${pixelToRem(160)};
+        height: ${pixelToRem(30)};
         background-color: ${({theme}) => theme.color.primary.normal};
+        ${color && css`
+          background-color: ${color};
+        `}
         mask-image: url(${GreenpeaceLogo});
         mask-size: 100%;
         mask-repeat: no-repeat;
@@ -27,16 +30,6 @@ export const Logo: React.FunctionComponent<{ color?: 'white' | 'green'; customCs
     >
 
     </Elements.Wrapper>
-    {/* <Elements.Img 
-      alt='Greenpeace'
-      src={(color === 'green') ? Images.Icons.GreenpeaceLogoGreen : Images.Icons.GreenpeaceLogoWhite }
-      customCss={css`
-        width: ${pixelToRem(140)};
-        height: auto;
-
-        ${(customCss) && customCss};
-      `}
-    /> */}
   </Elements.A>
 );
 

@@ -115,7 +115,7 @@ const DefaultTheme: ITheme = {
     },
     desktop: {
       backgroundColor: '#2A2929',
-      height: 300,
+      height: 350,
     },
   },
   footer: {
@@ -144,6 +144,23 @@ const DefaultTheme: ITheme = {
     desktop: {
       minWidth: 1024,
     },
+    screen: {
+      small: {
+        minWidth: 576,
+      },
+      medium: {
+        minWidth: 768,
+      },
+      large: {
+        minWidth: 992,
+      },
+      extraLarge: {
+        minWidth: 1200,
+      },
+      extraExtraLarge: {
+        minWidth: 1600,
+      },
+    }
   },
 };
 

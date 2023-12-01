@@ -29,61 +29,77 @@ const Component: FunctionComponent<{
   text?: string;
   showBackground?: boolean;
   textWeight?: 'normal' | 'bold';
+  data?: any;
 }> = memo(({
   customCss,
   theme = 'light',
   text = '',
   showBackground = false,
   textWeight = 'normal',
-}) => useMemo(() => (
-  <Elements.Wrapper
-    customCss={css`
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      ${(customCss) && customCss};
-    `}
-  >
-    {(text) && (
-      <Elements.Span
-        customCss={css`
-          font-size: ${pixelToRem(14)};
-          margin-bottom: ${pixelToRem(18)};
-          color: ${({theme}) => theme.text.color.secondary.normal};
-          text-align: center;
-          font-family: ${({theme}) => (textWeight === 'bold') ? theme.font.family.primary.bold : theme.font.family.primary.normal };
-        `}
-        dangerouslySetInnerHTML={{__html: text}}
-      />
-    )}
-    <Elements.Nav
+  data = null,
+}) => useMemo(() => {
+  return (
+    <Elements.Wrapper
       customCss={css`
-        > * {
-          &:not(:last-child) {
-            margin-right: ${pixelToRem(16)};
-          }
-        }
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        ${(customCss) && customCss};
       `}
     >
-      <SocialButton
-        href={'https://www.facebook.com/GreenpeaceArg/'}
-        icon={theme === 'color' ? Icons.FacebookOrangeLogo : Icons.FacebookLogo}
-        showBackground={showBackground}
-      />
-      <SocialButton
-        href={'https://twitter.com/GreenpeaceArg'}
-        icon={theme === 'color' ? Icons.TwitterOrangeLogo : Icons.TwitterLogo}
-        showBackground={showBackground}
-      />
-      <SocialButton
-        href={'https://www.instagram.com/greenpeacearg/'}
-        icon={theme === 'color' ? Icons.InstagramOrangeLogo : Icons.InstagramLogo}
-        showBackground={showBackground}
-      />
-    </Elements.Nav>
-  </Elements.Wrapper>
-), [
+      {(text) && (
+        <Elements.Span
+          customCss={css`
+            font-size: ${pixelToRem(14)};
+            margin-bottom: ${pixelToRem(18)};
+            color: ${({theme}) => theme.text.color.secondary.normal};
+            text-align: center;
+            font-family: ${({theme}) => (textWeight === 'bold') ? theme.font.family.primary.bold : theme.font.family.primary.normal };
+          `}
+          dangerouslySetInnerHTML={{__html: text}}
+        />
+      )}
+      <Elements.Nav
+        customCss={css`
+          > * {
+            &:not(:last-child) {
+              margin-right: ${pixelToRem(16)};
+            }
+          }
+        `}
+      >
+        {
+          data && (
+            <>
+              {data.facebook.enabled && (
+                <SocialButton
+                  href={data.facebook.profile}
+                  icon={theme === 'color' ? Icons.FacebookOrangeLogo : Icons.FacebookLogo}
+                  showBackground={showBackground}
+                />
+              )}
+              {data.twitter.enabled && (
+                <SocialButton
+                  href={data.twitter.profile}
+                  icon={theme === 'color' ? Icons.TwitterOrangeLogo : Icons.TwitterLogo}
+                  showBackground={showBackground}
+                />
+              )}
+              {data.instagram.enabled && (
+                <SocialButton
+                  href={data.instagram.profile}
+                  icon={theme === 'color' ? Icons.InstagramOrangeLogo : Icons.InstagramLogo}
+                  showBackground={showBackground}
+                />
+              )}
+            </>
+          )
+        }
+      </Elements.Nav>
+    </Elements.Wrapper>
+  )
+}, [
   customCss,
   theme,
   text,

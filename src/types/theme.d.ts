@@ -96,6 +96,14 @@ export interface ITheme {
       backgroundColor?: string;
       height?: number;
     };
+    desktopLarge?: {
+      backgroundColor?: string;
+      height?: number;
+    };
+    desktopXLarge?: {
+      backgroundColor?: string;
+      height?: number;
+    };
   };
   footer: {
     mobile?: {
@@ -113,12 +121,12 @@ export interface ITheme {
   };
   responsive: {
     screen?: {
-      extraSmall: ResponsiveScreenType,
-      small: ResponsiveScreenType,
-      medium: ResponsiveScreenType,
-      large: ResponsiveScreenType,
-      extraLarge: ResponsiveScreenType,
-      extraExtraLarge: ResponsiveScreenType,
+      extraSmall?: ResponsiveScreenType,
+      small?: ResponsiveScreenType,
+      medium?: ResponsiveScreenType,
+      large?: ResponsiveScreenType,
+      extraLarge?: ResponsiveScreenType,
+      extraExtraLarge?: ResponsiveScreenType,
     },
     mobile: {
       minWidth?: number;

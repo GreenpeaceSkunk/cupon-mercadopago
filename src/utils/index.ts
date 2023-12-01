@@ -2,7 +2,11 @@ export const parseAmount = (value1?: string, value2?: string) => {
   return (value1 === 'otherAmount') ? value2 : value1;
 }
 
-export const addOrRemoveSlashToDate = (value: string):string => {
+export const addOrRemoveSlashToDate = (value: string, maxLength = 10):string => {
+  if(value.length >= maxLength) {
+    return value;
+  }
+
   const lastChart = value.charAt(value.length - 1);
   
   switch(value.length) {
@@ -31,14 +35,13 @@ export const addOrRemoveSlashToDate = (value: string):string => {
     }
 
     default: {
-      return (value.length > 10) ? value.slice(0, 10) : value;
+      return (value.length > maxLength) ? value.slice(0, maxLength) : value;
     }
   }
 };
 
 export const getAppName = (pathname: string) => {
   const paths = pathname.split('/').filter((a: string) => a !== "" );
-  console.log(paths, paths.length ? paths[0].replaceAll('/', '') : 'default')
   return paths.length ? paths[0].replaceAll('/', '') : 'default';
 } 
 

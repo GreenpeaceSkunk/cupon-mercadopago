@@ -27,7 +27,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           background-size: cover;
           background-repeat: no-repeat;
           background-position: center;
-          
+
           @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
             flex-direction: row;
           }
@@ -91,14 +91,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData && appData.content && appData.content.home.title}</Elements.H1>
+              >{appData && appData.content && appData.content.home?.title}</Elements.H1>
               <Elements.WrapperHtml
                 customCss={css`
                   color: ${({theme}) => theme.color.secondary.dark};
                   font-size: ${pixelToRem(18)};
                   line-height: 140%;
                 `}
-                dangerouslySetInnerHTML={{__html: appData && appData.content && appData.content.home.text }}
+                dangerouslySetInnerHTML={{__html: appData && appData.content && appData.content.home?.text }}
               />
               <Elements.Span
                 customCss={css`
@@ -110,7 +110,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     font-size: ${pixelToRem(24)};
                   }
                 `}
-              >{appData && appData.content && appData.content.home.highlighted_text}</Elements.Span>
+              >{appData && appData.content && appData.content.home?.highlighted_text}</Elements.Span>
               <Elements.Button
                 onClick={(evt: MouseEvent<HTMLButtonElement>) => {setIsOpen(true)}}
                 customCss={css`
@@ -122,7 +122,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     display: none;
                   }
                 `}
-              >{appData && appData.content && appData.content.home.button_text}</Elements.Button>
+              >{appData && appData.content && appData.content.home?.button_text}</Elements.Button>
             </Elements.Wrapper>
           </Elements.Wrapper>
         </Elements.Wrapper>
@@ -131,10 +131,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             position: relative;
             flex-shrink: 0;
             flex-grow: 0;
-            width: 100%;
+            width: 100vw;
 
-            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.desktop.minWidth)}) {
-              width: ${pixelToRem(480)};
+            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.screen.medium.minWidth)}) {
+              width: 50vw;
+            }
+
+            @media (min-width: ${({theme}) => pixelToRem(theme.responsive.screen.extraLarge.minWidth)}) {
+              width: ${pixelToRem(600)};
             }
           `}
         >

@@ -187,7 +187,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           if(appData.settings.general.amounts.values.filter((v: number) => v === appData.settings.general.amounts.default).length) {
             dispatch({
               type: 'UPDATE_PAYMENT_DATA',
-              payload: {'amount': appData.settings.general.amounts.default || ''}
+              payload: {'amount': `${appData.settings.general.amounts.default || ''}`}
             });
           } else {
             dispatch({

@@ -69,14 +69,13 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
       if(results.length) {
         const paymentMethod = results[0];
         (document.getElementById('paymentMethodId') as any).value = paymentMethod.id;
-        // updatePCIFieldsSettings(results[0]);
       }
     }
   }
 
   async function initSecurityFields() {
     const _cardNumberElement_ = window.__mercadopago.fields.create('cardNumber', {
-      placeholder: "Ej. 5053 1803 1950"
+      placeholder: "Ej. 4509 9535 6623 3704"
     })
     .on('binChange', getPaymentMethods)
     .mount('cardNumber');
@@ -207,8 +206,10 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
           let errorCode, errorMessage;
           
           if(result['error']) {
+            if(result.message) {
+              errorMessage = result.message.replace(/,/g, '').replace(/;/g, '');
+            }
             errorCode = result.errorCode;
-            errorMessage = result.message.replace(/,/g, '').replace(/;/g, '');
             
             await updateContact(payload.email, { donationStatus });
           } else {

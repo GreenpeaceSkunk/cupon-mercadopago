@@ -40,7 +40,7 @@ export const updateContact = async (email: string, data: any) => {
         'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
       },
       baseURL: `${getApiUrl()}/hubspot/contact/email/${email}`,
-      method: 'POST',
+      method: 'PUT',
       data,
     });
     return response;

@@ -1,11 +1,11 @@
-import React, { useContext, useState, useRef, useMemo, useCallback, FormEvent, useEffect } from 'react';
+import React, { useContext, useState, useRef, useMemo, useCallback, FormEvent } from 'react';
 import { css } from 'styled-components';
 import Form from '../../v1/Shared/Form';
 import Elements from '../../Shared/Elements';
 import Shared from '../../Shared';
 import { AppContext } from '../../App/context';
 import { useNavigate } from 'react-router';
-import { CheckoutFormContext } from './context';
+import { CheckoutFormContext, IdentificationType } from './context';
 import { validateCardHolderName, validateCreditCard, validateCvv, validateEmptyField } from '../../../utils/validators';
 import { ERROR_CODES } from '../../../utils/mercadopago';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
@@ -16,15 +16,6 @@ import moment from 'moment';
 import { postRecord } from '../../../services/greenlab';
 import useQuery from '../../../hooks/useQuery';
 import { generatePath } from 'react-router';
-
-type IdentificationType = {
-  type: string;
-  value: string;
-  validator: {
-    expression: RegExp;
-  };
-  placeholder: string
-};
 
 /**
  * This form only stores data in ForMa database
@@ -41,11 +32,11 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     payment,
     user,
     params,
+    identificationType,
     dispatchFormErrors,
     onChangeHandler,
     onUpdateFieldHandler,
   } = useContext(CheckoutFormContext);
-  const [identificationType, setIdentificationType] = useState<IdentificationType | null>();
   const snackbarRef = useRef<ISnackbarRef>(null);
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
@@ -61,9 +52,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
 
-      dispatchFormErrors({
-        type: 'SUBMIT',
-      });
+      dispatchFormErrors({ type: 'SUBMIT' });
 
       /* Backup to Forma. */
       if(appData?.settings?.service?.forma?.transactions_form) {
@@ -84,9 +73,9 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
             card: payment.cardNumber,
             card_type: parseInt(`${payment.cardType}`),
             country: user.country,
-            city: user.city,
-            address: user.address,
-            countryRegion: user.province, // Change to province (create field)
+            city: user.city || '',
+            address: user.address || '',
+            countryRegion: user.province || '', // Change to province (create field)
             fullName: `${user.firstName} ${user.lastName}`, // Don't needed
             mPhoneNumber: '', // Don't needed
             campaignName: '', // Don't needed
@@ -135,13 +124,6 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     allowNext,
     navigate,
   ]);
-
-  useEffect(() => {
-    setIdentificationType(
-      appData.settings.general.form_fields.identification_types.filter(
-        (d: {type: string, value: string}) => d.type === payment.docType
-      )[0]);
-  }, [appData, payment.docType]);
 
   return useMemo(() => (
     <Form.Main id="paymentForm" onSubmit={onSubmitHandler}>

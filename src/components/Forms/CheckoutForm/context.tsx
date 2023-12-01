@@ -1,7 +1,17 @@
-import React, { createContext, useCallback, useContext, useMemo, useReducer, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { FormContext } from '../context';
 import { reducer, initialState, ContextActionType } from './reducer';
 import { IPaymentData, IUserData, OnChangeEvent, ParamsType } from 'greenpeace';
+import { AppContext } from '../../App/context';
+
+export type IdentificationType = {
+  type: string;
+  value: string;
+  validator: {
+    expression: RegExp;
+  };
+  placeholder: string
+};
 
 export interface IContext {
   submitting?: boolean;
@@ -13,12 +23,11 @@ export interface IContext {
   payment: IPaymentData;
   user: IUserData;
   params: ParamsType;
+  identificationType?: IdentificationType | null,
   dispatch: any;
   dispatchFormErrors: React.Dispatch<ContextActionType>;
   onChangeHandler: (evt: OnChangeEvent) => void;
   onUpdateFieldHandler: (fieldName: string, isValid: boolean, value: any) => void;
-  onChangeMPSecureFields: ({ field, errorMessages }: { field: string, errorMessages: [{ message: string, cause: string }]}) => void;
-  onReadyMPSecureFields: ({ field }: { field: string}) => void;
 }
 
 interface IProps {
@@ -30,8 +39,10 @@ Context.displayName = 'CheckoutFormContext';
 const { Provider, Consumer } = Context;
 
 const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
+  const { appData } = useContext(AppContext);
   const { data: { payment, user }, params, dispatch } = useContext(FormContext);
   const [{ submitting, submitted, allowNext, error, errorDate, attemps }, dispatchFormErrors ] = useReducer(reducer, initialState);
+  const [identificationType, setIdentificationType] = useState<IdentificationType | null>();
 
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
@@ -39,9 +50,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
       type: 'UPDATE_PAYMENT_DATA',
       payload: { [ evt.currentTarget.name ]: evt.currentTarget.value }
     });
-  }, [
-    dispatch,
-  ]);
+  }, [ dispatch ]);
 
   const onUpdateFieldHandler = useCallback((fieldName: string, isValid: boolean, value: any) => {
     dispatchFormErrors({
@@ -53,35 +62,12 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
     });
   }, []);
 
-  /**
-   * Mercadopago fields validation (on change)
-   * https://github.com/mercadopago/sdk-js/blob/main/API/fields.md
-   */
-  const onChangeMPSecureFields = useCallback(
-    ({ field, errorMessages }: { field: string, errorMessages: [{ message: string, cause: string }]
-  }) => {
-    dispatchFormErrors({
-      type: 'UPDATE_FIELD_ERRORS',
-      payload: {
-        fieldName: field,
-        isValid: errorMessages.length ? false : true,
-      }
-    });
-  }, []);
-
-  /**
-   * Mercadopago fields validation (on ready)
-   * https://github.com/mercadopago/sdk-js/blob/main/API/fields.md
-   */
-  const onReadyMPSecureFields = useCallback(({ field }: { field: string}) => {
-    dispatchFormErrors({
-      type: 'UPDATE_FIELD_ERRORS',
-      payload: {
-        fieldName: field,
-        isValid: false,
-      }
-    });
-  }, []);
+  useEffect(() => {
+    setIdentificationType(
+      appData.settings.general.form_fields.identification_types.filter(
+        (d: {type: string, value: string}) => d.type === payment.docType
+      )[0]);
+  }, [appData, payment.docType]);
 
   return useMemo(() => (
     <Provider
@@ -95,16 +81,16 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
         payment,
         user,
         params,
+        identificationType,
         dispatch,
         dispatchFormErrors,
         onChangeHandler,
         onUpdateFieldHandler,
-        onChangeMPSecureFields,
-        onReadyMPSecureFields,
       }}>
         {children}
       </Provider>
   ), [
+    appData,
     submitted,
     submitting,
     allowNext,
@@ -114,12 +100,11 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
     payment,
     user,
     params,
+    identificationType,
     dispatch,
     dispatchFormErrors,
     onChangeHandler,
     onUpdateFieldHandler,
-    onChangeMPSecureFields,
-    onReadyMPSecureFields,
   ]);
 };
 

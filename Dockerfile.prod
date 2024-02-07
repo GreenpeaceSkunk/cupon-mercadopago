@@ -1,13 +1,10 @@
-# Name the node stage "builder"
-FROM node:16 AS builder
-# Set working directory
+FROM node:18.19.0 AS builder
+
 WORKDIR /app
 
-# Copy all files from current directory to working dir in image
-# If you want to install the project
 COPY . .
 
-RUN npm install --location=global npm@8.15.0
+RUN npm install --location=global npm@9.3.1
 RUN npm install --location=global typescript
 RUN npm install --location=global react-scripts
 RUN npm install --legacy-peer-deps

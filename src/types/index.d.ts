@@ -94,6 +94,7 @@ export interface IUserData {
   referredPhoneNumber?: string;
   referredDocNumber?: string;
   referredDocType?: string;
+  zipCode?: string;
 }
 
 export interface IHubspotUserData {

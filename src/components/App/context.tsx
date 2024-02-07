@@ -3,7 +3,6 @@ import useQuery from "../../hooks/useQuery";
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../theme/globalStyle';
 import ErrorBoundary from '../ErrorBoundary';
-import Elements from '@bit/meema.ui-components.elements';
 import { getCoupon } from "../../services/greenlab";
 import { initialState, reducer } from './reducer';
 import { initialize as initializeTagManager, pushToDataLayer } from '../../utils/googleTagManager';
@@ -12,6 +11,7 @@ import { initialize as initializeMercadopago } from '../../utils/mercadopago';
 import { initialize as inititalizeAnalytics } from '../../utils/googleAnalytics';
 import { initialize as initializeHubspot } from '../../utils/hubspot';
 import { Loader } from "../Shared";
+import { useLocation } from "react-router";
 
 interface IContext {
   urlSearchParams: URLSearchParams;
@@ -36,6 +36,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const [ theme, setTheme ] = useState<any>();
   const [ router, setRouter ] = useState<any>(<Loader />);
   const { urlSearchParams } = useQuery();
+  const location = useLocation();
 
   useEffect(() => {
     window.sessionStorage.removeItem('greenlab_app_name');
@@ -66,19 +67,17 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
           }
 
           if(appData.features.payment_gateway.enabled) {
-            switch (appData.features.payment_gateway.third_party) {
-              case 'Mercadopago':
+            switch (`${appData.features.payment_gateway.third_party}`.toLowerCase()) {
+              case 'mercadopago':
                 initializeMercadopago();
-                break;
-              case 'Transbank':
-                // TODO: implement it
-                alert('Transbank is not already implemented');
-                break;
-                case 'PayU':
-                  // TODO: implement it
-                  alert('PayU is not already implemented');
-                  break;
-                  default:
+              break;
+              case 'transbank':
+                alert('Transbank is not working yet');
+              break;
+                case 'payu':
+                  alert('PayU is not working yet');
+              break;
+              default:
             }
           }
         }
@@ -128,20 +127,12 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
       isOpen,
       setIsOpen,
     }}>
-      {(!appData || !designVersion || !theme)
-        ? (
-          <Elements.Wrapper>
-            <Loader />
-          </Elements.Wrapper>
-        ) : <>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            <ErrorBoundary>
-              <>{router}</>
-            </ErrorBoundary>
-          </ThemeProvider>
-
-        </>}
+      <ThemeProvider theme={theme ?? {}}>
+        <GlobalStyle />
+        <ErrorBoundary>
+          <>{router}</>
+        </ErrorBoundary>
+      </ThemeProvider>
     </Provider>
   ), [
     appData,

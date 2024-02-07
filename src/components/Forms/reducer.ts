@@ -81,6 +81,7 @@ export const initialState: ContextStateType = {
         referredFirstName: 'Jhon',
         referredLastName: 'Doe',
         referredPhoneNumber: '98765432',
+        zipCode: 'CP1429',
       } : {}),
     } as IUserData,
     payment: {
@@ -89,14 +90,15 @@ export const initialState: ContextStateType = {
       securityCode: '',
       cardExpirationMonth: '12',
       cardExpirationYear: '25',
-      cardExpiration: '11/77',
+      cardExpiration: '11/27',
       docNumber: '',
       // docType: 'DNI',
       docType: 'cedula_extranjera',
       newAmount: '',
       ...(autofill ? {
         cardType: '2',
-        cardNumber: '4509953566233704', // Visa
+        cardNumber: '1234567890123456',
+        // cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
         // cardNumber: '371180303257522', // AMEX
         securityCode: '123',
@@ -132,6 +134,9 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
           user: {
             ...state.data.user,
             ...action.payload,
+            ...(action.payload.province === '') ? {
+              city: '',
+            } : null,
           },
         },
       }

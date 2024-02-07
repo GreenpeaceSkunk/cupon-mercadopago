@@ -31,7 +31,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   useEffect(() => {
     (async () => {
       if(appData.settings.general.form_fields) {
-        if(appData.settings.general.form_fields.location.country.enabled) {
+        if(appData.settings.general.form_fields.location.country.show) {
           dispatch({
             type: 'SET_FORM_FIELDS_SETTINGS',
             payload: {
@@ -56,7 +56,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
 
   useEffect(() => {
     (async () => {
-      if(data.user.country && appData.settings.general.form_fields.location.province.enabled) {
+      if(data.user.country && appData.settings.general.form_fields.location.province.show) {
         const provinces = (await (await fetch(`${process.env.REACT_APP_GREENLAB_API_URL}/location/world/countries/${data.user.country}`)).json());
         dispatch({
           type: 'SET_FORM_FIELDS_SETTINGS',

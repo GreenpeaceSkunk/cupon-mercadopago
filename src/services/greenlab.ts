@@ -79,13 +79,13 @@ export const getUserByEmail = async (email: string) => {
   }
 }
 
-export const postRecord = async (data: any, form_id?: number) => {
+export const postRecord = async (data: any, formId?: number) => {
   try {
     const response = await ApiCall({
       headers: {
         'X-Greenlab-App': `${window.sessionStorage.getItem('greenlab_app_name')}`,
       },
-      baseURL: `${getApiUrl()}/forma/form/${data.form_id || form_id!}/record`,
+      baseURL: `${getApiUrl()}/forma/form/${data.formId || formId!}/record`,
       method: 'POST',
       data,
     });

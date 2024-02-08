@@ -31,7 +31,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       user: {
         firstName,
         lastName,
-        birthDate,
         email,
         areaCode,
         phoneNumber,
@@ -66,11 +65,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
     const name = evt.currentTarget.name;
     let value = evt.currentTarget.value;
-
-    if(name === 'birthDate' && birthDate) {
-      value = addOrRemoveSlashToDate((value.length < birthDate.length && birthDate.charAt(birthDate.length - 1) === '/') ? birthDate : value);
-    }
-
+    
     if(name === 'amount' || name === 'newAmount') {
       dispatch({
         type: 'UPDATE_PAYMENT_DATA',
@@ -83,7 +78,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       });
     }
   }, [
-    birthDate,
     dispatch,
   ]);
 

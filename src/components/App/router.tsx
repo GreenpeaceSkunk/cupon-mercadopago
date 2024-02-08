@@ -26,7 +26,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   useEffect(() => {
     if(pathname === '/' && couponType) {
       navigate({
-        pathname: generatePath(':couponType/forms', { couponType }),
+        pathname: generatePath(':couponType/forms/registration', { couponType }),
         search: `${searchParams}`,
       });
     } else {

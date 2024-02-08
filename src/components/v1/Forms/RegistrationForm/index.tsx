@@ -40,6 +40,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         city,
         address,
         zipCode,
+        genre,
       },
       payment: {
         amount,
@@ -313,6 +314,27 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 onChange={onChangeHandler}
               />
             </Form.Group>
+            <Form.Group
+              fieldName='genre'
+              value={genre}
+              labelText='Género'
+              showErrorMessage={showFieldErrors}
+              validateFn={validateEmptyField}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Elements.Select
+                id="genre"
+                name="genre"
+                data-checkout="genre"
+                value={genre}
+                onChange={onChangeHandler}
+              >
+                <option value=""></option>
+                {['Femenino', 'Masculino', 'No binario'].map((value: string, key: number) => (
+                  <option key={key} value={value}>{value}</option>
+                ))}
+              </Elements.Select>
+            </Form.Group>
           </Form.Column>
         </Form.Row>
         <Form.Row>
@@ -539,6 +561,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     address,
     firstName,
     lastName,
+    genre,
     phoneNumber,
     amount,
     newAmount,

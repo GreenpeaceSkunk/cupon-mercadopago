@@ -36,7 +36,6 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const [ theme, setTheme ] = useState<any>();
   const [ router, setRouter ] = useState<any>(<Loader />);
   const { urlSearchParams } = useQuery();
-  const location = useLocation();
 
   useEffect(() => {
     window.sessionStorage.removeItem('greenlab_app_name');
@@ -64,6 +63,10 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
             setDesignVersion(appData.features.use_design_version);
           } else {
             setDesignVersion(1);
+          }
+
+          if(appData.features.expand_form) {
+            setIsOpen(appData.features.expand_form);
           }
 
           if(appData.features.payment_gateway.enabled) {

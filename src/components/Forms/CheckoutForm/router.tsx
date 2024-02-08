@@ -19,7 +19,7 @@ const Router: React.FunctionComponent<{}> = memo(() => {
     <Routes>
       <Route path='mercadopago' element={<Suspense fallback={<Loader/>}><MercadopagoCheckoutFormRouter/></Suspense>} />
       <Route path='offline' element={<Suspense fallback={<Loader/>}><OfflineCheckoutForm/></Suspense>} />
-      <Route path='*' element={<Navigate to='offline' />} />
+      <Route path='*' element={<Navigate to={`offline${searchParams}`} />} />
     </Routes>
   ), [
     appData,

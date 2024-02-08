@@ -67,7 +67,7 @@ export const initialState: ContextStateType = {
         lastName: 'Deer',
         birthDate: '20/03/1985',
         email: 'doe.deer@email.com',
-        genre: '',
+        genre: 'No binario',
         phoneNumber: '44440000',
         areaCode: '11',
         docNumber: '12345678',

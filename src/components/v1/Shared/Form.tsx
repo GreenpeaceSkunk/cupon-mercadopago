@@ -27,10 +27,11 @@ const Main = styled(Elements.Form)`
   justify-content: flex-start;
   flex-shrink: 0;
   flex-basis: 100%;
-  width: 100%;
   padding: ${pixelToRem(50)} ${pixelToRem(40)} ${pixelToRem(160)};
+  width: 100%;
   height: 100vh;
   overflow-y: scroll;
+  overflow-x: hidden;
 
   @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
     padding-bottom: 0; 
@@ -82,7 +83,7 @@ const Nav: React.FunctionComponent<{
           left: calc(100vw * ${formIndex});
           right: 0;
           bottom: 0;
-          box-shadow: 0 0 ${pixelToRem(20)} rgba(0, 0, 0, .1);
+          box-shadow: 0 0 ${pixelToRem(20)} rgba(0, 0, 0, .2);
         }
         
         ${customCss && customCss};

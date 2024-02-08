@@ -18,6 +18,7 @@ const Main = styled(Elements.Form)`
   width: 100%;
   height: 100vh;
   overflow-y: scroll;
+  overflow-x: hidden;
 
   @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
     padding-bottom: 0; 

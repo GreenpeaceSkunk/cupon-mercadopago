@@ -541,7 +541,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         ref={snackbarRef}
         text='Tenés campos incompletos o con errores. Revisalos para continuar.'
       />
-      <Form.Nav>
+      <Form.Nav
+        customCss={css`
+          background-color: ${({theme}) => theme.color.secondary.light};
+        `}
+      >
         <Elements.Button
           type='submit'
           disabled={(submitting) ? true : false}

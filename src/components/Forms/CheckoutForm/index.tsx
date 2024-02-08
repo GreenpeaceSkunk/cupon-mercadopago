@@ -59,7 +59,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
       if(appData?.settings?.service?.forma?.form_id) {
         const payload = {
           address: user.address || '',
-          amount: payment.amount,
+          amount: payment.amount === 'otherAmount' ? payment.newAmount : payment.amount,
           appUiVersion: appData.features.use_design_version,
           appName: appData.name,
           areaCode: user.areaCode,

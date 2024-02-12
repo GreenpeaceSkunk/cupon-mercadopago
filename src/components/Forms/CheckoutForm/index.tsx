@@ -56,7 +56,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
       dispatchFormErrors({ type: 'SUBMIT' });
 
       /* Backup to Forma. */
-      if(appData?.settings?.service?.forma?.form_id) {
+      if(appData?.settings?.services?.forma?.form_id) {
         const payload = {
           address: user.address || '',
           amount: payment.amount === 'otherAmount' ? payment.newAmount : payment.amount,
@@ -103,7 +103,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
         
         await postRecord(
           payload,
-          appData?.settings?.service?.forma?.form_id,
+          appData?.settings?.services?.forma?.form_id,
         );
       }
 

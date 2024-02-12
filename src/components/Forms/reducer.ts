@@ -88,12 +88,12 @@ export const initialState: ContextStateType = {
       cardNumber: '',
       cardholderName: '',
       securityCode: '',
-      cardExpirationMonth: '12',
-      cardExpirationYear: '25',
-      cardExpiration: '11/27',
+      cardExpirationMonth: '',
+      cardExpirationYear: '',
+      cardExpiration: '',
       docNumber: '',
       // docType: 'DNI',
-      docType: 'cedula_extranjera',
+      docType: '',
       newAmount: '',
       ...(autofill ? {
         cardType: '2',
@@ -101,12 +101,14 @@ export const initialState: ContextStateType = {
         // cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
         // cardNumber: '371180303257522', // AMEX
+        docType: '',
         securityCode: '123',
         // securityCode: '1234',
         cardholderName: 'APRO',
         // cardExpirationMonth: '11',
         // cardExpirationYear: '2025',
         docNumber: '102345678',
+        cardExpiration: '11/27',
         // docType: 'DNI',
       } : {})
     } as IPaymentData,

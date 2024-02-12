@@ -98,7 +98,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
           utmSource: urlSearchParams.get('utm_source') || '',
           utmContent: urlSearchParams.get('utm_content') || '',
           utmTerm: urlSearchParams.get('utm_term') || '',
-          zipCode: user.zipCode,
+          zipCode: user.zipCode || '',
         };
         
         await postRecord(

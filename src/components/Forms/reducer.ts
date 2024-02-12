@@ -67,7 +67,7 @@ export const initialState: ContextStateType = {
         lastName: 'Deer',
         birthDate: '20/03/1985',
         email: 'doe.deer@email.com',
-        genre: '',
+        genre: 'No binario',
         phoneNumber: '44440000',
         areaCode: '11',
         docNumber: '12345678',
@@ -81,30 +81,34 @@ export const initialState: ContextStateType = {
         referredFirstName: 'Jhon',
         referredLastName: 'Doe',
         referredPhoneNumber: '98765432',
+        zipCode: 'CP1429',
       } : {}),
     } as IUserData,
     payment: {
       cardNumber: '',
       cardholderName: '',
       securityCode: '',
-      cardExpirationMonth: '12',
-      cardExpirationYear: '25',
-      cardExpiration: '11/77',
+      cardExpirationMonth: '',
+      cardExpirationYear: '',
+      cardExpiration: '',
       docNumber: '',
       // docType: 'DNI',
-      docType: 'cedula_extranjera',
+      docType: '',
       newAmount: '',
       ...(autofill ? {
         cardType: '2',
-        cardNumber: '4509953566233704', // Visa
+        cardNumber: '1234567890123456',
+        // cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
         // cardNumber: '371180303257522', // AMEX
+        docType: '',
         securityCode: '123',
         // securityCode: '1234',
         cardholderName: 'APRO',
         // cardExpirationMonth: '11',
         // cardExpirationYear: '2025',
         docNumber: '102345678',
+        cardExpiration: '11/27',
         // docType: 'DNI',
       } : {})
     } as IPaymentData,
@@ -132,6 +136,9 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
           user: {
             ...state.data.user,
             ...action.payload,
+            ...(action.payload.province === '') ? {
+              city: '',
+            } : null,
           },
         },
       }

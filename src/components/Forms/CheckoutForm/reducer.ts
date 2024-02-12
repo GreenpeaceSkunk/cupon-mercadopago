@@ -33,8 +33,8 @@ export const initialState: ContextStateType = {
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
   switch (action.type) {
     case 'UPDATE_FIELD_ERRORS': {
-
       let tmpErrors = (state.errors) ? {...state.errors} : {};
+      
       if(action.payload.isValid) {
         delete tmpErrors[`${action.payload.fieldName}`];
       } else {

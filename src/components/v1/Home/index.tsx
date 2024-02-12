@@ -132,6 +132,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             flex-shrink: 0;
             flex-grow: 0;
             width: 100vw;
+            background-color: rgba(0, 0, 0, .015);
 
             @media (min-width: ${({theme}) => pixelToRem(theme.responsive.screen.medium.minWidth)}) {
               width: 50vw;

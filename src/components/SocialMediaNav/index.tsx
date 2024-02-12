@@ -69,33 +69,27 @@ const Component: FunctionComponent<{
           }
         `}
       >
-        {
-          data && (
-            <>
-              {data.facebook.enabled && (
-                <SocialButton
-                  href={data.facebook.profile}
-                  icon={theme === 'color' ? Icons.FacebookOrangeLogo : Icons.FacebookLogo}
-                  showBackground={showBackground}
-                />
-              )}
-              {data.twitter.enabled && (
-                <SocialButton
-                  href={data.twitter.profile}
-                  icon={theme === 'color' ? Icons.TwitterOrangeLogo : Icons.TwitterLogo}
-                  showBackground={showBackground}
-                />
-              )}
-              {data.instagram.enabled && (
-                <SocialButton
-                  href={data.instagram.profile}
-                  icon={theme === 'color' ? Icons.InstagramOrangeLogo : Icons.InstagramLogo}
-                  showBackground={showBackground}
-                />
-              )}
-            </>
-          )
-        }
+        {data?.facebook.show && (
+          <SocialButton
+            href={data.facebook.url}
+            icon={theme === 'color' ? Icons.FacebookOrangeLogo : Icons.FacebookLogo}
+            showBackground={showBackground}
+          />
+        )}
+        {data?.twitter.show && (
+          <SocialButton
+            href={data.twitter.url}
+            icon={theme === 'color' ? Icons.TwitterOrangeLogo : Icons.TwitterLogo}
+            showBackground={showBackground}
+          />
+        )}
+        {data?.instagram.show && (
+          <SocialButton
+            href={data.instagram.url}
+            icon={theme === 'color' ? Icons.InstagramOrangeLogo : Icons.InstagramLogo}
+            showBackground={showBackground}
+          />
+        )}
       </Elements.Nav>
     </Elements.Wrapper>
   )

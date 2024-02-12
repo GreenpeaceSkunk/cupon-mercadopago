@@ -105,6 +105,10 @@ export const Select = styled(Elements.Select)`
   background: url(${Icons.SelectArrowIcon}) no-repeat right ${pixelToRem(14)} top 50% white;
   cursor: pointer;
   ${customStyles};
+  
+  &:disabled {
+    opacity: 0.5;
+  }
 `;
 export const Span = styled(Elements.Span)`
   font-family: ${({theme}) => theme.font.family.primary.regular};

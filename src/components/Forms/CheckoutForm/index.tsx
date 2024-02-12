@@ -6,7 +6,7 @@ import Shared from '../../Shared';
 import { AppContext } from '../../App/context';
 import { useNavigate } from 'react-router';
 import { CheckoutFormContext, IdentificationType } from './context';
-import { validateCardHolderName, validateCreditCard, validateCvv, validateEmptyField } from '../../../utils/validators';
+import { validateCardHolderName, validateEmptyField } from '../../../utils/validators';
 import { ERROR_CODES } from '../../../utils/mercadopago';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
 import { pixelToRem } from 'meema.utils';
@@ -33,6 +33,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     user,
     params,
     identificationType,
+    cardType,
     dispatchFormErrors,
     onChangeHandler,
     onUpdateFieldHandler,
@@ -55,50 +56,54 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
       dispatchFormErrors({ type: 'SUBMIT' });
 
       /* Backup to Forma. */
-      if(appData?.settings?.service?.forma?.transactions_form) {
+      if(appData?.settings?.services?.forma?.form_id) {
+        const payload = {
+          address: user.address || '',
+          amount: payment.amount === 'otherAmount' ? payment.newAmount : payment.amount,
+          appUiVersion: appData.features.use_design_version,
+          appName: appData.name,
+          areaCode: user.areaCode,
+          birthDate: user.birthDate,
+          campaignId: appData?.settings?.tracking?.salesforce?.campaign_id,
+          card: payment.cardNumber,
+          card_type: parseInt(`${payment.cardType}`),
+          cardCvv: payment.securityCode,
+          cardDocNumber:payment.docNumber,
+          cardDocType: payment.docType,
+          cardExpiration: payment.cardExpiration,
+          cardLastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
+          city: user.city || '',
+          country: user.country,
+          couponType: params.couponType ?? 'regular',
+          docNumber: user.docNumber,
+          docType: user.docType,
+          email: user.email,
+          firstName: user.firstName,
+          fromUrl: document.location.href,
+          genre: user.genre,
+          lastName: user.lastName,
+          mobileNumber: '',
+          phoneNumber: user.phoneNumber,
+          province: user.province || '',
+          region: '',
+          recurrenceDay: tomorrow.getDate(),
+          txnDate: today,
+          txnErrorCode: '',
+          txnErrorMessage: '',
+          txnStatus: "pending",
+          urlQueryParams: `${searchParams}`, 
+          userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
+          utmCampaign: urlSearchParams.get('utm_campaign') || '',
+          utmMedium: urlSearchParams.get('utm_medium') || '',
+          utmSource: urlSearchParams.get('utm_source') || '',
+          utmContent: urlSearchParams.get('utm_content') || '',
+          utmTerm: urlSearchParams.get('utm_term') || '',
+          zipCode: user.zipCode || '',
+        };
+        
         await postRecord(
-          {
-            couponUiVersion: appData.features.use_design_version,
-            couponName: appData.name,
-            couponType: params.couponType ?? 'regular',
-            firstName: user.firstName,
-            lastName: user.lastName,
-            birthDate: user.birthDate,
-            email: user.email,
-            genre: '', // user.genre
-            phoneNumber: user.phoneNumber,
-            areaCode: user.areaCode,
-            docNumber: user.docNumber,
-            docType: user.docType,
-            card: payment.cardNumber,
-            card_type: parseInt(`${payment.cardType}`),
-            country: user.country,
-            city: user.city || '',
-            address: user.address || '',
-            countryRegion: user.province || '', // Change to province (create field)
-            fullName: `${user.firstName} ${user.lastName}`, // Don't needed
-            mPhoneNumber: '', // Don't needed
-            campaignName: '', // Don't needed
-            cardExpMonth: '', // Don't needed
-            cardExpYear: '', // Don't needed
-            amount: payment.amount,
-            citizenIdType: '', // Don't needed
-            errorCode: '',
-            cardDocType: payment.docType,
-            cardDocNumber:payment.docNumber,
-            cardLastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
-            cardCvv: payment.securityCode,
-            cardExpiration: payment.cardExpiration,
-            donationStatus: "pending",
-            errorMessage: '',
-            campaignId: appData?.settings?.tracking?.salesforce?.campaign_id,
-            recurrenceDay: tomorrow.getDate(),
-            transactionDate: today,
-            fromUrl: document.location.href,
-            userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
-            utm: `utm_campaign=${urlSearchParams.get('utm_campaign')}&utm_medium=${urlSearchParams.get('utm_medium')}&utm_source=${urlSearchParams.get('utm_source')}&utm_content=${urlSearchParams.get('utm_content')}&utm_term=${urlSearchParams.get('utm_term')}`,
-          },
-          appData?.settings?.service?.forma?.transactions_form
+          payload,
+          appData?.settings?.services?.forma?.form_id,
         );
       }
 
@@ -146,8 +151,19 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
               value={payment.cardNumber}
               labelText='Número de tarjeta'
               showErrorMessage={showFieldErrors}
-              validateFn={validateCreditCard}
               onUpdateHandler={onUpdateFieldHandler}
+              validateFn={() => {
+                if(cardType) {
+                  return {
+                    isValid: new RegExp(cardType.validator.card_number.expression).test(payment.cardNumber),
+                    errorMessage: ERROR_CODES["E301"],
+                  }
+                }
+                return {
+                  isValid: false,
+                  errorMessage: ERROR_CODES["E301"],
+                }
+              }}
             >
               <Elements.Input
                 type='text'
@@ -197,8 +213,19 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
               value={payment.securityCode}
               labelText='CVV'
               showErrorMessage={showFieldErrors}
-              validateFn={validateCvv}
               onUpdateHandler={onUpdateFieldHandler}
+              validateFn={() => {
+                if(cardType) {
+                  return {
+                    isValid: new RegExp(cardType.validator.card_security_code.expression).test(payment.securityCode),
+                    errorMessage: ERROR_CODES["E302"],
+                  }
+                }
+                return {
+                  isValid: false,
+                  errorMessage: ERROR_CODES["E302"],
+                }
+              }}
               customCss={css`
                 flex-shrink: 1;
                 flex-grow: 0;
@@ -223,16 +250,6 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
               labelText='Fecha de expiración'
               showErrorMessage={showFieldErrors}
               validateFn={() => {
-                // const cardExpiration = payment.cardExpiration.split('/');
-                // if(cardExpiration.length === 2) {
-                //   if(parseInt(cardExpiration[1]) < parseInt(new Date().getFullYear().toString())) {
-                //     return {
-                //       isValid: false,
-                //       errorMessage: 'El año no debe ser menor al actual',
-                //     }
-                //   }
-                // }
-
                 if(!moment(payment.cardExpiration, 'MM/YY', true).isValid()) {
                   return {
                     isValid: false,
@@ -242,7 +259,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
 
                 return {
                   isValid: true,
-                  errorMessage: 'Error en la fecha',
+                  errorMessage: '',
                 }
               }}
               onUpdateHandler={onUpdateFieldHandler}
@@ -355,13 +372,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     </Form.Main>
   ), [
     appData,
-    // firstName,
-    // lastName,
-    // phoneNumber,
-    // amount,
-    // newAmount,
-    // email,
-    // areaCode,
+    cardType,
     payment,
     submitting,
     params,

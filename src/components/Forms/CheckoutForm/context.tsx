@@ -10,7 +10,21 @@ export type IdentificationType = {
   validator: {
     expression: RegExp;
   };
-  placeholder: string
+  placeholder: string;
+};
+
+export type CardType = {
+  text: string;
+  slug: string;
+  value: number;
+  validator: {
+    card_number: {
+      expression: RegExp;
+    };
+    card_security_code: {
+      expression: RegExp;
+    };
+  };
 };
 
 export interface IContext {
@@ -24,6 +38,7 @@ export interface IContext {
   user: IUserData;
   params: ParamsType;
   identificationType?: IdentificationType | null,
+  cardType?: CardType | null,
   dispatch: any;
   dispatchFormErrors: React.Dispatch<ContextActionType>;
   onChangeHandler: (evt: OnChangeEvent) => void;
@@ -43,6 +58,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   const { data: { payment, user }, params, dispatch } = useContext(FormContext);
   const [{ submitting, submitted, allowNext, error, errorDate, attemps }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [identificationType, setIdentificationType] = useState<IdentificationType | null>();
+  const [cardType, setCardType] = useState<CardType | null>();
 
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     evt.preventDefault();
@@ -64,10 +80,20 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
 
   useEffect(() => {
     setIdentificationType(
-      appData.settings.general.form_fields.identification_types.filter(
+      appData.settings.general.form_fields.identification_types.find(
         (d: {type: string, value: string}) => d.type === payment.docType
-      )[0]);
+      ));
   }, [appData, payment.docType]);
+  
+  useEffect(() => {
+    if(payment.cardType) {
+      setCardType(
+        appData.settings.general.form_fields.card_types.find(
+          (c: CardType) => `${c.value}` === payment.cardType
+        )
+      );
+    }
+  }, [appData, payment.cardType, cardType]);
 
   return useMemo(() => (
     <Provider
@@ -82,6 +108,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
         user,
         params,
         identificationType,
+        cardType,
         dispatch,
         dispatchFormErrors,
         onChangeHandler,
@@ -91,6 +118,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
       </Provider>
   ), [
     appData,
+    cardType,
     submitted,
     submitting,
     allowNext,
@@ -112,4 +140,4 @@ export {
   ContextProvider as CheckoutFormProvider,
   Consumer as CheckoutFormConsumer,
   Context as CheckoutFormContext,
-}
+};

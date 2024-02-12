@@ -1,25 +1,16 @@
-import React, { FunctionComponent, memo, useContext, useMemo, MouseEvent, useEffect } from 'react';
+import React, { FunctionComponent, memo, useContext, useMemo, MouseEvent } from 'react';
 import Elements from '../../Shared/Elements';
 import { pixelToRem } from 'meema.utils';
 import { css } from 'styled-components';
 import { FormProvider } from '../../Forms/context';
 import Shared from '../../Shared';
-import { generatePath, Outlet } from 'react-router';
+import { Outlet } from 'react-router';
 import { AppContext } from '../../App/context';
-import { useNavigate } from "react-router-dom";
 import useQuery from '../../../hooks/useQuery';
 
 const Component: FunctionComponent<{}> = memo(() => {
   const { isOpen, setIsOpen } = useContext(AppContext);
-  const navigate = useNavigate();
   const { searchParams } = useQuery();
-
-  useEffect(() => {
-    navigate({
-      pathname: generatePath(`registration`, {}),
-      search: `${searchParams}`,
-    });
-  }, []);
 
   return useMemo(() => (
     <Elements.View

@@ -3,7 +3,6 @@ import useQuery from "../../hooks/useQuery";
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../theme/globalStyle';
 import ErrorBoundary from '../ErrorBoundary';
-import Elements from '@bit/meema.ui-components.elements';
 import { getCoupon } from "../../services/greenlab";
 import { initialState, reducer } from './reducer';
 import { initialize as initializeTagManager, pushToDataLayer } from '../../utils/googleTagManager';
@@ -57,44 +56,57 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   useEffect(() => {
     (async () => {
       if(appData) {
-        if(appData.features) {
+        document.title = appData.site_title ? appData.site_title : `Greenpeace ${appData.country}`;
 
+        if(appData.features) {
           if(appData.features.use_design_version) {
             setDesignVersion(appData.features.use_design_version);
           } else {
             setDesignVersion(1);
           }
 
+          if(appData.features.expand_form) {
+            setIsOpen(appData.features.expand_form);
+          }
+
           if(appData.features.payment_gateway.enabled) {
-            switch (appData.features.payment_gateway.third_party) {
-              case 'Mercadopago':
+            switch (`${appData.features.payment_gateway.third_party}`.toLowerCase()) {
+              case 'mercadopago':
                 initializeMercadopago();
-                break;
-              case 'Transbank':
-                // TODO: implement it
-                alert('Transbank is not already implemented');
-                break;
-                case 'PayU':
-                  // TODO: implement it
-                  alert('PayU is not already implemented');
-                  break;
-                  default:
+              break;
+              case 'transbank':
+                alert('Transbank is not working yet');
+              break;
+                case 'payu':
+                  alert('PayU is not working yet');
+              break;
+              default:
             }
           }
         }
 
-        if(appData.settings) {
-          document.title = appData.site_title ? appData.site_title : `Greenpeace ${appData.country}`;
+        // Initialise tracking
+        if(appData.settings.tracking) {
+          const {facebook, google, hubspot} = appData.settings.tracking;
 
-          initializeHubspot(appData.settings.tracking.hubspot.id);
+          if(google.tag_manager && google.tag_manager.enabled) {
+            console.log(`Initialise Google Tag Manager ${google.tag_manager.id}`)
+            initializeTagManager(google.tag_manager.id);
+          }
 
-          switch (process.env.REACT_APP_ENVIRONMENT) {
-            case 'test':
-            case 'production':
-              initializeTagManager(appData.settings.tracking.google.tag_manager.id);
-              inititalizeAnalytics(appData.name, appData.settings.tracking.google.analytics.tracking_id);
-              initializeFacebookPixel(appData.settings.tracking.facebook.pixel_id);
-              break;
+          if(google.analytics && google.analytics.enabled) {
+            console.log(`Initialise Google Analytics ${google.analytics.tracking_id}`)
+            inititalizeAnalytics(appData.name, google.analytics.tracking_id);
+          }
+
+          if(hubspot && hubspot.enabled) {
+            console.log(`Initialise Hubspot ${hubspot.id}`)
+            initializeHubspot(hubspot.id);
+          }
+
+          if(facebook && facebook.enabled) {
+            console.log(`Initialise Facebook Pixel ${facebook.pixel_id}`)
+            initializeFacebookPixel(facebook.pixel_id);
           }
         }
       }
@@ -128,20 +140,12 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
       isOpen,
       setIsOpen,
     }}>
-      {(!appData || !designVersion || !theme)
-        ? (
-          <Elements.Wrapper>
-            <Loader />
-          </Elements.Wrapper>
-        ) : <>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            <ErrorBoundary>
-              <>{router}</>
-            </ErrorBoundary>
-          </ThemeProvider>
-
-        </>}
+      <ThemeProvider theme={theme ?? {}}>
+        <GlobalStyle />
+        <ErrorBoundary>
+          <>{router}</>
+        </ErrorBoundary>
+      </ThemeProvider>
     </Provider>
   ), [
     appData,

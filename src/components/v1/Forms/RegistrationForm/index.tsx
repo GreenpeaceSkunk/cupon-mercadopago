@@ -137,12 +137,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       pushToDataLayer({ 'event' : 'petitionSignup' });
 
       if(params) {
+        const {payment_gateway} = appData.features;
+
         navigate({
           pathname: generatePath('/:couponType/forms/:formType/:paymentGateway', {
             couponType: `${params.couponType}`,
             formType: 'checkout',
-            paymentGateway: appData.features.payment_gateway.show && appData.features.payment_gateway.third_party
-              ? `${appData.features.payment_gateway.third_party}`.toLowerCase() : '',
+            paymentGateway: payment_gateway.enabled && payment_gateway.third_party
+              ? `${payment_gateway.third_party}`.toLowerCase() : '',
           }),
           search: searchParams,
         }, { replace: true });

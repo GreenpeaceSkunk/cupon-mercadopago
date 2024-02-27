@@ -33,6 +33,12 @@ export const createContact = async (data: any) => {
   }
 }
 
+/**
+ * Update Hubspot contact
+ * @param email
+ * @param data
+ * @returns
+ */
 export const updateContact = async (email: string, data: any) => {
   try {
     const response = await ApiCall({

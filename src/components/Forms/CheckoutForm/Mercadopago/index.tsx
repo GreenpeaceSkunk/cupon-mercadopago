@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
+import React, { useContext, useState, useRef, useEffect, useMemo } from 'react';
 import { generatePath, useNavigate } from 'react-router-dom';
 import { validateCardHolderName, validateCitizenId, validateEmptyField } from '../../../../utils/validators';
 import { css } from 'styled-components';
@@ -20,7 +20,6 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
   const { appData } = useContext(AppContext);
   const {
     submitting,
-    allowNext,
     error,
     errorDate,
     payment,
@@ -75,7 +74,7 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
 
   async function initSecurityFields() {
     const _cardNumberElement_ = window.__mercadopago.fields.create('cardNumber', {
-      placeholder: "Ej. 4509 9535 6623 3704"
+      placeholder: "4509 9535 6623 3704"
     })
     .on('binChange', getPaymentMethods)
     .mount('cardNumber');
@@ -86,7 +85,7 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
     }).mount('expirationDate');
     
     const _securityCodeElement_ = window.__mercadopago.fields.create('securityCode', {
-      placeholder: "Ej. 123"
+      placeholder: "123"
     }).mount('securityCode');
     setSecurityCodeElement(_securityCodeElement_);
 
@@ -171,116 +170,104 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
   async function getCardToken(event: any) {
     event.preventDefault();
     setShowFieldErrors(false);
-    
-    if(!allowNext) {
-      setShowFieldErrors(true);
-      dispatchFormErrors({
-        type: 'SET_ERROR',
-        error: 'Tenés campos incompletos o con errores. Revisalos para continuar.',
-        errorDate: new Date(),
-      });
-    } else {
-      dispatchFormErrors({ type: 'SUBMIT' });
+    dispatchFormErrors({ type: 'SUBMIT' });
 
-      const tokenPayload = {
-        cardholderName: (document.getElementById('cardholderName') as HTMLInputElement).value ?? '',
-        identificationType: (document.getElementById('identificationType') as HTMLInputElement).value ?? '',
-        identificationNumber: (document.getElementById('docNumber') as HTMLInputElement).value ?? '',
-      };
-      
-      await window.__mercadopago.fields.createCardToken(tokenPayload)
-        .then(async (token: any) => {
-          if(token.id) {
-            return await setCardTokenAndPay(token.id);
+    const tokenPayload = {
+      cardholderName: (document.getElementById('cardholderName') as HTMLInputElement).value ?? '',
+      identificationType: (document.getElementById('identificationType') as HTMLInputElement).value ?? '',
+      identificationNumber: (document.getElementById('docNumber') as HTMLInputElement).value ?? '',
+    };
+
+    await window.__mercadopago.fields.createCardToken(tokenPayload)
+      .then(async (token: any) => {
+        if(token.id) {
+          return await setCardTokenAndPay(token.id);
+        }
+      })
+      .then(async (payload: any) => {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        if(payload) {
+          const result = await createStaging(payload);
+
+        let donationStatus = 'pending';
+        let errorCode, errorMessage;
+        
+        // Update it even the API returns an error
+        if(result['error']) {
+          if(result.message) {
+            errorMessage = result.message.replace(/,/g, '').replace(/;/g, '');
           }
-        })
-        .then(async (payload: any) => {
-          const today = new Date();
-          const tomorrow = new Date(today);
-          tomorrow.setDate(tomorrow.getDate() + 1);
-
-          if(payload) {
-           const result = await createStaging(payload);
-
-          let donationStatus = 'pending';
-          let errorCode, errorMessage;
+          errorCode = result.errorCode;
           
-          if(result['error']) {
-            if(result.message) {
-              errorMessage = result.message.replace(/,/g, '').replace(/;/g, '');
-            }
-            errorCode = result.errorCode;
-            
-            await updateContact(payload.email, { donationStatus });
-          } else {
-            window.userAmount = payment.amount;
-            donationStatus = 'done';
+          await updateContact(payload.email, { donationStatus });
+        } else {
+          window.userAmount = payment.amount;
+          donationStatus = 'done';
 
-            await updateContact(payload.email, { donationStatus });
-          }
+          await updateContact(payload.email, { donationStatus });
+        }
 
-          /* Backup to Forma. */
-          if(appData?.settings?.service?.forma?.transactions_form) {
-            await postRecord({
-              amount: payload.amount,
-              campaignId: payload.campaign_id,
-              card: bin.length === 8 ? `${bin}00000000` : bin,
-              // card: bin.length === 8 ? `${bin}${bin}` : bin,
-              card_type: getCardType(payload.payment_method_id),
-              cardExpMonth: payload.mes_vencimiento,
-              cardExpYear: payload.ano_vencimiento,
-              cardLastDigits: payload.lastDigits,
-              citizenId: payment.docNumber,
-              citizenIdType: payment.docType,
-              mpPayOptId: payload.payment_type_id,
-              mpPayMethodId: payload.payment_method_id,
-              mpDeviceId: window.deviceId,
-              donationStatus,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              fromUrl: document.location.href,
-              errorCode: errorCode || '',
-              areaCode: user.areaCode,
-              errorMessage: errorMessage || '',
-              email: user.email,
-              phoneNumber: user.phoneNumber,
-              recurrenceDay: tomorrow.getDate(),
-              transactionDate: today,
-              userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
-              utm: `utm_campaign=${urlSearchParams.get('utm_campaign')}&utm_medium=${urlSearchParams.get('utm_medium')}&utm_source=${urlSearchParams.get('utm_source')}&utm_content=${urlSearchParams.get('utm_content')}&utm_term=${urlSearchParams.get('utm_term')}`,
-              form_id: appData?.settings?.service?.forma?.transactions_form,
-            });
-          }
+        // Backup to Forma.
+        if(appData?.settings?.service?.forma?.transactions_form) {
+          await postRecord({
+            amount: payload.amount,
+            campaignId: payload.campaign_id,
+            card: bin.length === 8 ? `${bin}00000000` : bin,
+            card_type: getCardType(payload.payment_method_id),
+            cardExpMonth: payload.mes_vencimiento,
+            cardExpYear: payload.ano_vencimiento,
+            cardLastDigits: payload.lastDigits,
+            citizenId: payment.docNumber,
+            citizenIdType: payment.docType,
+            mpPayOptId: payload.payment_type_id,
+            mpPayMethodId: payload.payment_method_id,
+            mpDeviceId: window.deviceId,
+            donationStatus,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            fromUrl: document.location.href,
+            errorCode: errorCode || '',
+            areaCode: user.areaCode,
+            errorMessage: errorMessage || '',
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            recurrenceDay: tomorrow.getDate(),
+            transactionDate: today,
+            userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
+            utm: `utm_campaign=${urlSearchParams.get('utm_campaign')}&utm_medium=${urlSearchParams.get('utm_medium')}&utm_source=${urlSearchParams.get('utm_source')}&utm_content=${urlSearchParams.get('utm_content')}&utm_term=${urlSearchParams.get('utm_term')}`,
+            form_id: appData?.settings?.service?.forma?.transactions_form,
+          });
+        }
 
-          const timer = setTimeout(() => {
-            dispatchFormErrors({ type: 'SUBMITTED' });
-            
-            navigate({
-              pathname: generatePath(`/:couponType/forms/thank-you`, {
-                couponType: `${params.couponType}`,
-              }),
-              search: `${searchParams}`,
-            }, { replace: true });
-          }, 250);
-    
-          return () => {
-            clearTimeout(timer);
-          }
-        }})
-        .catch((error: any) => {
-          console.log(error)
-          if(error.length) {
-            console.log('Token error');
-            dispatchFormErrors({ type: 'SUBMITTED' });
-            setShowFieldErrors(true);
-            dispatchFormErrors({
-              type: 'SET_ERROR',
-              error: 'Error al crear el token de la tarjeta. Por favor revisar los datos.',
-              errorDate: new Date(),
-            });
-          }
-        });
-    }
+        const timer = setTimeout(() => {
+          dispatchFormErrors({ type: 'SUBMITTED' });
+
+          navigate({
+            pathname: generatePath(`/:couponType/forms/thank-you`, {
+              couponType: `${params.couponType}`,
+            }),
+            search: `${searchParams}`,
+          }, { replace: true });
+        }, 250);
+
+        return () => {
+          clearTimeout(timer);
+        }
+      }})
+      .catch((error: any) => {
+        if(error.length) {
+          dispatchFormErrors({ type: 'SUBMITTED' });
+          setShowFieldErrors(true);
+          dispatchFormErrors({
+            type: 'SET_ERROR',
+            error: 'Error al crear el token de la tarjeta. Por favor revisar los datos.',
+            errorDate: new Date(),
+          });
+        }
+      });
   };
 
   useEffect(() => {
@@ -336,7 +323,7 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
     }
   }, []);
 
-  return (
+  return useMemo(() => (
     <Form.Main id="paymentForm">
       <Form.Header>
         <Elements.HGroup>
@@ -437,7 +424,26 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
         </Elements.Button>
       </Form.Nav>
     </Form.Main>
-  )
+  ), [
+    appData,
+    bin,
+    cardNumberElement,
+    error,
+    errorDate,
+    formReady,
+    params,
+    payment,
+    paymentMethods,
+    searchParams,
+    securityCodeElement,
+    showFieldErrors,
+    snackbarRef,
+    submitting,
+    user,
+    dispatchFormErrors,
+    onChangeHandler,
+    onUpdateFieldHandler,
+  ]);
 };
 
 MercadopagoCheckoutForm.displayName = 'MercadopagoCheckoutForm';

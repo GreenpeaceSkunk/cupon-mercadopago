@@ -23,6 +23,7 @@ import { createContact } from '../../../../services/greenlab';
 import { AppContext } from '../../../App/context';
 import { pixelToRem } from 'meema.utils';
 import { ProvinceType } from '../../../Forms/reducer';
+import moment from 'moment';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
@@ -40,6 +41,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         address,
         zipCode,
         genre,
+        birthDate,
       },
       payment: {
         amount,
@@ -280,7 +282,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             {(params.couponType === 'regular') && (
                <Form.Column>
                   <Elements.P
-                    dangerouslySetInnerHTML={{__html: appData.content.form.general.coupon_oneoff_label_text_2}}
+                    dangerouslySetInnerHTML={{__html: appData.content.form.general.coupon_regular_label_text_2}}
                     customCss={css`
                       display: block;
                       background: white;
@@ -291,47 +293,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   />
                </Form.Column>
             )}
-        </Form.Row>
-        <Form.Row>
-          <Form.Column>
-            <Form.Group
-              value={email}
-              fieldName='email'
-              labelText='Correo electrónico'
-              showErrorMessage={showFieldErrors}
-              validateFn={validateEmail}
-              onUpdateHandler={onUpdateFieldHandler}
-            >
-              <Elements.Input
-                name='email'
-                type='email'
-                placeholder=''
-                value={email}
-                onChange={onChangeHandler}
-              />
-            </Form.Group>
-            <Form.Group
-              fieldName='genre'
-              value={genre}
-              labelText='Género'
-              showErrorMessage={showFieldErrors}
-              validateFn={validateEmptyField}
-              onUpdateHandler={onUpdateFieldHandler}
-            >
-              <Elements.Select
-                id="genre"
-                name="genre"
-                data-checkout="genre"
-                value={genre}
-                onChange={onChangeHandler}
-              >
-                <option value=""></option>
-                {['Femenino', 'Masculino', 'No binario'].map((value: string, key: number) => (
-                  <option key={key} value={value}>{value}</option>
-                ))}
-              </Elements.Select>
-            </Form.Group>
-          </Form.Column>
         </Form.Row>
         <Form.Row>
           <Form.Column>
@@ -370,6 +331,62 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Column>
         </Form.Row>
         <Form.Row>
+          <Form.Column>
+            <Form.Group
+              value={email}
+              fieldName='email'
+              labelText='Correo electrónico'
+              showErrorMessage={showFieldErrors}
+              validateFn={validateEmail}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Elements.Input
+                name='email'
+                type='email'
+                placeholder=''
+                value={email}
+                onChange={onChangeHandler}
+              />
+            </Form.Group>
+            {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.birthDate.show) && (
+              <Form.Group
+                fieldName='birthDate'
+                value={birthDate}
+                labelText='Fecha de nacimiento'
+                showErrorMessage={showFieldErrors}
+                validateFn={() => {
+                  if(!moment(birthDate, 'DD/MM/YYYY', true).isValid()) {
+                    return {
+                      isValid: false,
+                      errorMessage: 'Error en la fecha',
+                    }
+                  }
+
+                  return {
+                    isValid: true,
+                    errorMessage: '',
+                  }
+                }}
+                onUpdateHandler={onUpdateFieldHandler}
+              >
+                <Elements.Input
+                  type='text'
+                  id='birthDate'
+                  name='birthDate'
+                  placeholder='DD/MM/AAAA'
+                  data-checkout='birthDate'
+                  maxLength={10}
+                  value={birthDate}
+                  onChange={(evt: OnChangeEvent) => {
+                    evt.currentTarget.value = addOrRemoveSlashToDate(evt.currentTarget.value, 10);
+                    onChangeHandler(evt);
+                  }}
+                />
+              </Form.Group>
+            )}
+          </Form.Column>
+        </Form.Row>
+        <Form.Row>
           <Form.Column bottomText='Escribe solo números y no agregues guiones.'>
             <Form.Group
               fieldName='areaCode'
@@ -402,7 +419,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               <Elements.Input
                 name='phoneNumber'
                 type='text'
-                placeholder={appData.settings.general.form_fields.phone_mobile_number?.placeholder || ''}
+                placeholder={appData.settings.general.form_fields.registration.phone_mobile_number?.placeholder || ''}
                 value={phoneNumber}
                 onChange={onChangeHandler}
               />
@@ -410,42 +427,65 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Column>
         </Form.Row>
 
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.country.show) && (
           <Form.Row>
             <Form.Column>
-              <Form.Group
-                fieldName='country'
-                value={country}
-                labelText='País'
-                showErrorMessage={showFieldErrors}
-                validateFn={validateEmptyField}
-                onUpdateHandler={onUpdateFieldHandler}
-              >
-                <Elements.Select
-                  id="country"
-                  name="country"
-                  data-checkout="country"
-                  value={country}
-                  onChange={onChangeHandler}
-                  disabled={appData.settings.general.form_fields.location.country.disabled}
+              {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.genre.show) && (
+                <Form.Group
+                  fieldName='genre'
+                  value={genre}
+                  labelText='Género'
+                  showErrorMessage={showFieldErrors}
+                  validateFn={validateEmptyField}
+                  onUpdateHandler={onUpdateFieldHandler}
                 >
-                  <option value=""></option>
-                  {(countries || []).map((value: any, key: number) => (
-                    <option key={key} value={value.label}>{value.label}</option>
-                  ))}
-                </Elements.Select>
-              </Form.Group>
+                  <Elements.Select
+                    id="genre"
+                    name="genre"
+                    data-checkout="genre"
+                    value={genre}
+                    onChange={onChangeHandler}
+                  >
+                    <option value=""></option>
+                    {['Femenino', 'Masculino', 'No binario'].map((value: string, key: number) => (
+                      <option key={key} value={value}>{value}</option>
+                    ))}
+                  </Elements.Select>
+                </Form.Group>
+              )}
+              {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.country.show) && (
+                <Form.Group
+                  fieldName='country'
+                  value={country}
+                  labelText='País'
+                  showErrorMessage={showFieldErrors}
+                  validateFn={validateEmptyField}
+                  onUpdateHandler={onUpdateFieldHandler}
+                >
+                  <Elements.Select
+                    id="country"
+                    name="country"
+                    data-checkout="country"
+                    value={country}
+                    onChange={onChangeHandler}
+                    disabled={appData.settings.general.form_fields.registration.location.country.disabled}
+                  >
+                    <option value=""></option>
+                    {(countries || []).map((value: any, key: number) => (
+                      <option key={key} value={value.label}>{value.label}</option>
+                    ))}
+                  </Elements.Select>
+                </Form.Group>
+              )}
             </Form.Column>
           </Form.Row>
-        )}
 
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.province.show) && (
+        {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.province.show) && (
           <Form.Row>
             <Form.Column>
               <Form.Group
                 fieldName='province'
                 value={province}
-                labelText={appData.settings.general.form_fields.location.province.label || 'Provincia'}
+                labelText={appData.settings.general.form_fields.registration.location.province.label || 'Provincia'}
                 showErrorMessage={showFieldErrors}
                 validateFn={validateEmptyField}
                 onUpdateHandler={onUpdateFieldHandler}
@@ -464,11 +504,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   ))}
                 </Elements.Select>
               </Form.Group>
-            {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.province.show && appData.settings.general.form_fields.location.city.show) && (
+            {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.province.show && appData.settings.general.form_fields.registration.location.city.show) && (
               <Form.Group
                 fieldName='city'
                 value={city}
-                labelText={appData.settings.general.form_fields.location.city.label || 'Ciudad'}
+                labelText={appData.settings.general.form_fields.registration.location.city.label || 'Ciudad'}
                 showErrorMessage={showFieldErrors}
                 validateFn={validateEmptyField}
                 onUpdateHandler={onUpdateFieldHandler}
@@ -493,7 +533,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Row>
         )}
 
-        {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.address.show) && (
+        {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.address.show) && (
           <Form.Row>
             <Form.Column>
               <Form.Group
@@ -513,7 +553,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   onChange={onChangeHandler}
                 />
               </Form.Group>
-              {(appData.settings.general.form_fields && appData.settings.general.form_fields.location.address.show && appData.settings.general.form_fields.location.zipCode.show) && (
+              {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.address.show && appData.settings.general.form_fields.registration.location.zipCode.show) && (
                 <Form.Group
                   fieldName='zipCode'
                   value={zipCode}
@@ -559,6 +599,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     </Form.Main>
   ), [
     address,
+    birthDate,
     firstName,
     lastName,
     genre,

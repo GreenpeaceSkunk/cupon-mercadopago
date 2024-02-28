@@ -39,6 +39,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   useEffect(() => {
     window.sessionStorage.removeItem('greenlab_app_name');
     window.sessionStorage.removeItem('greenlab_app_design_version');
+
     if(appName !== null) {
       (async () => {
         const payload = await getCoupon(appName) as any;
@@ -86,7 +87,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
         }
 
         // Initialise tracking
-        if(appData.settings.tracking) {
+        if(appData.settings?.tracking) {
           const {facebook, google, hubspot} = appData.settings.tracking;
 
           if(google.tag_manager && google.tag_manager.enabled) {
@@ -124,7 +125,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   }, [ designVersion ]);
 
   useEffect(() => {
-    setAppName(urlSearchParams.get('app') ? urlSearchParams.get('app') : 'general');
+    setAppName(urlSearchParams.get('app') ?? 'general');
 
     if(process.env.REACT_APP_ENVIRONMENT === 'test' ||
       process.env.REACT_APP_ENVIRONMENT === 'production') {

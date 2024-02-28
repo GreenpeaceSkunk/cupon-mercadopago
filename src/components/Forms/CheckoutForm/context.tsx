@@ -80,7 +80,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
 
   useEffect(() => {
     setIdentificationType(
-      appData.settings.general.form_fields.identification_types.find(
+      appData.settings.general.form_fields.registration.identification_types.values.find(
         (d: {type: string, value: string}) => d.type === payment.docType
       ));
   }, [appData, payment.docType]);
@@ -88,7 +88,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
   useEffect(() => {
     if(payment.cardType) {
       setCardType(
-        appData.settings.general.form_fields.card_types.find(
+        appData.settings.general.form_fields.checkout.card_types.values.find(
           (c: CardType) => `${c.value}` === payment.cardType
         )
       );

@@ -194,7 +194,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
                 onChange={onChangeHandler}
               >
                 <option value=""></option>
-                {(appData.settings.general.form_fields.card_types || []).map((doc: {text: string, slug: string, value: number}) => (
+                {(appData.settings.general.form_fields.checkout.card_types.values || []).map((doc: {text: string, slug: string, value: number}) => (
                   <option key={doc.slug} value={doc.value}>{doc.text}</option>
                 ))}
               </Elements.Select>
@@ -298,7 +298,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
                 onChange={onChangeHandler}
               >
                 <option value=""></option>
-                {(appData.settings.general.form_fields.identification_types || []).map((doc: IdentificationType) => (
+                {(appData.settings.general.form_fields.registration.identification_types.values || []).map((doc: IdentificationType) => (
                   <option key={doc.type} value={doc.type}>{doc.value}</option>
                 ))}
               </Elements.Select>

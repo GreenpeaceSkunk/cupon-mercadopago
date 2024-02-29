@@ -158,7 +158,7 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
           { campo: 'gpi__utm_content__c', valor: `${urlSearchParams.get('utm_content')}` },
           { campo: 'gpi__utm_term__c', valor: `${urlSearchParams.get('utm_term')}` },
         ],
-        form_id: appData?.settings?.service?.forma?.transactions_form,
+        form_id: appData?.settings?.services?.forma?.form_id,
         campaign_id: `${appData?.settings?.tracking?.salesforce?.campaign_id}`,
       };
 
@@ -211,7 +211,7 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
         }
 
         // Backup to Forma.
-        if(appData?.settings?.service?.forma?.transactions_form) {
+        if(appData?.settings?.services?.forma?.form_id) {
           await postRecord({
             amount: payload.amount,
             campaignId: payload.campaign_id,
@@ -238,7 +238,7 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
             transactionDate: today,
             userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
             utm: `utm_campaign=${urlSearchParams.get('utm_campaign')}&utm_medium=${urlSearchParams.get('utm_medium')}&utm_source=${urlSearchParams.get('utm_source')}&utm_content=${urlSearchParams.get('utm_content')}&utm_term=${urlSearchParams.get('utm_term')}`,
-            form_id: appData?.settings?.service?.forma?.transactions_form,
+            form_id: appData?.settings?.services?.forma?.form_id,
           });
         }
 

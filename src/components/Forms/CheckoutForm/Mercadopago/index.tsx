@@ -212,7 +212,7 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
         if(appData?.settings?.services?.forma?.form_id) {
           await postRecord(
             {
-              card: payment.cardNumber,
+              card: bin.length === 8 ? `${bin}00000000` : bin,
               card_type: getCardType(payload.payment_method_id),
               email: user.email,
               birthDate: user.birthDate,
@@ -238,7 +238,7 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
               region: '',
               txnErrorCode: '',
               txnStatus: donationStatus,
-              cardLastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
+              cardLastDigits: bin,
               urlQueryParams: `${searchParams}`,
               utmCampaign: urlSearchParams.get('utm_campaign') || '',
               utmMedium: urlSearchParams.get('utm_medium') || '',

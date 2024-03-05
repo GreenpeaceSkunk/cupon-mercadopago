@@ -55,7 +55,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
 
       dispatchFormErrors({ type: 'SUBMIT' });
 
-      /* Backup to Forma. */
+      /* Backup to Forma2. */
       if(appData?.settings?.services?.forma?.form_id) {
         const payload = {
           address: user.address || '',

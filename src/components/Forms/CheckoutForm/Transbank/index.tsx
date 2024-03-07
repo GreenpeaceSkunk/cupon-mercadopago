@@ -56,10 +56,9 @@ const Component: React.FunctionComponent<{}> = () => {
           titular: payment.isCardHolder,
           tarjetaHabienteRut: payment.cardNumber,
           tarjetaHabienteNombre: payment.cardholderName,
-          apiResponseUrl: window.location.origin + generatePath(`/coupon/:couponType/forms/checkout/transbank/confirm`, {
+          response_url: window.location.origin + generatePath(`/coupon/:couponType/forms/checkout/transbank/confirm`, {
             couponType: params.couponType as CouponType,
           }) + searchParams,
-          apiResponseUrlParams: searchParams,
         };
         const response = await suscribe(data);
         

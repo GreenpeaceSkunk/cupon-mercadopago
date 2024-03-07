@@ -62,10 +62,11 @@ export type StylesType = {
 };
   
 export type AxiosResquestError = {
-  error: boolean,
-  errorCode?: number,
-  status: number,
-  message: string,
+  error: boolean;
+  errorCode?: number;
+  status: number;
+  message: string;
+  data?: any;
 };
 
 export type ServiceParams = {
@@ -86,8 +87,10 @@ export interface IUserData {
   birthDate?: string;
   country?: string;
   province?: string;
+  region?: string;
   city?: string;
   address?: string;
+  addressNumber?: string;
   referredFirstName?: string;
   referredLastName?: string;
   referredEmail?: string;
@@ -117,6 +120,7 @@ export interface IPaymentData {
   docType: string;
   amount: string;
   newAmount: string;
+  isCardHolder: boolean;
 }
 
 export interface IData {
@@ -139,6 +143,29 @@ export type SharedActions =
 export type OnChangeEvent = MouseEvent<HTMLButtonElement> | ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLSelectElement>;
 export type OnClickEvent = MouseEvent<HTMLButtonElement>;
 export type FeedbackType = 'positive' | 'negative';
+
+export type IdentificationType = {
+  type: string;
+  value: string;
+  validator: {
+    expression: RegExp;
+  };
+  placeholder: string;
+};
+
+export type CardType = {
+  text: string;
+  slug: string;
+  value: number;
+  validator: {
+    card_number: {
+      expression: RegExp;
+    };
+    card_security_code: {
+      expression: RegExp;
+    };
+  };
+};
 
 export type {
   GoogleTagManagerEventType,

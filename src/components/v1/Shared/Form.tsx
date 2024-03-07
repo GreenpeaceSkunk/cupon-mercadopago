@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { pixelToRem, CustomCSSType } from 'meema.utils';
-import { OnChangeEvent } from 'greenpeace';
+import { OnChangeEvent, OnClickEvent } from 'greenpeace';
 import { ValidationType } from '../../../utils/validators';
 import Icons from '../../../images/icons';
 import Elements from '../../Shared/Elements';
@@ -119,18 +119,22 @@ const TextArea = styled(Elements.TextArea)`
 
 const RadioButton: React.FunctionComponent<{
   name: string;
-  value: string;
+  value: string | number;
   text: string;
-  checkedValue: string;
+  checkedValue: string | number;
   customCss?: CustomCSSType;
+  dataSchema: 'payment' | 'user';
   onChangeHandler: (evt: OnChangeEvent) => void;
+  onClickHandler?: (evt: OnClickEvent) => void;
 }> = ({
   name,
   value,
   text,
   checkedValue,
   customCss,
+  dataSchema,
   onChangeHandler,
+  onClickHandler,
 }) => {
   return useMemo(() => (
     <Elements.Label
@@ -139,7 +143,7 @@ const RadioButton: React.FunctionComponent<{
         align-items: center;
         width: fit-content;
         cursor: pointer;
-        margin-bottom: ${pixelToRem(10)};
+        margin-bottom: ${pixelToRem(0)};
         user-select: none;
         text-align: left;
         font-family: ${({theme}) => theme.font.family.primary.regular};
@@ -152,9 +156,11 @@ const RadioButton: React.FunctionComponent<{
         type='radio'
         name={name}
         value={value}
-        checked={(`${checkedValue}` === value)}
+        checked={checkedValue === value}
         data-text={text}
         onChange={onChangeHandler}
+        {...(onClickHandler) ? {onClick: onClickHandler} : null}
+        data-schema={dataSchema}
         customCss={css`
           position: absolute;
           width: ${pixelToRem(20)};
@@ -173,7 +179,7 @@ const RadioButton: React.FunctionComponent<{
           border: solid ${pixelToRem(1)} ${({theme}) => theme.color.secondary.normal};
           margin-right: ${pixelToRem(10)};
 
-          ${(`${checkedValue}` === value) && css`
+          ${(checkedValue === value) && css`
             border-color: ${({theme}) => theme.color.primary.normal};
             background-color: ${({theme}) => theme.color.primary.normal};
             border-width: ${pixelToRem(4)};
@@ -201,7 +207,9 @@ const RadioButton: React.FunctionComponent<{
     text,
     checkedValue,
     customCss,
+    dataSchema,
     onChangeHandler,
+    onClickHandler,
   ]);
 };
 
@@ -224,9 +232,11 @@ const Row = styled(Elements.Wrapper)`
 const Column: React.FunctionComponent<{
   children: React.ReactNode | HTMLAllCollection;
   bottomText?: string;
+  topText?: string;
   customCss?: CustomCSSType;
 }> = ({
   children,
+  topText,
   bottomText,
   customCss,
 }) => (
@@ -236,14 +246,25 @@ const Column: React.FunctionComponent<{
       ${(customCss) && customCss};
     `}
   >
+    {(topText) && (
+      <Elements.Span
+        customCss={css`
+          font-size: ${pixelToRem(16)};
+          font-weight: bold;
+          display: block;
+          margin: ${pixelToRem(8)} 0;
+        `}
+      >{topText}</Elements.Span>
+    )}
     <Elements.Wrapper
       customCss={css`
         display: flex;
         width: 100%;
+        flex-direction: column;
 
         ${innerMargin(20, 20)};
 
-        @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.tablet.minWidth)}) {
+        @media (min-width: ${({ theme }) => pixelToRem(theme.responsive.desktop.minWidth)}) {
           flex-direction: row;
         }
       `}
@@ -263,7 +284,7 @@ const Group: React.FunctionComponent<{
   fieldName: string;
   labelText?: string;
   labelBottomText?: string;
-  value?: string|number;
+  value?: string|number|boolean;
   showErrorMessage?: boolean;
   customCss?: CustomCSSType;
   maxLength?: number;
@@ -272,7 +293,7 @@ const Group: React.FunctionComponent<{
   displayAs?: 'grid' | 'flex' | 'block';
   gridColumns?: number;
   validateFn?: (value: any, maxLength?: number) => ValidationType;
-  onUpdateHandler?: (fieldName: string, isValid: boolean, value?: string|number) => void;
+  onUpdateHandler?: (fieldName: string, isValid: boolean, value?: string|number|boolean) => void;
 }> = ({
   children,
   fieldName,

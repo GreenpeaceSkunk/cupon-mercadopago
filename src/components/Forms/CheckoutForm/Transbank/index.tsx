@@ -41,7 +41,7 @@ const Component: React.FunctionComponent<{}> = () => {
           telefono: user.phoneNumber,
           fechaNacimiento: user.birthDate,
           pais: user.country,
-          region: user.region,
+          region: user.province,
           provincia: user.province,
           comuna: user.city,
           calle: user.address,

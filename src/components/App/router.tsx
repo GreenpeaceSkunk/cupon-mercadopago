@@ -7,6 +7,7 @@ import { getDesignVersion } from '../../utils';
 import useCouponType from '../../hooks/useCouponType';
 
 const App = lazy(() => import('.'));
+const Local = lazy(() => import('../Local'));
 const Forms = lazy(() => import(`../v${DESIGN_VERSION}/Forms`));
 const RegistrationForm = lazy(() => import(`../v${DESIGN_VERSION}/Forms/RegistrationForm`));
 const CheckoutFormRouter = lazy(() => import('../Forms/CheckoutForm/router'));
@@ -46,6 +47,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           <Route path='thank-you' element={<Suspense fallback={<Loader/>}><ThankYou/></Suspense>} />
         </Route>
       </Route>
+      <Route path="local" element={<Suspense fallback={<Loader/>}><Local/></Suspense>} />
     </Routes>
   ), [
     couponType,

@@ -13,7 +13,7 @@ import { pixelToRem } from 'meema.utils';
 import { OnChangeEvent } from 'greenpeace';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import moment from 'moment';
-import { postRecord } from '../../../services/greenlab';
+import { postRecord, saveLocal } from '../../../services/greenlab';
 import useQuery from '../../../hooks/useQuery';
 import { generatePath } from 'react-router';
 
@@ -49,62 +49,73 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
         snackbarRef.current.showSnackbar();
       }
     } else {
+      dispatchFormErrors({ type: 'SUBMIT' });
+      
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
 
-      dispatchFormErrors({ type: 'SUBMIT' });
+      const payload = {
+        address: user.address || '',
+        amount: payment.amount === 'otherAmount' ? payment.newAmount : payment.amount,
+        appUiVersion: appData.features.use_design_version,
+        appName: appData.name,
+        areaCode: user.areaCode,
+        birthDate: user.birthDate,
+        campaignId: appData?.settings?.tracking?.salesforce?.campaign_id,
+        card: payment.cardNumber,
+        card_type: parseInt(`${payment.cardType}`),
+        cardCvv: payment.securityCode,
+        cardDocNumber:payment.docNumber,
+        cardDocType: payment.docType,
+        cardExpiration: payment.cardExpiration,
+        cardLastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
+        city: user.city || '',
+        country: user.country,
+        couponType: params.couponType ?? 'regular',
+        docNumber: user.docNumber,
+        docType: user.docType,
+        email: user.email,
+        firstName: user.firstName,
+        fromUrl: document.location.href,
+        genre: user.genre,
+        lastName: user.lastName,
+        mobileNumber: '',
+        phoneNumber: user.phoneNumber,
+        province: user.province || '',
+        region: '',
+        recurrenceDay: tomorrow.getDate(),
+        txnDate: today,
+        txnErrorCode: '',
+        txnErrorMessage: '',
+        txnStatus: "pending",
+        urlQueryParams: `${searchParams}`, 
+        userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
+        utmCampaign: urlSearchParams.get('utm_campaign') || '',
+        utmMedium: urlSearchParams.get('utm_medium') || '',
+        utmSource: urlSearchParams.get('utm_source') || '',
+        utmContent: urlSearchParams.get('utm_content') || '',
+        utmTerm: urlSearchParams.get('utm_term') || '',
+        zipCode: user.zipCode || '',
+      };
 
-      /* Backup to Forma. */
-      if(appData?.settings?.services?.forma?.form_id) {
-        const payload = {
-          address: user.address || '',
-          amount: payment.amount === 'otherAmount' ? payment.newAmount : payment.amount,
-          appUiVersion: appData.features.use_design_version,
-          appName: appData.name,
-          areaCode: user.areaCode,
-          birthDate: user.birthDate,
-          campaignId: appData?.settings?.tracking?.salesforce?.campaign_id,
-          card: payment.cardNumber,
-          card_type: parseInt(`${payment.cardType}`),
-          cardCvv: payment.securityCode,
-          cardDocNumber:payment.docNumber,
-          cardDocType: payment.docType,
-          cardExpiration: payment.cardExpiration,
-          cardLastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
-          city: user.city || '',
-          country: user.country,
-          couponType: params.couponType ?? 'regular',
-          docNumber: user.docNumber,
-          docType: user.docType,
-          email: user.email,
-          firstName: user.firstName,
-          fromUrl: document.location.href,
-          genre: user.genre,
-          lastName: user.lastName,
-          mobileNumber: '',
-          phoneNumber: user.phoneNumber,
-          province: user.province || '',
-          region: '',
-          recurrenceDay: tomorrow.getDate(),
-          txnDate: today,
-          txnErrorCode: '',
-          txnErrorMessage: '',
-          txnStatus: "pending",
-          urlQueryParams: `${searchParams}`, 
-          userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
-          utmCampaign: urlSearchParams.get('utm_campaign') || '',
-          utmMedium: urlSearchParams.get('utm_medium') || '',
-          utmSource: urlSearchParams.get('utm_source') || '',
-          utmContent: urlSearchParams.get('utm_content') || '',
-          utmTerm: urlSearchParams.get('utm_term') || '',
-          zipCode: user.zipCode || '',
-        };
-        
-        await postRecord(
-          payload,
+      if(appData?.features.sync_local === true) {
+        /* Backup to Local. */
+        saveLocal(
           appData?.settings?.services?.forma?.form_id,
+          appData.name,
+          appData.country,
+          payload,
         );
+      } else {
+
+        /* Backup to Forma. */
+        if(appData?.settings?.services?.forma?.form_id) {
+          await postRecord(
+            payload,
+            appData?.settings?.services?.forma?.form_id,
+          );
+        }
       }
 
       const timer = setTimeout(() => {

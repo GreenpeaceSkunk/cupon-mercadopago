@@ -32,6 +32,7 @@ const ApiCall = async <A>(config: AxiosRequestConfig) => {
       status: response?.status,
       message: errorMessage,
       errorCode,
+      data: response?.data || {},
     } as AxiosResquestError;
   }
 }

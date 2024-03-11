@@ -5,12 +5,12 @@ import Elements from '../../Shared/Elements';
 import Shared from '../../Shared';
 import { AppContext } from '../../App/context';
 import { useNavigate } from 'react-router';
-import { CheckoutFormContext, IdentificationType } from './context';
+import { CheckoutFormContext } from './context';
 import { validateCardHolderName, validateEmptyField } from '../../../utils/validators';
 import { ERROR_CODES } from '../../../utils/mercadopago';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
 import { pixelToRem } from 'meema.utils';
-import { OnChangeEvent } from 'greenpeace';
+import { OnChangeEvent, IdentificationType } from 'greenpeace';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import moment from 'moment';
 import { postRecord, saveLocal } from '../../../services/greenlab';
@@ -100,7 +100,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
       };
 
       if(appData?.features.sync_local === true) {
-        /* Backup to Local. */
+        console.log('Backup to Local.')
         saveLocal(
           appData?.settings?.services?.forma?.form_id,
           appData.name,
@@ -309,7 +309,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
                 onChange={onChangeHandler}
               >
                 <option value=""></option>
-                {(appData.settings.general.form_fields.registration.identification_types.values || []).map((doc: IdentificationType) => (
+                {(appData.settings.general.form_fields.shared.identification_types.values || []).map((doc: IdentificationType) => (
                   <option key={doc.type} value={doc.type}>{doc.value}</option>
                 ))}
               </Elements.Select>

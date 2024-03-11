@@ -1,31 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { FormContext } from '../context';
 import { reducer, initialState, ContextActionType } from './reducer';
-import { IPaymentData, IUserData, OnChangeEvent, ParamsType } from 'greenpeace';
+import { IdentificationType, CardType, IPaymentData, IUserData, OnChangeEvent, ParamsType } from 'greenpeace';
 import { AppContext } from '../../App/context';
-
-export type IdentificationType = {
-  type: string;
-  value: string;
-  validator: {
-    expression: RegExp;
-  };
-  placeholder: string;
-};
-
-export type CardType = {
-  text: string;
-  slug: string;
-  value: number;
-  validator: {
-    card_number: {
-      expression: RegExp;
-    };
-    card_security_code: {
-      expression: RegExp;
-    };
-  };
-};
 
 export interface IContext {
   submitting?: boolean;
@@ -80,7 +57,7 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
 
   useEffect(() => {
     setIdentificationType(
-      appData.settings.general.form_fields.registration.identification_types.values.find(
+      appData.settings.general.form_fields.shared.identification_types.values.find(
         (d: {type: string, value: string}) => d.type === payment.docType
       ));
   }, [appData, payment.docType]);

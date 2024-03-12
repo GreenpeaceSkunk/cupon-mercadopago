@@ -75,8 +75,8 @@ const ContextProvider: React.FunctionComponent<IProps> = ({ children }) => {
               case 'mercadopago':
                 initializeMercadopago();
               break;
-              case 'payu':
-                alert('PayU is not working yet');
+                case 'payu':
+                  alert('PayU is not working yet');
               break;
               default:
             }

@@ -49,9 +49,16 @@ export const validateField = (value: string): ValidationType => {
 };
 
 export const validateEmptyField = (value: string): ValidationType => {
+  if(value === '') {
+    return {
+      isValid: false,
+      errorMessage: ERROR_CODES['SK012'],
+    };
+  }
+  
   return {
-    isValid: (value !== '') ? true : false,
-    errorMessage: ERROR_CODES['SK012'],
+    isValid: true,
+    errorMessage: '',
   };
 }
 

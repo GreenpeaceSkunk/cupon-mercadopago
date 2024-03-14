@@ -121,6 +121,11 @@ export interface IPaymentData {
   amount: string;
   newAmount: string;
   isCardHolder: boolean;
+  paymentType?: 'bank_account' | 'credit_card';
+  bankName?: string;
+  bankAccountType?: string;
+  bankAccountNumber?: string;
+  paymentHolderName?: string;
 }
 
 export interface IData {

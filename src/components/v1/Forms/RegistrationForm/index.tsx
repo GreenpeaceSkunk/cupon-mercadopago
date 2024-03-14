@@ -407,7 +407,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 data-schema='user'
               />
             </Form.Group>
-            {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.birthDate.show) && (
+            {(appData.settings.general.form_fields.registration.birthDate?.show) && (
               <Form.Group
                 fieldName='birthDate'
                 value={user.birthDate}
@@ -491,7 +491,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
 
           <Form.Row>
             <Form.Column>
-              {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.genre.show) && (
+              {(appData.settings.general.form_fields.registration.genre?.show) && (
                 <Form.Group
                   fieldName='genre'
                   value={user.genre}
@@ -514,7 +514,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   </Elements.Select>
                 </Form.Group>
               )}
-              {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.country.show) && (
+              {(appData.settings.general.form_fields.registration.location.country?.show) && (
                 <Form.Group
                   fieldName='country'
                   value={user.country}
@@ -542,7 +542,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             </Form.Column>
           </Form.Row>
 
-        {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.province.show) && (
+        {(appData.settings.general.form_fields.registration.location.province?.show) && (
           <Form.Row>
             <Form.Column>
               <Form.Group
@@ -568,7 +568,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   ))}
                 </Elements.Select>
               </Form.Group>
-            {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.province.show && appData.settings.general.form_fields.registration.location.city.show) && (
+            {(appData.settings.general.form_fields.registration.location.province?.show && appData.settings.general.form_fields.registration.location.city?.show) && (
               <Form.Group
                 fieldName='city'
                 value={user.city}
@@ -598,17 +598,17 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           </Form.Row>
         )}
 
-        {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.address.show) && (
+        {(appData.settings.general.form_fields.registration.location.address?.show) && (
           <Form.Row>
             <Form.Column>
               <Form.Group
                 value={user.address}
                 fieldName='address'
-                labelText='Dirección completa'
+                labelText='Dirección'
                 showErrorMessage={showFieldErrors}
                 validateFn={validateEmptyField}
                 onUpdateHandler={onUpdateFieldHandler}
-                isRequired={false}
+                isRequired={appData.settings.general.form_fields.registration.location.address.required || false}
               >
                 <Elements.Input
                   name='address'
@@ -650,6 +650,29 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   showErrorMessage={showFieldErrors}
                   validateFn={validateEmptyField}
                   onUpdateHandler={onUpdateFieldHandler}
+                  isRequired={appData.settings.general.form_fields.registration.location.addressNumber.required || false}
+                  customCss={css`
+                    width: 40%;
+                  `}
+                >
+                  <Elements.Input
+                    name='addressNumber'
+                    type='number'
+                    placeholder=''
+                    value={addressNumber}
+                    onChange={onChangeHandler}
+                  />
+                </Form.Group>
+              )}
+              {(appData.settings.general.form_fields.registration.location.address.show && appData.settings.general.form_fields.registration.location.zipCode?.show) && (
+                <Form.Group
+                  fieldName='zipCode'
+                  value={zipCode}
+                  labelText='Cód. postal'
+                  showErrorMessage={showFieldErrors}
+                  validateFn={validateEmptyField}
+                  onUpdateHandler={onUpdateFieldHandler}
+                  isRequired={appData.settings.general.form_fields.registration.location.zipCode.required || false}
                   customCss={css`
                     width: 40%;
                   `}

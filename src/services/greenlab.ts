@@ -149,14 +149,21 @@ export const getLocal = (couponName: string, country: string): Array<any> => {
  * @param country Country
  * @returns
  */
-export const syncLocal = async (couponName: string, country: string):Promise<any> => {
+export const syncLocal = async (couponName: string, country: string, collectorId: number):Promise<any> => {
   const dbLocalName = `__coupon_${couponName}_${country}`.toLowerCase();
 
   let dbLocal = getLocal(couponName, country);
   const filteredDbLocal = dbLocal.map(data => !data.synced ? data : null);
 
   return await Promise.all(
-    filteredDbLocal.map(data => data ? postRecord(data.data, data.formId) : "")
+    filteredDbLocal.map(
+      data => data
+        ? postRecord({
+          ...data.data,
+          fromUrl: `${data.data.fromUrl}&captador=${collectorId}`,
+        }, data.formId)
+        : ""
+      )
   ).then(response => {
     response.map((item: any, idx: number) => {
       let filteredItem = filteredDbLocal[idx];

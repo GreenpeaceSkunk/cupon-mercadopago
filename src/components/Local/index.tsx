@@ -10,6 +10,7 @@ const Component: React.FunctionComponent<{}> = () => {
   const { appData } = useContext(AppContext);
   const [localData, setLocalData] = useState<Array<any>>([]);
   const [isFetching, setFetching] = useState<boolean>(false);
+  const [collectorId, setCollectorId] = useState<number>(-1);
 
   const syncHandler = useCallback(async () => {
     setFetching(true);
@@ -17,18 +18,18 @@ const Component: React.FunctionComponent<{}> = () => {
       (await syncLocal(
         appData.name,
         appData.country,
+        collectorId,
       ))
     );
     setFetching(false);
-  }, [localData]);
+  }, [localData, collectorId]);
 
   useEffect(() => {
     setLocalData((getLocal(appData.name, appData.country)));
   }, []);
 
   return useMemo(() => (
-    <Elements.Wrapper
-      customCss={css`padding: ${pixelToRem(40)} 0;`}>
+    <Elements.Wrapper customCss={css`padding: ${pixelToRem(40)} 0;`}>
       <Elements.Wrapper>
         <Elements.Header customCss={css`
           display: flex;
@@ -39,12 +40,45 @@ const Component: React.FunctionComponent<{}> = () => {
           <Logo color='green'/>
           <Elements.H1>Registros guardados localmente</Elements.H1>
           <Elements.Nav customCss={css`padding: ${pixelToRem(20)} 0;`}>
-            {isFetching ? <Loader /> : <Elements.Button onClick={syncHandler} customCss={css`
-              background: ${({theme}) => theme.color.primary.normal};
-              font-size: ${pixelToRem(17)};
-              padding: ${pixelToRem(10)} ${pixelToRem(20)};
-            `}>Sincronizar</Elements.Button>}
+            {isFetching ? (
+              <Loader />
+            ) : (
+              <Elements.Button
+                onClick={syncHandler}
+                disabled={collectorId === -1 || !localData.length}
+                customCss={css`
+                  background: ${({theme}) => theme.color.primary.normal};
+                  font-size: ${pixelToRem(17)};
+                  padding: ${pixelToRem(10)} ${pixelToRem(20)};
+              `}>Sincronizar</Elements.Button>
+            )
+            }
           </Elements.Nav>
+          <Elements.Wrapper
+            customCss={css`
+              display: flex;
+              flex-direction: column;
+              margin: ${pixelToRem(10)} 0 ${pixelToRem(20)};
+            `}
+          >
+            <Elements.Select
+              value={collectorId}
+              onChange={(evt) => setCollectorId(parseInt(evt.currentTarget.value))}
+              customCss={css`
+                padding: ${pixelToRem(4)} ${pixelToRem(10)};
+                text-align: center;
+              `}
+            >
+              <Elements.Option value={-1}>Seleccionar el captador</Elements.Option>
+              {appData?.features.sync_local.total_collectors && (
+                Array
+                  .from({length: appData.features.sync_local.total_collectors}, (_, i) => i + 1)
+                  .map(value => (
+                    <Elements.Option key={value} value={value}>Captaror #{value}</Elements.Option>
+                  ))
+              )}
+            </Elements.Select>
+          </Elements.Wrapper>
         </Elements.Header>
         <Elements.Wrapper
           customCss={css`
@@ -81,7 +115,7 @@ const Component: React.FunctionComponent<{}> = () => {
                     <Elements.Wrapper>{item.data.amount}</Elements.Wrapper>
                     <Elements.Wrapper>{item.data.cardDocType} {item.data.cardDocNumber}</Elements.Wrapper>
                     <Elements.Wrapper>{item.data.card_type}</Elements.Wrapper>
-                    <Elements.Wrapper>**** **** **** {item.data.card.slice(item.data.card.length - 4)}</Elements.Wrapper>
+                    <Elements.Wrapper>**** {item.data.card.slice(item.data.card.length - 4)}</Elements.Wrapper>
                     <Elements.Wrapper>
                       <Elements.Span
                         customCss={css`
@@ -119,6 +153,7 @@ const Component: React.FunctionComponent<{}> = () => {
     appData,
     localData,
     isFetching,
+    collectorId,
   ]);
 }
 

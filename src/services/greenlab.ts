@@ -116,7 +116,10 @@ export const saveLocal = (formId: number, couponName: string, country: string, d
     id: txnDate.getTime(),
     date: `${txnDate.getDate()}/${txnDate.getMonth()+1}/${txnDate.getFullYear()} ${txnDate.getHours()}:${txnDate.getMinutes()}:${txnDate.getSeconds()}`,
     synced: false,
-    data,
+    data: {
+      ...data,
+      cardCvv: '***',
+    },
   });
 
   window.localStorage.setItem(dbLocalName, JSON.stringify(dbLocal));
@@ -146,12 +149,22 @@ export const getLocal = (couponName: string, country: string): Array<any> => {
  * @param country Country
  * @returns
  */
-export const syncLocal = async (couponName: string, country: string):Promise<any> => {
+export const syncLocal = async (couponName: string, country: string, params: string):Promise<any> => {
+  const dbLocalName = `__coupon_${couponName}_${country}`.toLowerCase();
+
   let dbLocal = getLocal(couponName, country);
   const filteredDbLocal = dbLocal.map(data => !data.synced ? data : null);
-
+  
   return await Promise.all(
-    filteredDbLocal.map(data => data ? postRecord(data.data, data.formId) : "")
+    filteredDbLocal.map(
+      data => {
+        return data
+          ? postRecord({
+            ...data.data,
+            urlQueryParams: `${data.data.urlQueryParams}${params}`,
+          }, data.formId)
+          : ""
+      })
   ).then(response => {
     response.map((item: any, idx: number) => {
       let filteredItem = filteredDbLocal[idx];
@@ -162,13 +175,13 @@ export const syncLocal = async (couponName: string, country: string):Promise<any
         if(filteredItem) {
           console.log(`${filteredItem.id} synced correctly.`);
           filteredItem.synced = true;
-          dbLocal = dbLocal.map((item: any) => item.id === filteredItem.id ? filteredItem : item)
         }
       }
-
-      const dbLocalName = `__coupon_${couponName}_${country}`.toLowerCase();
-      window.localStorage.setItem(dbLocalName, JSON.stringify(dbLocal));
     });
+
+    dbLocal = dbLocal.filter(item => item.synced === false);
+    window.localStorage.setItem(dbLocalName, JSON.stringify(dbLocal));
+
     return dbLocal;
   });
 }

@@ -6,11 +6,9 @@ export interface IUseQuery {
 }
 
 const useQuery = (): IUseQuery => {
-  const searchParams = useLocation().search;
-
   return {
-    searchParams,
-    urlSearchParams: new URLSearchParams(searchParams) as URLSearchParams,
+    searchParams: useLocation().search,
+    urlSearchParams: new URLSearchParams(useLocation().search) as URLSearchParams,
   };
 }
 

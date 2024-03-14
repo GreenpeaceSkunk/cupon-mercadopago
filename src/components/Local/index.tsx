@@ -20,10 +20,6 @@ const Component: React.FunctionComponent<{}> = () => {
       ))
     );
     setFetching(false);
-  }, [localData])
-
-  useEffect(() => {
-    console.log(localData)
   }, [localData]);
 
   useEffect(() => {
@@ -56,7 +52,7 @@ const Component: React.FunctionComponent<{}> = () => {
             margin: auto;
           `}
         >
-          <Elements.Ul>
+          {localData.length ? <Elements.Ul>
             {localData.map(
               (item: any, idx: number) => (
                 <Elements.Li key={idx}>
@@ -115,7 +111,7 @@ const Component: React.FunctionComponent<{}> = () => {
                 </Elements.Li>
               )
             )}
-          </Elements.Ul>
+          </Elements.Ul> : <Elements.Span customCss={css`display: block;text-align: center;`}>No hay registros pendientes por sincronizar</Elements.Span>}
         </Elements.Wrapper>
       </Elements.Wrapper>
     </Elements.Wrapper>

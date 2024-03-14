@@ -81,6 +81,10 @@ export const Header = styled(Elements.Header)``;
 export const HGroup = styled(Elements.HGroup)``;
 export const Img = styled(Elements.Img)``;
 export const Input = styled(Elements.Input)`
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
   ${sharedInputStyles};
   ${customStyles};
 `;

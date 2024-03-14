@@ -99,7 +99,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
         zipCode: user.zipCode || '',
       };
 
-      if(appData?.features.sync_local === true) {
+      if(appData?.features.sync_local.enabled === true) {
         console.log('Backup to Local.')
         saveLocal(
           appData?.settings?.services?.forma?.form_id,
@@ -108,7 +108,6 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
           payload,
         );
       } else {
-
         /* Backup to Forma. */
         if(appData?.settings?.services?.forma?.form_id) {
           await postRecord(
@@ -157,7 +156,30 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
           `}
         >
           <Form.Column>
-           <Form.Group
+            <Form.Group
+               fieldName='cardType'
+               value={payment.cardType}
+               labelText='Tipo de tarjeta'
+               showErrorMessage={showFieldErrors}
+               validateFn={validateEmptyField}
+               onUpdateHandler={onUpdateFieldHandler}
+             >
+               <Elements.Select
+                 id="cardType"
+                 name="cardType"
+                 data-checkout="cardType"
+                 value={`${payment.cardType}`}
+                 onChange={onChangeHandler}
+               >
+                 <option value=""></option>
+                 {(appData.settings.general.form_fields.checkout.card_types.values || []).map((doc: {text: string, slug: string, value: number}) => (
+                   <option key={doc.slug} value={doc.value}>{doc.text}</option>
+                 ))}
+               </Elements.Select>
+             </Form.Group>
+           </Form.Column>
+          <Form.Column>
+            <Form.Group
               fieldName='cardNumber'
               value={payment.cardNumber}
               labelText='Número de tarjeta'
@@ -188,29 +210,6 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
               />
             </Form.Group>
           </Form.Column>
-          <Form.Column>
-           <Form.Group
-              fieldName='cardType'
-              value={payment.cardType}
-              labelText='Tipo de tarjeta'
-              showErrorMessage={showFieldErrors}
-              validateFn={validateEmptyField}
-              onUpdateHandler={onUpdateFieldHandler}
-            >
-              <Elements.Select
-                id="cardType"
-                name="cardType"
-                data-checkout="cardType"
-                value={`${payment.cardType}`}
-                onChange={onChangeHandler}
-              >
-                <option value=""></option>
-                {(appData.settings.general.form_fields.checkout.card_types.values || []).map((doc: {text: string, slug: string, value: number}) => (
-                  <option key={doc.slug} value={doc.value}>{doc.text}</option>
-                ))}
-              </Elements.Select>
-            </Form.Group>
-          </Form.Column>
         </Form.Row>
         <Form.Row
           customCss={css`
@@ -225,6 +224,11 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
               labelText='CVV'
               showErrorMessage={showFieldErrors}
               onUpdateHandler={onUpdateFieldHandler}
+              isRequired={
+                typeof appData.settings.general.form_fields.checkout.card_security_code?.disabled !== 'undefined'
+                  ? !appData.settings.general.form_fields.checkout.card_security_code?.disabled
+                  : true
+              }
               validateFn={() => {
                 if(cardType) {
                   return {
@@ -243,7 +247,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
               `}
             >
               <Elements.Input
-                type='text'
+                type='password'
                 id='securityCode'
                 name='securityCode'
                 placeholder='Ej. 1950'
@@ -251,6 +255,11 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
                 maxLength={4}
                 value={payment.securityCode}
                 onChange={onChangeHandler}
+                disabled={
+                  typeof appData.settings.general.form_fields.checkout.card_security_code?.disabled !== 'undefined'
+                    ? appData.settings.general.form_fields.checkout.card_security_code?.disabled
+                    : false
+                }
               />
             </Form.Group>
           </Form.Column>

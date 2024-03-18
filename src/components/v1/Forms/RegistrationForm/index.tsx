@@ -1,7 +1,7 @@
 import React, { FormEvent, memo, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { generatePath, useNavigate } from 'react-router-dom';
 import { FormContext } from '../../../Forms/context';
-import { OnChangeEvent } from 'greenpeace';
+import { IdentificationType, OnChangeEvent } from 'greenpeace';
 import {
   validateEmail,
   validateNewAmount,
@@ -24,29 +24,14 @@ import { AppContext } from '../../../App/context';
 import { pixelToRem } from 'meema.utils';
 import { ProvinceType } from '../../../Forms/reducer';
 import moment from 'moment';
+import { ERROR_CODES } from '../../../../utils/mercadopago';
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
   const {
     data: {
-      user: {
-        firstName,
-        lastName,
-        email,
-        areaCode,
-        phoneNumber,
-        country,
-        province,
-        city,
-        address,
-        zipCode,
-        genre,
-        birthDate,
-      },
-      payment: {
-        amount,
-        newAmount,
-      },
+      user,
+      payment,
     },
     shared: {
       countries,
@@ -58,26 +43,31 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   } = useContext(FormContext);
   const [{ submitting, allowNext }, dispatchFormErrors ] = useReducer(reducer, initialState);
   const [ showFieldErrors, setShowFieldErrors ] = useState<boolean>(false);
+  const [identificationType, setIdentificationType] = useState<IdentificationType | null>();
   const navigate = useNavigate();
   const { searchParams, urlSearchParams } = useQuery();
   const snackbarRef = useRef<ISnackbarRef>(null);
   
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
-    evt.preventDefault();
-
     const name = evt.currentTarget.name;
-    let value = evt.currentTarget.value;
-    
-    if(name === 'amount' || name === 'newAmount') {
-      dispatch({
-        type: 'UPDATE_PAYMENT_DATA',
-        payload: { [name]: value }
-      });
-    } else {
-      dispatch({
-        type: 'UPDATE_FIELD',
-        payload: { [name]: value }
-      });
+    const value = evt.currentTarget.value;
+    const schema: 'payment' | 'user' = evt.currentTarget.dataset.schema;
+
+    switch (schema) {
+      case 'payment':
+        dispatch({
+          type: 'UPDATE_PAYMENT_DATA',
+          payload: { [name]: value }
+        });
+        break;
+      case 'user':
+        dispatch({
+          type: 'UPDATE_USER_DATA',
+          payload: { [name]: value }
+        });
+        break;
+      default:
+        console.log(`The "schema" is not defined to "${name}"`);
     }
   }, [
     dispatch,
@@ -92,7 +82,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           isValid: 
           (fieldName === 'amount' && value === 'otherAmount')
           ? false
-          : (fieldName === 'newAmount' && amount === 'otherAmount')
+          : (fieldName === 'newAmount' && payment.amount === 'otherAmount')
           ? validateNewAmount(value, appData.settings.general.amounts.min_other_amount).isValid
           : true,
         }
@@ -107,7 +97,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       });
     }
   }, [
-    amount,
+    payment.amount,
     appData,
     dispatchFormErrors,
   ]);
@@ -128,10 +118,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     });
 
     const contact = await createContact({
-      email,
-      firstname: firstName,
-      lastname: lastName,
-      phone: `${areaCode}${phoneNumber}`,
+      email: user.email,
+      firstname: user.firstName,
+      lastname: user.lastName,
+      phone: `${user.areaCode}${user.phoneNumber}`,
       donationStatus: 'requested',
     });
 
@@ -153,16 +143,19 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       }
     }
   }, [
-    firstName,
-    lastName,
-    email,
-    areaCode,
-    phoneNumber,
+    user,
     params,
     allowNext,
     navigate,
     searchParams,
   ]);
+
+  useEffect(() => {
+    setIdentificationType(
+      appData.settings.general.form_fields.shared.identification_types.values.find(
+        (d: {type: string, value: string}) => d.type === user.docType
+      ));
+  }, [appData, user.docType]);
 
   useEffect(() => {
     (async () => {
@@ -171,21 +164,25 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         payload: { ['country']: appData.country }
       });
 
+      const amounts = appData.settings.general.amounts.values || [];
+      let defaultAmount;
+
       if(urlSearchParams.get('donate')) {
-        const amounts = appData.settings.general.amounts.values || [];
+        defaultAmount = `${urlSearchParams.get('donate')}`;
+        
         dispatch({
           type: 'UPDATE_PAYMENT_DATA',
           payload: {
             ...(amounts.filter((a:number) => `${a}` === urlSearchParams.get('donate')).length) ? {
-              amount: `${urlSearchParams.get('donate')}`,
+              amount: defaultAmount,
             } : {
               amount: 'otherAmount',
-              newAmount: `${urlSearchParams.get('donate')}`,
+              newAmount: defaultAmount,
             },
           }
         })
       } else {
-        if(appData && appData.content) {
+        if(typeof payment.amount === 'undefined' && amounts) {
           if(appData.settings.general.amounts.values.filter((v: number) => v === appData.settings.general.amounts.default).length) {
             dispatch({
               type: 'UPDATE_PAYMENT_DATA',
@@ -220,7 +217,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         <Form.Row>
           <Form.Column>
             <Form.Group
-              value={amount}
+              value={payment.amount}
               fieldName='amount'
               labelText={`
                 ${params.couponType === 'oneoff'
@@ -243,8 +240,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   text={`${appData.settings.general.amounts.currency}${value}`}
                   name='amount'
                   value={`${value}`}
-                  checkedValue={amount}
+                  checkedValue={payment.amount}
                   onChangeHandler={onChangeHandler}
+                  dataSchema='payment'
                 />
               ))}
               <Form.RadioButton
@@ -252,29 +250,31 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 text='Otras donaciones'
                 name='amount'
                 value='otherAmount'
-                checkedValue={amount}
+                checkedValue={payment.amount}
                 onChangeHandler={onChangeHandler}
                 customCss={css``}
+                dataSchema='payment'
               />
             </Form.Group>
           </Form.Column>
-            {(amount === 'otherAmount') ? (
+            {(payment.amount === 'otherAmount') ? (
               <Form.Column>
                 <Form.Group
                   fieldName='newAmount'
-                  value={newAmount}
+                  value={payment.newAmount}
                   labelText='Ingrese el monto'
                   showErrorMessage={showFieldErrors}
-                  validateFn={() => validateNewAmount(newAmount, appData.settings.general.amounts.min_other_amount)}
+                  validateFn={() => validateNewAmount(payment.newAmount, appData.settings.general.amounts.min_other_amount)}
                   onUpdateHandler={onUpdateFieldHandler}
                 >
                   <Elements.Input
                     name='newAmount'
                     type='text'
-                    disabled={!(amount === 'otherAmount')} 
+                    value={payment.newAmount}
                     placeholder={`Ej. ${appData.settings.general.amounts.currency}${appData.settings.general.amounts.min_other_amount}`}
                     maxLength={8}
                     onChange={onChangeHandler}
+                    data-schema='payment'
                   />
                 </Form.Group>
               </Form.Column>
@@ -298,7 +298,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           <Form.Column>
             <Form.Group
               fieldName='firstName'
-              value={firstName}
+              value={user.firstName}
               labelText='Nombre'
               showErrorMessage={showFieldErrors}
               validateFn={validateFirstName}
@@ -308,13 +308,14 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 name='firstName'
                 type='text'
                 placeholder=''
-                value={firstName}
+                value={user.firstName}
                 onChange={onChangeHandler}
+                data-schema='user'
               />
             </Form.Group>
             <Form.Group
               fieldName='lastName'
-              value={lastName}
+              value={user.lastName}
               labelText='Apellido'
               showErrorMessage={showFieldErrors}
               validateFn={validateFirstName}
@@ -324,8 +325,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 name='lastName'
                 type='text'
                 placeholder=''
-                value={lastName}
+                value={user.lastName}
                 onChange={onChangeHandler}
+                data-schema='user'
               />
             </Form.Group>
           </Form.Column>
@@ -333,7 +335,63 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         <Form.Row>
           <Form.Column>
             <Form.Group
-              value={email}
+              fieldName='docType'
+              value={user.docType}
+              labelText='Tipo de documento'
+              showErrorMessage={showFieldErrors}
+              validateFn={validateEmptyField}
+              onUpdateHandler={onUpdateFieldHandler}
+            >
+              <Elements.Select
+                id="docType"
+                name="docType"
+                data-checkout="docType"
+                value={user.docType}
+                onChange={onChangeHandler}
+                data-schema='user'
+              >
+                <option value=""></option>
+                {(appData.settings.general.form_fields.shared.identification_types.values || []).map((doc: IdentificationType) => (
+                  <option key={doc.type} value={doc.type}>{doc.value}</option>
+                ))}
+              </Elements.Select>
+            </Form.Group>
+            <Form.Group
+              fieldName='docNumber'
+              value={user.docNumber}
+              labelText='Número de documento'
+              showErrorMessage={showFieldErrors}
+              onUpdateHandler={onUpdateFieldHandler}
+              validateFn={() => {
+                if(identificationType) {
+                  return {
+                    isValid: new RegExp(identificationType.validator.expression).test(user.docNumber),
+                    errorMessage: ERROR_CODES["324"],
+                  }
+                }
+                return {
+                  isValid: false,
+                  errorMessage: ERROR_CODES["324"],
+                }
+              }}
+            >
+              <Elements.Input
+                type='text'
+                id='docNumber'
+                name='docNumber'
+                placeholder={identificationType?.placeholder || ''}
+                data-checkout='docNumber'
+                value={user.docNumber}
+                onChange={onChangeHandler}
+                data-schema='user'
+              />
+            </Form.Group>
+          </Form.Column>
+        </Form.Row>
+        <Form.Row>
+          <Form.Column>
+            <Form.Group
+              value={user.email}
               fieldName='email'
               labelText='Correo electrónico'
               showErrorMessage={showFieldErrors}
@@ -344,18 +402,19 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 name='email'
                 type='email'
                 placeholder=''
-                value={email}
+                value={user.email}
                 onChange={onChangeHandler}
+                data-schema='user'
               />
             </Form.Group>
             {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.birthDate.show) && (
               <Form.Group
                 fieldName='birthDate'
-                value={birthDate}
+                value={user.birthDate}
                 labelText='Fecha de nacimiento'
                 showErrorMessage={showFieldErrors}
                 validateFn={() => {
-                  if(!moment(birthDate, 'DD/MM/YYYY', true).isValid()) {
+                  if(!moment(user.birthDate, 'DD/MM/YYYY', true).isValid()) {
                     return {
                       isValid: false,
                       errorMessage: 'Error en la fecha',
@@ -376,11 +435,12 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   placeholder='DD/MM/AAAA'
                   data-checkout='birthDate'
                   maxLength={10}
-                  value={birthDate}
+                  value={user.birthDate}
                   onChange={(evt: OnChangeEvent) => {
                     evt.currentTarget.value = addOrRemoveSlashToDate(evt.currentTarget.value, 10);
                     onChangeHandler(evt);
                   }}
+                  data-schema='user'
                 />
               </Form.Group>
             )}
@@ -390,7 +450,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           <Form.Column bottomText='Escribe solo números y no agregues guiones.'>
             <Form.Group
               fieldName='areaCode'
-              value={areaCode}
+              value={user.areaCode}
               labelText='Cód. área'
               showErrorMessage={showFieldErrors}
               validateFn={validateAreaCode}
@@ -403,14 +463,15 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 name='areaCode'
                 type='text'
                 placeholder=''
-                value={areaCode}
+                value={user.areaCode}
                 maxLength={4}
                 onChange={onChangeHandler}
+                data-schema='user'
               />
             </Form.Group>
             <Form.Group
               fieldName='phoneNumber'
-              value={phoneNumber}
+              value={user.phoneNumber}
               labelText='Número telefónico'
               showErrorMessage={showFieldErrors}
               validateFn={validatePhoneNumber}
@@ -420,8 +481,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 name='phoneNumber'
                 type='text'
                 placeholder={appData.settings.general.form_fields.registration.phone_mobile_number?.placeholder || ''}
-                value={phoneNumber}
+                value={user.phoneNumber}
                 onChange={onChangeHandler}
+                data-schema='user'
               />
             </Form.Group>
           </Form.Column>
@@ -432,7 +494,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.genre.show) && (
                 <Form.Group
                   fieldName='genre'
-                  value={genre}
+                  value={user.genre}
                   labelText='Género'
                   showErrorMessage={showFieldErrors}
                   validateFn={validateEmptyField}
@@ -442,7 +504,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     id="genre"
                     name="genre"
                     data-checkout="genre"
-                    value={genre}
+                    value={user.genre}
                     onChange={onChangeHandler}
                   >
                     <option value=""></option>
@@ -455,7 +517,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.country.show) && (
                 <Form.Group
                   fieldName='country'
-                  value={country}
+                  value={user.country}
                   labelText='País'
                   showErrorMessage={showFieldErrors}
                   validateFn={validateEmptyField}
@@ -465,9 +527,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     id="country"
                     name="country"
                     data-checkout="country"
-                    value={country}
+                    value={user.country}
                     onChange={onChangeHandler}
                     disabled={appData.settings.general.form_fields.registration.location.country.disabled}
+                    data-schema='user'
                   >
                     <option value=""></option>
                     {(countries || []).map((value: any, key: number) => (
@@ -484,7 +547,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             <Form.Column>
               <Form.Group
                 fieldName='province'
-                value={province}
+                value={user.province}
                 labelText={appData.settings.general.form_fields.registration.location.province.label || 'Provincia'}
                 showErrorMessage={showFieldErrors}
                 validateFn={validateEmptyField}
@@ -495,8 +558,9 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   id="province"
                   name="province"
                   data-checkout="province"
-                  value={province}
+                  value={user.province}
                   onChange={onChangeHandler}
+                  data-schema='user'
                 >
                   <option value=""></option>
                   {(provinces || []).map((value: ProvinceType) => (
@@ -507,7 +571,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.province.show && appData.settings.general.form_fields.registration.location.city.show) && (
               <Form.Group
                 fieldName='city'
-                value={city}
+                value={user.city}
                 labelText={appData.settings.general.form_fields.registration.location.city.label || 'Ciudad'}
                 showErrorMessage={showFieldErrors}
                 validateFn={validateEmptyField}
@@ -518,9 +582,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                   id="city"
                   name="city"
                   data-checkout="city"
-                  value={city}
+                  value={user.city}
                   onChange={onChangeHandler}
-                  disabled={(!province ? true : false)}
+                  disabled={(!user.province ? true : false)}
+                  data-schema='user'
                 >
                   <option value=""></option>
                   {(cities || []).map((value: string, key: number) => (
@@ -537,7 +602,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           <Form.Row>
             <Form.Column>
               <Form.Group
-                value={address}
+                value={user.address}
                 fieldName='address'
                 labelText='Dirección completa'
                 showErrorMessage={showFieldErrors}
@@ -547,17 +612,41 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               >
                 <Elements.Input
                   name='address'
-                  type='address'
+                  type='text'
                   placeholder=''
-                  value={address}
+                  value={user.address}
                   onChange={onChangeHandler}
+                  data-schema='user'
                 />
               </Form.Group>
-              {(appData.settings.general.form_fields.registration && appData.settings.general.form_fields.registration.location.address.show && appData.settings.general.form_fields.registration.location.zipCode.show) && (
+              {(appData.settings.general.form_fields.registration.location.addressNumber?.show) && (
+                <Form.Group
+                  fieldName='addressNumber'
+                  value={user.addressNumber}
+                  labelText='Número'
+                  showErrorMessage={showFieldErrors}
+                  validateFn={validateEmptyField}
+                  onUpdateHandler={onUpdateFieldHandler}
+                  isRequired={appData.settings.general.form_fields.registration.location.addressNumber.required || false}
+                  customCss={css`
+                    width: 40%;
+                  `}
+                >
+                  <Elements.Input
+                    name='addressNumber'
+                    type='number'
+                    placeholder=''
+                    value={user.addressNumber}
+                    onChange={onChangeHandler}
+                    data-schema='user'
+                  />
+                </Form.Group>
+              )}
+              {(appData.settings.general.form_fields.registration.location.address.show && appData.settings.general.form_fields.registration.location.zipCode?.show) && (
                 <Form.Group
                   fieldName='zipCode'
-                  value={zipCode}
-                  labelText='Código postal'
+                  value={user.zipCode}
+                  labelText='Cód. postal'
                   showErrorMessage={showFieldErrors}
                   validateFn={validateEmptyField}
                   onUpdateHandler={onUpdateFieldHandler}
@@ -569,9 +658,10 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     name='zipCode'
                     type='text'
                     placeholder=''
-                    value={zipCode}
+                    value={user.zipCode}
                     maxLength={10}
                     onChange={onChangeHandler}
+                    data-schema='user'
                   />
                 </Form.Group>
               )}
@@ -598,19 +688,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       </Form.Nav>
     </Form.Main>
   ), [
-    address,
-    birthDate,
-    firstName,
-    lastName,
-    genre,
-    phoneNumber,
-    amount,
-    newAmount,
-    email,
-    country,
-    province,
-    city,
-    areaCode,
+    user,
+    payment,
     submitting,
     countries,
     provinces,
@@ -619,7 +698,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
     snackbarRef,
     showFieldErrors,
     appData,
-    zipCode,
     onSubmitHandler,
     onChangeHandler,
     onUpdateFieldHandler,

@@ -1,4 +1,5 @@
 import React, { useContext, useState, useRef, useMemo, useCallback, FormEvent } from 'react';
+import {Link} from "react-router-dom";
 import { css } from 'styled-components';
 import Form from '../../v1/Shared/Form';
 import Elements from '../../Shared/Elements';
@@ -10,7 +11,7 @@ import { validateCardHolderName, validateEmptyField } from '../../../utils/valid
 import { ERROR_CODES } from '../../../utils/mercadopago';
 import Snackbar, { IRef as ISnackbarRef } from '../../Snackbar';
 import { pixelToRem } from 'meema.utils';
-import { OnChangeEvent, IdentificationType } from 'greenpeace';
+import { OnChangeEvent, IdentificationType, CouponType } from 'greenpeace';
 import { addOrRemoveSlashToDate } from '../../../utils';
 import moment from 'moment';
 import { postRecord, saveLocal } from '../../../services/greenlab';
@@ -388,6 +389,9 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
           ? <Shared.Loader mode='light' />
           : (appData && appData.content && appData.content.form.checkout?.button_text)}
         </Elements.Button>
+        <Link to={generatePath(`/:couponType/forms/registration`, {
+          couponType: params.couponType as CouponType,
+        }) + searchParams}>Volver</Link>
       </Form.Nav>  
     </Form.Main>
   ), [

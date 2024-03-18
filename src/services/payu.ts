@@ -1,7 +1,7 @@
 import { AxiosResquestError } from 'greenpeace';
 import { ApiCall } from '../utils/apiCall';
 
-type PayUSuscribeResponse = {token: string; url_webpay: string};
+type PayUSuscribeResponse = {OK: boolean};
 
 export const suscribe = async (data: any): Promise<any | AxiosResquestError> => {
   const response: any = await ApiCall({
@@ -12,14 +12,14 @@ export const suscribe = async (data: any): Promise<any | AxiosResquestError> => 
 
   if(response.error) {
     return {
-      message: response.data.messages[0],
-      data: response.data.validationErrors,
+      message: response.data.messages[0] || 'API PayU: unexpected error.',
+      data: response.data.validationErrors || {},
       status: response.status,
     } as AxiosResquestError;
   }
-
+  
   return {
-    token: response.token,
-    url_webpay: response.url_webpay,
+    OK: true,
+    status: 201,
   } as PayUSuscribeResponse;
 };

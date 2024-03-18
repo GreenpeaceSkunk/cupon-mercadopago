@@ -4,7 +4,7 @@ export type FieldErrorType = { [fieldName: string]:boolean } | null;
 export type ErrorsType = { [index: string]: FieldErrorType } | null;
 
 type FieldType = { [x: string]: string | number };
-export type ProvinceType = {name: string; slug: string; cities: Array<string>};
+export type ProvinceType = {name: string; slug: string; code: string; cities: Array<string>;};
 
 export type FormSharedType = {
   countries?: Array<{code: string; label: string; phone: string}>; // { code: "AD", label: "Andorra", phone: "376" } 
@@ -170,6 +170,7 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
         },
       }
     case 'UPDATE_PAYMENT_DATA':
+      console.log('UPDATE_PAYMENT_DATA', action.payload['amount'], action.payload['newAmount'])
       return {
         ...state,
         data: {

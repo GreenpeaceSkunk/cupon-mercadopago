@@ -39,6 +39,7 @@ const DefaultTheme: ITheme = {
     },
     warning: {},
     error: {
+      light: '#FFF2F1',
       normal: '#FF543E',
     },
   },

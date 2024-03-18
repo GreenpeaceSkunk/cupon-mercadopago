@@ -1,6 +1,7 @@
 import { OnChangeEvent, IdentificationType, CouponType } from 'greenpeace';
 import React, { useContext, useState, useRef, useMemo, useCallback, FormEvent, useEffect } from 'react';
 import { css } from 'styled-components';
+import {Link} from "react-router-dom";
 import Form from '../../../v1/Shared/Form';
 import Elements from '../../../Shared/Elements';
 import Shared from '../../../Shared';
@@ -16,6 +17,7 @@ import moment from 'moment';
 import useQuery from '../../../../hooks/useQuery';
 import { generatePath } from 'react-router';
 import { suscribe } from '../../../../services/payu';
+import { FormContext } from '../../context';
 
 /**
  * This form only stores data in ForMa database
@@ -34,10 +36,12 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     params,
     identificationType,
     cardType,
+    error,
     dispatchFormErrors,
     onChangeHandler,
     onUpdateFieldHandler,
   } = useContext(CheckoutFormContext);
+  const {shared} = useContext(FormContext);
   const snackbarRef = useRef<ISnackbarRef>(null);
 
   const onSubmitHandler = useCallback(async (evt: FormEvent) => {
@@ -45,12 +49,12 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     
     if(!allowNext) {
       setShowFieldErrors(true);
+
       if(snackbarRef && snackbarRef.current) {
         snackbarRef.current.showSnackbar();
       }
     } else {
-      // dispatchFormErrors({ type: 'SUBMIT' });
-      
+      dispatchFormErrors({ type: 'SUBMIT' });
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -59,21 +63,21 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
         nombre: user.firstName,
         apellido: user.lastName,
         email: user.email,
-        fecha_nacimiento: user.birthDate,
+        fecha_nacimiento: moment(user.birthDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         prefijo: user.areaCode,
         telefono: user.phoneNumber,
         pais: user.country,
         numero: user.addressNumber,
-        monto: payment.amount,
+        monto: parseInt(payment.amount),
         direccion: user.address || '',
-        tipo_donacion: params.couponType,
+        tipo_donacion: params.couponType === 'oneoff' ? 'ONE_OFF' : 'Mensual',
         utm_campaign: urlSearchParams.get('utm_campaign') || 'utm_campaign',
         utm_medium: urlSearchParams.get('utm_medium') || 'utm_medium',
         utm_source: urlSearchParams.get('utm_source') || 'utm_source',
         utm_content: urlSearchParams.get('utm_content') || 'utm_content',
         utm_term: urlSearchParams.get('utm_term') || 'utm_term',
         ciudad: user.city,
-        departamento: user.province,
+        departamento: shared.provinces?.find((province: any) => province.name === user.province)?.code,
         
         tipo_documento_cliente: user.docType,
         numero_documento_cliente: user.docNumber,
@@ -86,20 +90,39 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
           tipo_documento_tarjetahabiente: payment.docType,
           numero_documento_tarjetahabiente: payment.docNumber,
           nombre_apellido_tarjetahabiente: payment.paymentHolderName,
-          numero_tarjeta: payment.cardNumber,
+          numero_tarjeta: parseInt(payment.cardNumber),
           cvv: parseInt(payment.securityCode),
-          metodo_pago: payment.cardType,
-          fecha_vencimiento_tarjeta: "2025/01", // TODO: Review
+          metodo_pago: appData.settings.general.form_fields.checkout.card_types.values.find((ct: any) => ct.value == payment.cardType).slug.toUpperCase(),
+          fecha_vencimiento_tarjeta: moment(payment.cardExpiration, 'MM/YYYY').format('YYYY/MM')
         } : null,
-
-        // response_url: window.location.origin + generatePath(`/coupon/:couponType/forms/checkout/:paymentGateway/confirm`, {
-        //   couponType: params.couponType as CouponType,
-        //   paymentGateway: 'payu',
-        // }) + searchParams,
       };
-      console.log(data)
+      
       const response = await suscribe(data);
-      console.log(response.data)
+
+      if(response.status === 400) {
+        dispatchFormErrors({
+          type: 'SET_ERROR',
+          error: `Hay errores en los siguientes campos: ${Object.values(response.data).map((e: any) => `"<strong>${e[0]}</strong>"`)}`,
+        });
+
+        dispatchFormErrors({ type: 'SUBMITTED' });
+        return;
+      }
+
+      const timer = setTimeout(() => {
+        dispatchFormErrors({ type: 'SUBMITTED' });
+
+        navigate({
+          pathname: generatePath(`/:couponType/forms/thank-you`, {
+            couponType: params.couponType as CouponType,
+          }),
+          search: `${searchParams}`,
+        }, { replace: true });
+      }, 250);
+
+      return () => {
+        clearTimeout(timer);
+      }
     }
   }, [
     user,
@@ -448,6 +471,14 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
           </Form.Column>
         </Form.Row>
       </Form.Content>
+      {error && <Elements.Span
+        dangerouslySetInnerHTML={{__html: `${error}`}}
+        customCss={css`
+          padding: ${pixelToRem(10)};
+          background-color: ${({theme}) => theme.color.error.light};
+          color: ${({theme}) => theme.color.error.normal};
+        `}
+      />}
       <Snackbar
         ref={snackbarRef}
         text='Tenés campos incompletos o con errores. Revisalos para continuar.' />
@@ -459,6 +490,9 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
           ? <Shared.Loader mode='light' />
           : (appData && appData.content && appData.content.form.checkout?.button_text)}
         </Elements.Button>
+        <Link to={generatePath(`/:couponType/forms/registration`, {
+          couponType: params.couponType as CouponType,
+        }) + searchParams}>Volver</Link>
       </Form.Nav>  
     </Form.Main>
   ), [
@@ -473,6 +507,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
     searchParams,
     urlSearchParams,
     identificationType,
+    error,
     onSubmitHandler,
     onChangeHandler,
     onUpdateFieldHandler,

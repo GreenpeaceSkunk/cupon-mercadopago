@@ -659,7 +659,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     name='addressNumber'
                     type='number'
                     placeholder=''
-                    value={addressNumber}
+                    value={user.addressNumber}
                     onChange={onChangeHandler}
                   />
                 </Form.Group>
@@ -667,7 +667,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
               {(appData.settings.general.form_fields.registration.location.address.show && appData.settings.general.form_fields.registration.location.zipCode?.show) && (
                 <Form.Group
                   fieldName='zipCode'
-                  value={zipCode}
+                  value={user.zipCode}
                   labelText='Cód. postal'
                   showErrorMessage={showFieldErrors}
                   validateFn={validateEmptyField}

@@ -34,7 +34,6 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
   switch (action.type) {
     case 'UPDATE_FIELD_ERRORS': {
       let tmpErrors = (state.errors) ? {...state.errors} : {};
-      console.log(tmpErrors)
       
       if(action.payload.isValid) {
         delete tmpErrors[`${action.payload.fieldName}`];

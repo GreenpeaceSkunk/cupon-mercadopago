@@ -170,7 +170,6 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
         },
       }
     case 'UPDATE_PAYMENT_DATA':
-      console.log('UPDATE_PAYMENT_DATA', action.payload['amount'], action.payload['newAmount'])
       return {
         ...state,
         data: {

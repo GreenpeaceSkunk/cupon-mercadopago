@@ -47,7 +47,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
   const navigate = useNavigate();
   const { searchParams, urlSearchParams } = useQuery();
   const snackbarRef = useRef<ISnackbarRef>(null);
-  const [identificationType, setIdentificationType] = useState<IdentificationType | null>();
   
   const onChangeHandler = useCallback((evt: OnChangeEvent) => {
     const name = evt.currentTarget.name;
@@ -255,7 +254,6 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                 onChangeHandler={onChangeHandler}
                 dataSchema='payment'
                 customCss={css``}
-                dataSchema='payment'
               />
             </Form.Group>
           </Form.Column>

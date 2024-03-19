@@ -9,6 +9,7 @@ export const suscribe = async (data: any): Promise<any | AxiosResquestError> => 
     method: 'POST',
     data,
   });
+  console.log(response)
 
   if(response.error) {
     return {

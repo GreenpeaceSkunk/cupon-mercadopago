@@ -123,7 +123,7 @@ const RadioButton: React.FunctionComponent<{
   text: string;
   checkedValue: string | number;
   customCss?: CustomCSSType;
-  dataSchema?: 'payment' | 'user'; // Remove ?
+  dataSchema?: 'payment' | 'user';
   onChangeHandler: (evt: OnChangeEvent) => void;
   onClickHandler?: (evt: OnClickEvent) => void;
 }> = ({
@@ -238,7 +238,6 @@ const Column: React.FunctionComponent<{
   children,
   topText,
   bottomText,
-  topText,
   customCss,
 }) => (
   <Elements.Wrapper

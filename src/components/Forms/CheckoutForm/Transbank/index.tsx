@@ -59,7 +59,9 @@ const Component: React.FunctionComponent<{}> = () => {
           response_url: window.location.origin + generatePath(`/coupon/:couponType/forms/checkout/transbank/confirm`, {
             couponType: params.couponType as CouponType,
           }) + searchParams,
+          apiResponseUrlParams: searchParams || '',
         };
+
         const response = await suscribe(data);
         
         if(response.token && response.url_webpay) {

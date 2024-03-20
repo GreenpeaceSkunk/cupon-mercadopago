@@ -5,11 +5,23 @@ import { pixelToRem } from 'meema.utils';
 import Shared from '../../Shared';
 import { carouselItemStyles } from '../../../styles/mixins';
 import { AppContext } from '../../App/context';
+import {CouponType} from 'greenpeace';
+import { generatePath, useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
+import useQuery from '../../../hooks/useQuery';
+import { FormContext } from '../../Forms/context';
+import { Button } from '@bit/meema.ui-components.elements';
 
 const SocialMediaNav = lazy(() => import('../../SocialMediaNav'));
 
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
+  const {
+    params,
+    dispatch,
+  } = useContext(FormContext);
+  const { searchParams } = useQuery();
+  const navigate = useNavigate();
 
   return useMemo(() => (
     <Elements.View
@@ -78,10 +90,35 @@ const Component: React.FunctionComponent<{}> = memo(() => {
           width: 100%;
           height: 100%;
         `}
-      />
+      >
+        <Button
+          customCss={css`
+            padding: 0;
+            font-size: ${pixelToRem(16)};
+            &:hover {
+              background: none;
+              &:not(:disabled) {
+                box-shadow: none;
+              }
+            }
+          `}
+          onClick={() => {
+            dispatch({type: 'RESET'})
+            navigate({
+              pathname: generatePath(`/:couponType/forms/registration`, {
+                couponType: `${params.couponType}`,
+              }),
+              search: `${searchParams}`,
+            }, { replace: true });
+          }}
+        >
+          Volver a donar
+        </Button>
+      </Elements.Nav>
     </Elements.View>
   ), [
     appData,
+    params,
   ]);
 });
 

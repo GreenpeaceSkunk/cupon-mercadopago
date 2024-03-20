@@ -529,7 +529,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                     data-checkout="country"
                     value={user.country}
                     onChange={onChangeHandler}
-                    disabled={appData.settings.general.form_fields.registration.location.country.disabled}
+                    // disabled={appData.settings.general.form_fields.registration.location.country.disabled}
                     data-schema='user'
                   >
                     <option value=""></option>

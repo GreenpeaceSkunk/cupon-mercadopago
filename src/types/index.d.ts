@@ -77,7 +77,7 @@ export interface IUserData {
   firstName: string;
   lastName: string;
   email: string;
-  genre: 'Femenino' | 'Masculino' | 'No binario';
+  genre: 'Femenino' | 'Masculino' | 'No binario' | '';
   areaCode: string;
   phoneNumber: string;
   docNumber: string;

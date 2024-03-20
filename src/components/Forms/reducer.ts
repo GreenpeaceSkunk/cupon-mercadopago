@@ -38,30 +38,51 @@ export type ContextActionType =
 | { type: 'RESET' }
 | SharedActions;
 
+const defaultData = {
+  user: {
+    firstName: '',
+    lastName: '',
+    birthDate: '',
+    email: '',
+    genre: '',
+    phoneNumber: '',
+    areaCode: '',
+    docNumber: '',
+    docType: '',
+    citizenId: '',
+    country: '',
+    province: '',
+    city: '',
+    address: '',
+    addressNumber: '',
+    constituentId: '',
+    referredAreaCode: '',
+    referredDocNumber: '',
+    referredDocType: '',
+    referredEmail: '',
+    referredFirstName: '',
+    referredLastName: '',
+    referredPhoneNumber: '',
+  } as IUserData,
+  payment: {
+    cardNumber: '',
+    cardholderName: '',
+    securityCode: '',
+    cardExpirationMonth: '',
+    cardExpirationYear: '',
+    cardExpiration: '',
+    docNumber: '',
+    docType: '',
+    newAmount: '',
+    isCardHolder: true,
+  } as IPaymentData,
+} as IData;
+
 export const initialState: ContextStateType = {
   data: {
+    ...defaultData,
     user: {
-      firstName: '',
-      lastName: '',
-      birthDate: '',
-      email: '',
-      genre: '',
-      phoneNumber: '',
-      areaCode: '',
-      docNumber: '',
-      docType: '',
-      citizenId: '',
-      country: '',
-      province: '',
-      city: '',
-      constituentId: '',
-      referredAreaCode: '',
-      referredDocNumber: '',
-      referredDocType: '',
-      referredEmail: '',
-      referredFirstName: '',
-      referredLastName: '',
-      referredPhoneNumber: '',
+      ...defaultData.user,
       ...(autofill ? {
         firstName: 'Doe',
         lastName: 'Deer',
@@ -85,16 +106,7 @@ export const initialState: ContextStateType = {
       } : {}),
     } as IUserData,
     payment: {
-      cardNumber: '',
-      cardholderName: '',
-      securityCode: '',
-      cardExpirationMonth: '',
-      cardExpirationYear: '',
-      cardExpiration: '',
-      docNumber: '',
-      // docType: 'DNI',
-      docType: '',
-      newAmount: '',
+      ...defaultData.payment,
       ...(autofill ? {
         cardType: '2',
         cardNumber: '1234567890123456',
@@ -208,6 +220,7 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
     case 'RESET': {
       return {
         ...state,
+        data: {...defaultData},
         errors: null,
         submitting: false,
         submitted: false,

@@ -75,6 +75,11 @@ const defaultData = {
     docType: '',
     newAmount: '',
     isCardHolder: true,
+    paymentType: 'credit_card',
+    bankName: '',
+    bankAccountType: '',
+    bankAccountNumber: '',
+    paymentHolderName: '',
   } as IPaymentData,
 } as IData;
 

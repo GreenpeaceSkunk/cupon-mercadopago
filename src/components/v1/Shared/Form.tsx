@@ -143,7 +143,7 @@ const RadioButton: React.FunctionComponent<{
         align-items: center;
         width: fit-content;
         cursor: pointer;
-        margin-bottom: ${pixelToRem(10)};
+        margin-bottom: ${pixelToRem(0)};
         user-select: none;
         text-align: left;
         font-family: ${({theme}) => theme.font.family.primary.regular};
@@ -236,6 +236,7 @@ const Column: React.FunctionComponent<{
   customCss?: CustomCSSType;
 }> = ({
   children,
+  topText,
   bottomText,
   topText,
   customCss,

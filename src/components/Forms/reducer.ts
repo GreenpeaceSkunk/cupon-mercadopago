@@ -91,7 +91,7 @@ export const initialState: ContextStateType = {
         genre: 'No binario',
         phoneNumber: '44440000',
         areaCode: '11',
-        docNumber: '12345678',
+        docNumber: '9876543210',
         docType: 'DNI',
         citizenId: '',
         constituentId: '',
@@ -119,7 +119,7 @@ export const initialState: ContextStateType = {
         cardHolderName: 'APRO',
         // cardExpirationMonth: '11',
         // cardExpirationYear: '2025',
-        docNumber: '102345678',
+        docNumber: '0123456789',
         cardExpiration: '11/27',
         // docType: 'DNI',
       } : {})
@@ -136,7 +136,7 @@ export const initialState: ContextStateType = {
   allowNext: false,
   error: null,
   errors: null,
-}
+};
 
 export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (state: ContextStateType, action: ContextActionType) => {
   switch (action.type) {
@@ -178,6 +178,12 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
                   newAmount: (action.payload['amount'] === 'otherAmount') ? action.payload['newAmount'] : '',
                 }
               : action.payload,
+            // ...(action.payload['isCardHolder'])
+            //   ? {
+            //       cardholderName: +action.payload['isCardHolder'] === 0 ? `${state.data.user.firstName} ${state.data.user.lastName}` : '',
+            //       docNumber: +action.payload['isCardHolder'] === 0 ? state.data.user.docNumber : '',
+            //       docType: +action.payload['isCardHolder'] === 0 ? state.data.user.docType : '',
+            //     } : null,
           },
         },
       }

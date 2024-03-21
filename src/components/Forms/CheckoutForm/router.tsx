@@ -9,6 +9,7 @@ import { CheckoutFormProvider } from './context';
 const DESIGN_VERSION = getDesignVersion();
 const OfflineCheckoutForm = lazy(() => import(`../../v${DESIGN_VERSION}/Forms/CheckoutForm`));
 const MercadopagoCheckoutFormRouter = lazy(() => import('./Mercadopago/router'));
+const TransbankCheckoutFormRouter = lazy(() => import('./Transbank/router'));
 
 const Router: React.FunctionComponent<{}> = memo(() => {
   const {appData} = useContext(AppContext);
@@ -18,6 +19,7 @@ const Router: React.FunctionComponent<{}> = memo(() => {
   return useMemo(() => (
     <Routes>
       <Route path='mercadopago' element={<Suspense fallback={<Loader/>}><MercadopagoCheckoutFormRouter/></Suspense>} />
+      <Route path='transbank/*' element={<Suspense fallback={<Loader/>}><TransbankCheckoutFormRouter/></Suspense>} />
       <Route path='offline' element={<Suspense fallback={<Loader/>}><OfflineCheckoutForm/></Suspense>} />
       <Route path='*' element={<Navigate to={`offline${searchParams}`} />} />
     </Routes>

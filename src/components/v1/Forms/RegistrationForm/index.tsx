@@ -29,15 +29,7 @@ import { ERROR_CODES } from '../../../../utils/mercadopago';
 const Component: React.FunctionComponent<{}> = memo(() => {
   const { appData } = useContext(AppContext);
   const {
-    data: {
-      user,
-      payment,
-    },
-    shared: {
-      countries,
-      provinces,
-      cities,
-    },
+    data: { user, payment }, shared: { countries, provinces, cities },
     params,
     dispatch,
   } = useContext(FormContext);

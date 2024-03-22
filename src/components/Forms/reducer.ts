@@ -166,6 +166,11 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
         },
       }
     case 'UPDATE_PAYMENT_DATA':
+      let isCardHolder =  state.data.payment.isCardHolder;
+      if(action.payload['isCardHolder']) {
+        isCardHolder = action.payload['isCardHolder'] === '0' ? false : true;
+      }
+
       return {
         ...state,
         data: {
@@ -178,12 +183,7 @@ export const reducer: GenericReducerFn<ContextStateType, ContextActionType> = (s
                   newAmount: (action.payload['amount'] === 'otherAmount') ? action.payload['newAmount'] : '',
                 }
               : action.payload,
-            // ...(action.payload['isCardHolder'])
-            //   ? {
-            //       cardholderName: +action.payload['isCardHolder'] === 0 ? `${state.data.user.firstName} ${state.data.user.lastName}` : '',
-            //       docNumber: +action.payload['isCardHolder'] === 0 ? state.data.user.docNumber : '',
-            //       docType: +action.payload['isCardHolder'] === 0 ? state.data.user.docType : '',
-            //     } : null,
+              isCardHolder,
           },
         },
       }

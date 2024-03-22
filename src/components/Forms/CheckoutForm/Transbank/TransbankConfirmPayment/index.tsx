@@ -15,14 +15,13 @@ const Component: React.FunctionComponent<{}> = () => {
   const { searchParams, urlSearchParams } = useQuery();
   const { appData } = useContext(AppContext);
   const { data: { payment, user } } = useContext(FormContext);
+  const { params } = useContext(CheckoutFormContext);
   const navigate = useNavigate();
-  const {
-    params,
-  } = useContext(CheckoutFormContext);
   
   useEffect(() => {
     (async () => {
       const txnStatus = (urlSearchParams.get('TBK_TOKEN') && urlSearchParams.get('TRANSACCION_ID')) ? 'done' : 'pending';
+
       if(urlSearchParams.get('TBK_TOKEN') && urlSearchParams.get('TRANSACCION_ID')) {
         await confirm({
           token: urlSearchParams.get('TBK_TOKEN') || '',

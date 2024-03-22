@@ -54,16 +54,16 @@ const Component: React.FunctionComponent<{}> = () => {
           utmTerm: urlSearchParams.get('utm_term') || 'utm_term',
           tipoDonacion: params.couponType,
           titular: payment.isCardHolder,
-          tarjetaHabienteRut: payment.cardNumber,
+          tarjetaHabienteRut: payment.docNumber,
           tarjetaHabienteNombre: payment.cardholderName,
           response_url: window.location.origin + generatePath(`/coupon/:couponType/forms/checkout/transbank/confirm`, {
             couponType: params.couponType as CouponType,
-          }) + searchParams,
+          }),
           apiResponseUrlParams: searchParams || '',
         };
-
-        const response = await suscribe(data);
         
+        const response = await suscribe(data);
+
         if(response.token && response.url_webpay) {
           setToken(response.token);
 

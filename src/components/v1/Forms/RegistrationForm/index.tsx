@@ -484,14 +484,16 @@ const Component: React.FunctionComponent<{}> = memo(() => {
                       />
                     </Form.Group>
                   </Form.Column>
-                  <UserDocument
-                    onChangeHandler={onChangeHandler}
-                    onUpdateFieldHandler={onUpdateFieldHandler}
-                    docType={payment.isCardHolder ? user.docType : payment.docType}
-                    docNumber={payment.isCardHolder ? user.docNumber : payment.docNumber}
-                    dataSchema='payment'
-                    disabled={payment.isCardHolder}
-                  />
+                  <Form.Column>
+                    <UserDocument
+                      onChangeHandler={onChangeHandler}
+                      onUpdateFieldHandler={onUpdateFieldHandler}
+                      docType={payment.isCardHolder ? user.docType : payment.docType}
+                      docNumber={payment.isCardHolder ? user.docNumber : payment.docNumber}
+                      dataSchema='payment'
+                      disabled={payment.isCardHolder}
+                    />
+                  </Form.Column>
                 </>
               )}
             </Form.Row>

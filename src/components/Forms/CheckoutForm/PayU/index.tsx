@@ -18,6 +18,7 @@ import useQuery from '../../../../hooks/useQuery';
 import { generatePath } from 'react-router';
 import { suscribe } from '../../../../services/payu';
 import { FormContext } from '../../context';
+import { postRecord } from '../../../../services/greenlab';
 
 /**
  * This form only stores data in ForMa database
@@ -55,49 +56,44 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
       }
     } else {
       dispatchFormErrors({ type: 'SUBMIT' });
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
 
-      const data = {
-        nombre: user.firstName,
-        apellido: user.lastName,
-        email: user.email,
-        fecha_nacimiento: moment(user.birthDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-        prefijo: user.areaCode,
-        telefono: user.phoneNumber,
-        pais: user.country,
-        numero: user.addressNumber,
-        monto: parseInt(payment.amount),
-        direccion: user.address || '',
-        tipo_donacion: params.couponType === 'oneoff' ? 'ONE_OFF' : 'Mensual',
-        utm_campaign: urlSearchParams.get('utm_campaign') || 'utm_campaign',
-        utm_medium: urlSearchParams.get('utm_medium') || 'utm_medium',
-        utm_source: urlSearchParams.get('utm_source') || 'utm_source',
-        utm_content: urlSearchParams.get('utm_content') || 'utm_content',
-        utm_term: urlSearchParams.get('utm_term') || 'utm_term',
-        ciudad: user.city,
-        departamento: shared.provinces?.find((province: any) => province.name === user.province)?.code,
-        
-        tipo_documento_cliente: user.docType,
-        numero_documento_cliente: user.docNumber,
-        
-        ...(payment.paymentType === 'bank_account') ? {
-          banco: payment.bankName, 
-          numero_cuenta: payment.bankAccountNumber,
-          tipo_cuenta: payment.bankAccountType,
-        } : (payment.paymentType === 'credit_card') ? {
-          tipo_documento_tarjetahabiente: payment.docType,
-          numero_documento_tarjetahabiente: payment.docNumber,
-          nombre_apellido_tarjetahabiente: payment.paymentHolderName,
-          numero_tarjeta: parseInt(payment.cardNumber),
-          cvv: parseInt(payment.securityCode),
-          metodo_pago: appData.settings.general.form_fields.checkout.card_types.values.find((ct: any) => ct.value == payment.cardType).slug.toUpperCase(),
-          fecha_vencimiento_tarjeta: moment(payment.cardExpiration, 'MM/YYYY').format('YYYY/MM')
-        } : null,
-      };
-      
-      const response = await suscribe(data);
+      const response = await suscribe(
+        {
+          nombre: user.firstName,
+          apellido: user.lastName,
+          email: user.email,
+          fecha_nacimiento: moment(user.birthDate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+          prefijo: user.areaCode,
+          telefono: user.phoneNumber,
+          pais: user.country,
+          numero: user.addressNumber,
+          monto: parseInt(payment.amount),
+          direccion: user.address || '',
+          tipo_donacion: params.couponType === 'oneoff' ? 'ONE_OFF' : 'Mensual',
+          utm_campaign: urlSearchParams.get('utm_campaign') || '',
+          utm_medium: urlSearchParams.get('utm_medium') || '',
+          utm_source: urlSearchParams.get('utm_source') || '',
+          utm_content: urlSearchParams.get('utm_content') || '',
+          utm_term: urlSearchParams.get('utm_term') || '',
+          ciudad: user.city,
+          departamento: shared.provinces?.find((province: any) => province.name === user.province)?.code,
+          tipo_documento_cliente: user.docType,
+          numero_documento_cliente: user.docNumber,
+          ...(payment.paymentType === 'bank_account') ? {
+            banco: payment.bankName,
+            numero_cuenta: payment.bankAccountNumber,
+            tipo_cuenta: payment.bankAccountType,
+          } : (payment.paymentType === 'credit_card') ? {
+            tipo_documento_tarjetahabiente: payment.docType,
+            numero_documento_tarjetahabiente: payment.docNumber,
+            nombre_apellido_tarjetahabiente: payment.paymentHolderName,
+            numero_tarjeta: parseInt(payment.cardNumber),
+            cvv: parseInt(payment.securityCode),
+            metodo_pago: appData.settings.general.form_fields.checkout.card_types.values.find((ct: any) => ct.value == payment.cardType).slug.toUpperCase(),
+            fecha_vencimiento_tarjeta: moment(payment.cardExpiration, 'MM/YYYY').format('YYYY/MM')
+          } : null,
+        }
+      );
 
       if(response.status === 400) {
         dispatchFormErrors({
@@ -107,6 +103,60 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
 
         dispatchFormErrors({ type: 'SUBMITTED' });
         return;
+      }
+
+      /* Backup to Forma. */
+      if(appData?.settings?.services?.forma?.form_id) {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        await postRecord(
+          {
+            address: user.address || '',
+            amount: payment.amount === 'otherAmount' ? payment.newAmount : payment.amount,
+            appUiVersion: appData.features.use_design_version,
+            appName: appData.name,
+            areaCode: user.areaCode,
+            birthDate: user.birthDate,
+            campaignId: appData?.settings?.tracking?.salesforce?.campaign_id,
+            card: payment.cardNumber,
+            card_type: parseInt(`${payment.cardType}`),
+            cardCvv: payment.securityCode,
+            cardDocNumber:payment.docNumber,
+            cardDocType: payment.docType,
+            cardExpiration: payment.cardExpiration,
+            cardLastDigits: payment.cardNumber.slice(payment.cardNumber.length - 4),
+            city: user.city || '',
+            country: user.country,
+            couponType: params.couponType ?? 'regular',
+            docNumber: user.docNumber,
+            docType: user.docType,
+            email: user.email,
+            firstName: user.firstName,
+            fromUrl: document.location.href,
+            genre: user.genre,
+            lastName: user.lastName,
+            mobileNumber: '',
+            phoneNumber: user.phoneNumber,
+            province: user.province || '',
+            region: '',
+            recurrenceDay: tomorrow.getDate(),
+            txnDate: today,
+            txnErrorCode: '',
+            txnErrorMessage: '',
+            txnStatus: "done",
+            urlQueryParams: `${searchParams}`,
+            userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
+            utmCampaign: urlSearchParams.get('utm_campaign') || '',
+            utmMedium: urlSearchParams.get('utm_medium') || '',
+            utmSource: urlSearchParams.get('utm_source') || '',
+            utmContent: urlSearchParams.get('utm_content') || '',
+            utmTerm: urlSearchParams.get('utm_term') || '',
+            zipCode: user.zipCode || '',
+          },
+          appData.settings.services.forma.form_id,
+        );
       }
 
       const timer = setTimeout(() => {
@@ -159,7 +209,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
             >
               {([
                 {text: 'Tarjeta de crédito', value: 'credit_card'},
-                {text: 'PSE', value: 'bank_account'},
+                // {text: 'PSE', value: 'bank_account'},
               ]).map((paymentType: {text: string, value: string}) => (
                 <Form.RadioButton
                   key={paymentType.value}

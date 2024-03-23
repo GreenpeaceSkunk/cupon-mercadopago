@@ -13,6 +13,7 @@ import { suscribe } from '../../../../services/transbank';
 import { Img } from '@bit/meema.ui-components.elements';
 import { FormContext } from '../../context';
 import { pixelToRem } from 'meema.utils';
+import moment from 'moment';
 
 const Component: React.FunctionComponent<{}> = () => {
   const checkoutFormRef = useRef<HTMLFormElement | any>();
@@ -39,7 +40,7 @@ const Component: React.FunctionComponent<{}> = () => {
           email: user.email,
           prefijo: user.areaCode,
           telefono: user.phoneNumber,
-          fechaNacimiento: user.birthDate,
+          fechaNacimiento: moment(user.birthDate, 'DD/MM/YYYY').format('YYYY/MM/DD'),
           pais: user.country,
           region: user.province,
           provincia: user.province,
@@ -52,7 +53,7 @@ const Component: React.FunctionComponent<{}> = () => {
           utmSource: urlSearchParams.get('utm_source') || 'utm_source',
           utmContent: urlSearchParams.get('utm_content') || 'utm_content',
           utmTerm: urlSearchParams.get('utm_term') || 'utm_term',
-          tipoDonacion: params.couponType,
+          tipoDonacion: params.couponType === 'oneoff' ? 'ONE_OFF' : 'Mensual',
           titular: payment.isCardHolder,
           tarjetaHabienteRut: payment.docNumber,
           tarjetaHabienteNombre: payment.cardholderName,

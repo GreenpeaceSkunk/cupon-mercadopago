@@ -410,8 +410,8 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
         <Form.Row>
           <Form.Column>
             <Form.Group
-              fieldName='cardholderName'
-              value={payment.cardholderName}
+              fieldName='cardHolderName'
+              value={payment.cardHolderName}
               labelText='Titular de la tarjeta'
               showErrorMessage={showFieldErrors}
               validateFn={validateCardHolderName}
@@ -419,11 +419,11 @@ const MercadopagoCheckoutForm: React.FunctionComponent<{}> = () => {
             >
               <Elements.Input
                 type='text'
-                id='cardholderName'
-                name='cardholderName'
-                data-checkout='cardholderName'
+                id='cardHolderName'
+                name='cardHolderName'
+                data-checkout='cardHolderName'
                 placeholder='Ej. Daniela Lopez'
-                value={payment.cardholderName}
+                value={payment.cardHolderName}
                 onChange={onChangeHandler}
               />
             </Form.Group>

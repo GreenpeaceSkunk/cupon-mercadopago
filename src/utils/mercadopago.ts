@@ -86,7 +86,7 @@ export const getIdentificationTypes = async (): Promise<any> => {
 
 export const createToken = async (form: HTMLFormElement, MercadoPago?: any, data?: IData):Promise<{ isValid: boolean; message: string; tokenId: string | null }> => {
   return await MercadoPago.createCardToken({
-    cardholderName: data?.payment.cardholderName,
+    cardholderName: data?.payment.cardHolderName,
     identificationType: data?.payment.docType,
     identificationNumber: data?.payment.docNumber,
   })

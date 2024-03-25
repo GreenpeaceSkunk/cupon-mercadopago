@@ -66,7 +66,7 @@ const defaultData = {
   } as IUserData,
   payment: {
     cardNumber: '',
-    cardholderName: '',
+    cardHolderName: '',
     securityCode: '',
     cardExpirationMonth: '',
     cardExpirationYear: '',
@@ -116,7 +116,7 @@ export const initialState: ContextStateType = {
         docType: '',
         securityCode: '123',
         // securityCode: '1234',
-        cardholderName: 'APRO',
+        cardHolderName: 'APRO',
         // cardExpirationMonth: '11',
         // cardExpirationYear: '2025',
         docNumber: '102345678',

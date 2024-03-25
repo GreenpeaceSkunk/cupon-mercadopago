@@ -425,8 +425,8 @@ const Component: React.FunctionComponent<{}> = memo(() => {
         <Form.Row>
           <Form.Column>
             <Form.Group
-              value={payment.cardholderName}
-              fieldName='cardholderName'
+              value={payment.cardHolderName}
+              fieldName='cardHolderName'
               labelText='Titular de la tarjeta'
               isRequired={true}
               validateFn={validateCardHolderName}
@@ -435,11 +435,11 @@ const Component: React.FunctionComponent<{}> = memo(() => {
             >
               <Form.Input
                 type='text'
-                id='cardholderName'
-                name='cardholderName'
-                data-checkout='cardholderName'
+                id='cardHolderName'
+                name='cardHolderName'
+                data-checkout='cardHolderName'
                 placeholder='Daniela Lopez'
-                value={payment.cardholderName}
+                value={payment.cardHolderName}
                 onChange={onChangeHandler}
               />
             </Form.Group>

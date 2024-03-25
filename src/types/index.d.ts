@@ -107,7 +107,7 @@ export interface IHubspotUserData {
 
 export interface IPaymentData {
   cardNumber: string;
-  cardholderName: string;
+  cardHolderName: string;
   cardType?: string;
   securityCode: string;
   cardExpirationMonth: string;

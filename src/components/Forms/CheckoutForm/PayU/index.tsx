@@ -144,7 +144,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
             recurrenceDay: tomorrow.getDate(),
             txnDate: today,
             txnErrorCode: '',
-            txnErrorMessage: response.status === 400 ? `Errores: ${Object.keys(response.data).map((e: any) => e)}` : '',
+            txnErrorMessage: response.status === 400 ? `Errores: ${Object.keys(response.data).map((e: any) => e)}`.replaceAll(',', ' | ') : '',
             txnStatus: response.status === 400 ? 'pending' : 'done',
             urlQueryParams: `${searchParams}`,
             userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),

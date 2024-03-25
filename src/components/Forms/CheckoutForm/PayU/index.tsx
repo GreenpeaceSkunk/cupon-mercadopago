@@ -146,7 +146,7 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
             txnDate: today,
             txnErrorCode: '',
             txnType: 'payu',
-            txnErrorMessage: response.status === 400 ? `Error en ${Object.keys(response.data).map((e: any) => e)}`.replace(/,/g, '|') : '',
+            txnErrorMessage: response.status === 400 ? `${Object.keys(response.data).length > 1 ? "Errores" : "Error"} en ${Object.keys(response.data).map((e: any) => `"${e}"`)}`.replace(/,/g, '|') : '',
             txnStatus: response.status === 400 ? 'pending' : 'done',
             urlQueryParams: `${searchParams}`,
             userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),

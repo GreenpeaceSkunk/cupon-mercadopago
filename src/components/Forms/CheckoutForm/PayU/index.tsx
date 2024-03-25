@@ -95,15 +95,15 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
         }
       );
 
-      if(response.status === 400) {
-        dispatchFormErrors({
-          type: 'SET_ERROR',
-          error: `Hay errores en los siguientes campos: ${Object.values(response.data).map((e: any) => `"<strong>${e[0]}</strong>"`)}`,
-        });
+      // if(response.status === 400) {
+      //   dispatchFormErrors({
+      //     type: 'SET_ERROR',
+      //     error: `Hay errores en los siguientes campos: ${Object.values(response.data).map((e: any) => `"<strong>${e[0]}</strong>"`)}`,
+      //   });
 
-        dispatchFormErrors({ type: 'SUBMITTED' });
-        return;
-      }
+      //   dispatchFormErrors({ type: 'SUBMITTED' });
+      //   return;
+      // }
 
       /* Backup to Forma. */
       if(appData?.settings?.services?.forma?.form_id) {
@@ -144,8 +144,8 @@ const CheckoutForm: React.FunctionComponent<{}> = () => {
             recurrenceDay: tomorrow.getDate(),
             txnDate: today,
             txnErrorCode: '',
-            txnErrorMessage: '',
-            txnStatus: "done",
+            txnErrorMessage: response.status === 400 ? `Errores: ${Object.keys(response.data).map((e: any) => e)}` : '',
+            txnStatus: response.status === 400 ? 'pending' : 'done',
             urlQueryParams: `${searchParams}`,
             userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
             utmCampaign: urlSearchParams.get('utm_campaign') || '',

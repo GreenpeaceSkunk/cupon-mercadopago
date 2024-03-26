@@ -93,6 +93,8 @@ export const initialState: ContextStateType = {
         areaCode: '11',
         docNumber: '9876543210',
         docType: 'DNI',
+        address: 'Av. Libertador',
+        addressNumber: '8734',
         citizenId: '',
         constituentId: '',
         referredAreaCode: '351',

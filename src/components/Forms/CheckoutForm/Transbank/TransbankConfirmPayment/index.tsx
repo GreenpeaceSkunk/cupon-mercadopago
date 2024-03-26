@@ -45,7 +45,7 @@ const Component: React.FunctionComponent<{}> = () => {
           campaignId: appData?.settings?.tracking?.salesforce?.campaign_id,
           cardDocNumber:payment.docNumber,
           cardDocType: payment.docType,
-          cardHolderName: payment.cardholderName,
+          cardHolderName: payment.cardHolderName,
           city: user.city || '',
           country: user.country,
           couponType: params.couponType ?? 'regular',

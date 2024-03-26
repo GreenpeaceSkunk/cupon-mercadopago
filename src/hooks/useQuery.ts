@@ -5,10 +5,14 @@ export interface IUseQuery {
   urlSearchParams: URLSearchParams;
 }
 
+const parseParams = (search: string) => {
+  return search.replaceAll('%253F', '&').replaceAll('%3D', '=');
+}
+
 const useQuery = (): IUseQuery => {
   return {
-    searchParams: useLocation().search,
-    urlSearchParams: new URLSearchParams(useLocation().search) as URLSearchParams,
+    searchParams: parseParams(useLocation().search),
+    urlSearchParams: new URLSearchParams(parseParams(useLocation().search)) as URLSearchParams,
   };
 }
 

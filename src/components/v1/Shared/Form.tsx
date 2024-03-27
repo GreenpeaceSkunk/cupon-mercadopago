@@ -314,7 +314,7 @@ const Group: React.FunctionComponent<{
 
   useEffect(() => {
     if(isRequired && validateFn) {
-      let validator: ValidationType;      
+      let validator: ValidationType;
       if(maxLength) {
         validator = validateFn(value, maxLength);
       } else {

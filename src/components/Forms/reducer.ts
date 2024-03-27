@@ -4,7 +4,7 @@ export type FieldErrorType = { [fieldName: string]:boolean } | null;
 export type ErrorsType = { [index: string]: FieldErrorType } | null;
 
 type FieldType = { [x: string]: string | number };
-export type ProvinceType = {name: string; slug: string; cities: Array<string>};
+export type ProvinceType = {name: string; slug: string; code: string; cities: Array<string>;};
 
 export type FormSharedType = {
   countries?: Array<{code: string; label: string; phone: string}>; // { code: "AD", label: "Andorra", phone: "376" } 
@@ -75,6 +75,11 @@ const defaultData = {
     docType: '',
     newAmount: '',
     isCardHolder: true,
+    paymentType: 'credit_card',
+    bankName: '',
+    bankAccountType: '',
+    bankAccountNumber: '',
+    paymentHolderName: '',
   } as IPaymentData,
 } as IData;
 
@@ -109,18 +114,22 @@ export const initialState: ContextStateType = {
       ...defaultData.payment,
       ...(autofill ? {
         cardType: '2',
-        cardNumber: '1234567890123456',
+        cardNumber: '4509953566233704',
         // cardNumber: '4509953566233704', // Visa
         // cardNumber: '5031755734530604', // Mastercard
         // cardNumber: '371180303257522', // AMEX
-        docType: '',
-        securityCode: '123',
+        securityCode: '',
         // securityCode: '1234',
         cardHolderName: 'APRO',
         // cardExpirationMonth: '11',
         // cardExpirationYear: '2025',
+        docType: 'CC',
         docNumber: '102345678',
         cardExpiration: '11/27',
+        bankName: 'bank_2',
+        bankAccountType: 'AHORROS',
+        bankAccountNumber: '555555',
+        paymentHolderName: 'Jhon Doe',
         // docType: 'DNI',
       } : {})
     } as IPaymentData,

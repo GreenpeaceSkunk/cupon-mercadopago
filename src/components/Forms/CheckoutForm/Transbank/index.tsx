@@ -63,10 +63,13 @@ const Component: React.FunctionComponent<{}> = () => {
           }),
           apiResponseUrlParams: searchParams || '',
         };
-        
+
         const response = await suscribe(data);
 
         if(response.token && response.url_webpay) {
+          // Save locally
+          window.localStorage.setItem(`tbk_${response.token}`, JSON.stringify(data));
+
           setToken(response.token);
 
           if(checkoutFormRef.current) {

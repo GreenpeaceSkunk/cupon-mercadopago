@@ -207,6 +207,7 @@ const Component: React.FunctionComponent<{}> = memo(() => {
       donationStatus: 'requested',
     });
 
+    console.log('Contact', contact);
     if(contact) {
       pushToDataLayer({ 'event' : 'petitionSignup' });
 

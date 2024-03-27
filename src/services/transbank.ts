@@ -37,8 +37,9 @@ export const confirm = async (data: {token: string, transactionId: string}): Pro
 
   if(response.error) {
     return {
-      message: response.data.name,
+      message: response.data,
       status: response.status,
+      error: response.error,
     } as AxiosResquestError;
   }
 

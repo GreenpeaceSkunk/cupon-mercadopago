@@ -20,65 +20,67 @@ const Component: React.FunctionComponent<{}> = () => {
   
   useEffect(() => {
     (async () => {
-      const txnStatus = (urlSearchParams.get('TBK_TOKEN') && urlSearchParams.get('TRANSACCION_ID')) ? 'done' : 'pending';
+      const tbkToken = urlSearchParams.get('TBK_TOKEN') || '';
+      const tbkTxnId = urlSearchParams.get('TRANSACCION_ID') || '';
 
-      if(urlSearchParams.get('TBK_TOKEN') && urlSearchParams.get('TRANSACCION_ID')) {
-        await confirm({
-          token: urlSearchParams.get('TBK_TOKEN') || '',
-          transactionId: urlSearchParams.get('TRANSACCION_ID') || '',
-        });
+      // Get data from local and remove it
+      let localData: any = window.localStorage.getItem(`tbk_${tbkToken}`);
+      if(typeof localData === 'string') {
+        localData = JSON.parse(localData);
+        window.localStorage.removeItem(`tbk_${tbkToken}`);
       }
+
+      const response = await confirm({ token: tbkToken, transactionId: tbkTxnId });
       
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      
+
       /* Backup to Forma. */
       if(appData?.settings?.services?.forma?.form_id) {
-        const payload = {
-          address: user.address || '',
-          amount: payment.amount === 'otherAmount' ? payment.newAmount : payment.amount,
-          appUiVersion: appData.features.use_design_version,
-          appName: appData.name,
-          areaCode: user.areaCode,
-          birthDate: user.birthDate,
-          campaignId: appData?.settings?.tracking?.salesforce?.campaign_id,
-          cardDocNumber:payment.docNumber,
-          cardDocType: payment.docType,
-          cardHolderName: payment.cardHolderName,
-          city: user.city || '',
-          country: user.country,
-          couponType: params.couponType ?? 'regular',
-          docNumber: user.docNumber,
-          docType: user.docType,
-          email: user.email,
-          firstName: user.firstName,
-          fromUrl: document.location.href,
-          genre: user.genre,
-          lastName: user.lastName,
-          mobileNumber: '',
-          phoneNumber: user.phoneNumber,
-          province: user.province || '',
-          region: '',
-          recurrenceDay: tomorrow.getDate(),
-          txnDate: today,
-          txnErrorCode: '',
-          txnErrorMessage: '',
-          txnStatus,
-          urlQueryParams: `${searchParams}`, 
-          userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
-          utmCampaign: urlSearchParams.get('utm_campaign') || '',
-          utmMedium: urlSearchParams.get('utm_medium') || '',
-          utmSource: urlSearchParams.get('utm_source') || '',
-          utmContent: urlSearchParams.get('utm_content') || '',
-          utmTerm: urlSearchParams.get('utm_term') || '',
-          zipCode: user.zipCode || '',
-          token: urlSearchParams.get('TBK_TOKEN') || '',
-          transactionId: urlSearchParams.get('TRANSACCION_ID') || '',
-        };
-        
         await postRecord(
-          payload,
+          {
+            address: `${localData.direccion} ${localData.numero}`,
+            amount: localData.monto,
+            appUiVersion: appData.features.use_design_version,
+            appName: appData.name,
+            areaCode: localData.prefijo,
+            birthDate: localData.fechaNacimiento,
+            campaignId: appData?.settings?.tracking?.salesforce?.campaign_id,
+            cardDocNumber: localData.tarjetaHabienteRut,
+            cardDocType: 'RUT',
+            cardHolderName: localData.tarjetaHabienteNombre,
+            country: localData.pais,
+            city: localData.comuna,
+            province: localData.provincia,
+            region: localData.region,
+            couponType: params.couponType ?? 'regular',
+            docNumber: localData.rut,
+            docType: 'RUT',
+            email: localData.email,
+            firstName: localData.nombre,
+            fromUrl: document.location.href,
+            genre: '',
+            lastName: localData.apellido,
+            mobileNumber: '',
+            phoneNumber: localData.telefono,
+            recurrenceDay: tomorrow.getDate(),
+            urlQueryParams: localData.apiResponseUrlParams,
+            userAgent: window.navigator.userAgent.replace(/;/g, '').replace(/,/g, ''),
+            utmCampaign: localData.utmCampaign,
+            utmMedium: localData.utmMedium,
+            utmSource: localData.utmSource,
+            utmContent: localData.utmContent,
+            utmTerm: localData.utmTerm,
+            zipCode: '',
+            txnDate: today,
+            txnErrorCode: '',
+            txnErrorMessage: response.status === 400 ? response.message : '',
+            txnStatus: response.status === 400 ? 'pending' : 'done',
+            txnType: "transbank",
+            tbkToken,
+            tbkTxnId,
+          },
           appData?.settings?.services?.forma?.form_id,
         );
       }
